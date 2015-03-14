@@ -91,7 +91,7 @@ namespace OpenTKMapMaker
         {
             CurrentContext = ContextView;
             glControlView.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0f, 0f, 0f, 1f });
+            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
             glControlView.SwapBuffers();
@@ -111,7 +111,7 @@ namespace OpenTKMapMaker
         {
             CurrentContext = ContextTop;
             glControlTop.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0f, 0f, 0f, 1f });
+            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             glControlTop.SwapBuffers();
         }
 
@@ -129,7 +129,7 @@ namespace OpenTKMapMaker
         {
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0f, 0f, 0f, 1f });
+            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             glControlSide.SwapBuffers();
         }
 
@@ -147,7 +147,7 @@ namespace OpenTKMapMaker
         {
             CurrentContext = ContextTex;
             glControlTex.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0f, 0f, 0f, 1f });
+            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             glControlTex.SwapBuffers();
         }
 
