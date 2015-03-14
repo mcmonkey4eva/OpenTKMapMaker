@@ -28,6 +28,7 @@ namespace OpenTKMapMaker
             InitializeComponent();
             SysConsole.Init();
             this.FormClosed += new FormClosedEventHandler(PrimaryEditor_FormClosed);
+            menuStrip1.Renderer = new MyRenderer();
             /*Timer timer = new Timer();
             timer.Interval = 200;
             timer.Tick += new EventHandler(timer_Tick);
@@ -224,5 +225,25 @@ namespace OpenTKMapMaker
         {
             this.Close();
         }
+    }
+
+    class MyRenderer : ToolStripProfessionalRenderer
+    {
+        public MyRenderer() : base(new MyColors()) { }
+    }
+
+    class MyColors : ProfessionalColorTable
+    {
+        public override Color MenuItemSelected { get { return Color.DarkGreen; } }
+        public override Color MenuItemSelectedGradientBegin { get { return Color.DarkGreen; } }
+        public override Color MenuItemSelectedGradientEnd { get { return Color.DarkGreen; } }
+        public override Color ButtonPressedHighlight { get { return Color.DarkGreen; } }
+        public override Color ButtonPressedGradientBegin { get { return Color.DarkGreen; } }
+        public override Color ButtonPressedGradientEnd { get { return Color.DarkGreen; } }
+        public override Color ButtonSelectedHighlight { get { return Color.DarkGreen; } }
+        public override Color ButtonSelectedGradientBegin { get { return Color.DarkGreen; } }
+        public override Color ButtonSelectedGradientEnd { get { return Color.DarkGreen; } }
+        public override Color MenuItemPressedGradientBegin { get { return Color.DarkGreen; } }
+        public override Color MenuItemPressedGradientEnd { get { return Color.DarkGreen; } }
     }
 }
