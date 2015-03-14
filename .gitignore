@@ -1,0 +1,6 @@
+obj/
+debug/
+*.suo
+*.user
+*.pdb
+*.exe
