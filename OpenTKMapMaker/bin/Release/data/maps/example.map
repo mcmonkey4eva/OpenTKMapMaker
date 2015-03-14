@@ -1,0 +1,25 @@
+general
+{
+	ambient: 0.1, 0.1, 0.1
+	music: common/example
+}
+cube
+{
+	min: -100, -100, -10
+	max: 100, 100, 0
+	angle: 0, 0, 0
+	velocity: 0, 0, 0
+	angle_velocity: 0, 0, 0
+	textures: common/example_top|common/example_bottom|common/example_xp|common/example_xm|common/example_yp|common/example_ym
+	mass: 0
+}
+point_light
+{
+	position: 0, 0, 10
+	radius: 100
+	color: 1.0, 1.0, 1.0
+}
+spawn
+{
+	position: 0, 0, 10
+}
