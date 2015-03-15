@@ -176,6 +176,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         uint VBONormals;
         uint VBOTexCoords;
         uint VBOIndices;
+        uint VBOColors;
         uint VAO;
         Vector3[] Positions;
         Vector3[] Normals;
@@ -185,11 +186,11 @@ namespace OpenTKMapMaker.GraphicsSystem
 
         public void GenerateVBO()
         {
-            List<Vector3> Vecs = new List<Vector3>();
-            List<Vector3> Norms = new List<Vector3>();
-            List<Vector2> Texs = new List<Vector2>();
-            List<ushort> Inds = new List<ushort>();
-            List<Vector3> Cols = new List<Vector3>();
+            List<Vector3> Vecs = new List<Vector3>(100);
+            List<Vector3> Norms = new List<Vector3>(100);
+            List<Vector2> Texs = new List<Vector2>(100);
+            List<ushort> Inds = new List<ushort>(100);
+            List<Vector3> Cols = new List<Vector3>(100);
             for (int i = 0; i < Meshes.Count; i++)
             {
                 for (int x = 0; x < Meshes[i].Faces.Count; x++)
@@ -241,6 +242,12 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(TexCoords.Length * Vector2.SizeInBytes),
                 TexCoords, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // Coolor buffer
+            GL.GenBuffers(1, out VBOColors);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBOColors);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Colors.Length * Vector3.SizeInBytes),
+                Colors, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             // Index buffer
             GL.GenBuffers(1, out VBOIndices);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, VBOIndices);
@@ -255,16 +262,20 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBONormals);
             GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 0, 0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBOTexCoords);
-            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBOColors);
+            GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
             GL.EnableVertexAttribArray(2);
+            GL.EnableVertexAttribArray(3);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, VBOIndices);
             // Clean up
             GL.BindVertexArray(0);
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
             GL.DisableVertexAttribArray(2);
+            GL.DisableVertexAttribArray(3);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
         }
@@ -274,6 +285,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.DeleteBuffer(VBO);
             GL.DeleteBuffer(VBONormals);
             GL.DeleteBuffer(VBOTexCoords);
+            GL.DeleteBuffer(VBOColors);
             GL.DeleteVertexArray(VAO);
         }
 
@@ -283,7 +295,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public void Draw()
         {
             GL.BindVertexArray(VAO);
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedShort, IntPtr.Zero);
         }
 
         /// <summary>

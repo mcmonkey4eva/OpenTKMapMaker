@@ -117,23 +117,30 @@ namespace OpenTKMapMaker
 
         private void glControlView_Paint(object sender, PaintEventArgs e)
         {
-            CurrentContext = ContextView;
-            glControlView.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            CurrentContext.Shaders.ColorMultShader.Bind();
-            Location CameraTarget = CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
-            proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(CameraFOV), (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height, CameraZNear, CameraZFar);
-            view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
-            combined = view * proj;
-            GL.UniformMatrix4(1, false, ref combined);
-            Render3D(CurrentContext);
-            ortho = combined;
-            Matrix4 mat = Matrix4.Identity;
-            GL.UniformMatrix4(2, false, ref mat);
-            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
-            ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
-            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World! YAW:" + CameraYaw + ", PITCH: " + CameraPitch + ", R: " + Utilities.UtilRandom.NextDouble().ToString(), new Location(0, 0, 0));
-            glControlView.SwapBuffers();
+            try
+            {
+                CurrentContext = ContextView;
+                glControlView.MakeCurrent();
+                GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+                CurrentContext.Shaders.ColorMultShader.Bind();
+                Location CameraTarget = CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
+                proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(CameraFOV), (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height, CameraZNear, CameraZFar);
+                view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
+                combined = view * proj;
+                GL.UniformMatrix4(1, false, ref combined);
+                Render3D(CurrentContext);
+                ortho = combined;
+                Matrix4 mat = Matrix4.Identity;
+                GL.UniformMatrix4(2, false, ref mat);
+                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
+                ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World! YAW:" + CameraYaw + ", PITCH: " + CameraPitch + ", R: " + Utilities.UtilRandom.NextDouble().ToString(), new Location(0, 0, 0));
+                glControlView.SwapBuffers();
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, "PaintView: " + ex.ToString());
+            }
         }
 
         GLContext ContextTop;
@@ -150,16 +157,23 @@ namespace OpenTKMapMaker
 
         private void glControlTop_Paint(object sender, PaintEventArgs e)
         {
-            CurrentContext = ContextTop;
-            glControlTop.MakeCurrent();
-            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000);
-            GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext);
-            Matrix4 mat = Matrix4.Identity;
-            GL.UniformMatrix4(2, false, ref mat);
-            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
-            glControlTop.SwapBuffers();
+            try
+            {
+                CurrentContext = ContextTop;
+                glControlTop.MakeCurrent();
+                GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+                ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000);
+                GL.UniformMatrix4(1, false, ref ortho);
+                Render3D(CurrentContext);
+                Matrix4 mat = Matrix4.Identity;
+                GL.UniformMatrix4(2, false, ref mat);
+                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
+                glControlTop.SwapBuffers();
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, "PaintTop: " + ex.ToString());
+            }
         }
 
         GLContext ContextSide;
@@ -312,7 +326,6 @@ namespace OpenTKMapMaker
 
         void auto_redrawer_Tick(object sender, EventArgs e)
         {
-            SysConsole.Output(OutputType.INFO, "TICK"); // TODO: Why does this almost never show?!
             glControlView.Invalidate();
         }
     }
