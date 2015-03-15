@@ -37,6 +37,32 @@ namespace OpenTKMapMaker
             Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
             PickCameraSpawn();
             auto_redrawer.Tick += new EventHandler(auto_redrawer_Tick);
+            glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
+            glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
+        }
+
+        public static float side_zoom = 1;
+
+        void glControlSide_MouseWheel(object sender, MouseEventArgs e)
+        {
+            side_zoom *= (e.Delta >= 0 ? 1.1f : 0.9f);
+            if (side_zoom == 0f)
+            {
+                side_zoom = 0.001f;
+            }
+            glControlSide.Invalidate();
+        }
+
+        public static float top_zoom = 1;
+
+        void glControlTop_MouseWheel(object sender, MouseEventArgs e)
+        {
+            top_zoom *= (e.Delta >= 0 ? 1.1f : 0.9f);
+            if (top_zoom == 0f)
+            {
+                top_zoom = 0.001f;
+            }
+            glControlTop.Invalidate();
         }
 
         public Location CameraPos;
@@ -130,11 +156,8 @@ namespace OpenTKMapMaker
                 GL.UniformMatrix4(1, false, ref combined);
                 Render3D(CurrentContext);
                 ortho = combined;
-                Matrix4 mat = Matrix4.Identity;
-                GL.UniformMatrix4(2, false, ref mat);
-                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
-                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World! YAW:" + CameraYaw + ", PITCH: " + CameraPitch + ", R: " + Utilities.UtilRandom.NextDouble().ToString(), new Location(0, 0, 0));
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + CameraYaw + "/" + CameraPitch, new Location(0, 0, 0));
                 glControlView.SwapBuffers();
             }
             catch (Exception ex)
@@ -162,12 +185,15 @@ namespace OpenTKMapMaker
                 CurrentContext = ContextTop;
                 glControlTop.MakeCurrent();
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-                ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000);
+                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom, 500f / top_zoom, 500f / top_zoom, -500f / top_zoom, -100000, 100000);
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext);
-                Matrix4 mat = Matrix4.Identity;
-                GL.UniformMatrix4(2, false, ref mat);
-                CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
+                ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+                GL.Enable(EnableCap.Texture2D);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + top_zoom.ToString(), new Location(0, 0, 0));
+                GL.Disable(EnableCap.Texture2D);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
                 glControlTop.SwapBuffers();
             }
             catch (Exception ex)
@@ -193,12 +219,15 @@ namespace OpenTKMapMaker
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000) * Matrix4.CreateRotationX(90);
+            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom, 500f / side_zoom, 500f / side_zoom, -500f / side_zoom, -100000, 100000) * Matrix4.CreateRotationX(90);
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext);
-            Matrix4 mat = Matrix4.Identity;
-            GL.UniformMatrix4(2, false, ref mat);
-            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
+            ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+            GL.Enable(EnableCap.Texture2D);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
+            GL.Disable(EnableCap.Texture2D);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             glControlSide.SwapBuffers();
         }
 
