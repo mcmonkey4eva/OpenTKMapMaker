@@ -128,6 +128,8 @@ namespace OpenTKMapMaker
             GL.UniformMatrix4(1, false, ref combined);
             Render3D(CurrentContext);
             ortho = combined;
+            Matrix4 mat = Matrix4.Identity;
+            GL.UniformMatrix4(2, false, ref mat);
             CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World! YAW:" + CameraYaw + ", PITCH: " + CameraPitch + ", R: " + Utilities.UtilRandom.NextDouble().ToString(), new Location(0, 0, 0));
@@ -142,6 +144,8 @@ namespace OpenTKMapMaker
             ContextTop = new GLContext();
             ContextTop.Control = glControlTop;
             InitGL(ContextTop);
+            GL.Disable(EnableCap.Texture2D);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
         }
 
         private void glControlTop_Paint(object sender, PaintEventArgs e)
@@ -149,6 +153,12 @@ namespace OpenTKMapMaker
             CurrentContext = ContextTop;
             glControlTop.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+            ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000);
+            GL.UniformMatrix4(1, false, ref ortho);
+            Render3D(CurrentContext);
+            Matrix4 mat = Matrix4.Identity;
+            GL.UniformMatrix4(2, false, ref mat);
+            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
             glControlTop.SwapBuffers();
         }
 
