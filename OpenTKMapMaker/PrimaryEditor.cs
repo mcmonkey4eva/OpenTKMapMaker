@@ -184,6 +184,8 @@ namespace OpenTKMapMaker
             ContextSide = new GLContext();
             ContextSide.Control = glControlSide;
             InitGL(ContextSide);
+            GL.Disable(EnableCap.Texture2D);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
         }
 
         private void glControlSide_Paint(object sender, PaintEventArgs e)
@@ -191,6 +193,12 @@ namespace OpenTKMapMaker
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+            ortho = Matrix4.CreateOrthographicOffCenter(-500, 500, 500, -500, -100000, 100000) * Matrix4.CreateRotationX(90);
+            GL.UniformMatrix4(1, false, ref ortho);
+            Render3D(CurrentContext);
+            Matrix4 mat = Matrix4.Identity;
+            GL.UniformMatrix4(2, false, ref mat);
+            CurrentContext.FontSets.Standard.DrawColoredText("^!^e^7Hello World!", new Location(0, 0, 0));
             glControlSide.SwapBuffers();
         }
 
