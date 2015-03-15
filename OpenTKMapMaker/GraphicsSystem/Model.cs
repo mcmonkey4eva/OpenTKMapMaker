@@ -181,6 +181,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         Vector3[] Normals;
         Vector2[] TexCoords;
         ushort[] Indices;
+        Vector3[] Colors;
 
         public void GenerateVBO()
         {
@@ -188,6 +189,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             List<Vector3> Norms = new List<Vector3>();
             List<Vector2> Texs = new List<Vector2>();
             List<ushort> Inds = new List<ushort>();
+            List<Vector3> Cols = new List<Vector3>();
             for (int i = 0; i < Meshes.Count; i++)
             {
                 for (int x = 0; x < Meshes[i].Faces.Count; x++)
@@ -211,12 +213,16 @@ namespace OpenTKMapMaker.GraphicsSystem
                     Inds.Add((ushort)(Vecs.Count - 1));
                     Location tex3 = TextureCoords[Meshes[i].Faces[x].T3 - 1];
                     Texs.Add(new Vector2((float)tex3.X, (float)tex3.Y));
+                    Cols.Add(new Vector3(1, 1, 1));
+                    Cols.Add(new Vector3(1, 1, 1));
+                    Cols.Add(new Vector3(1, 1, 1));
                 }
             }
             Positions = Vecs.ToArray();
             Normals = Norms.ToArray();
             TexCoords = Texs.ToArray();
             Indices = Inds.ToArray();
+            Colors = Cols.ToArray();
             // Vertex buffer
             GL.GenBuffers(1, out VBO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);

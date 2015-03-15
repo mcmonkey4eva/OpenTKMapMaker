@@ -52,6 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntitySystem\CubeEntity.cs" />
+    <Compile Include="EntitySystem\Entity.cs" />
+    <Compile Include="EntitySystem\PointLightEntity.cs" />
+    <Compile Include="EntitySystem\SpawnPointEntity.cs" />
     <Compile Include="GLContext.cs" />
     <Compile Include="GraphicsSystem\FontSet.cs" />
     <Compile Include="GraphicsSystem\Frustum.cs" />
