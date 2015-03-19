@@ -36,7 +36,6 @@ namespace OpenTKMapMaker
             Entities.Add(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
             Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
             PickCameraSpawn();
-            auto_redrawer.Tick += new EventHandler(auto_redrawer_Tick);
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
             glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
         }
@@ -185,7 +184,8 @@ namespace OpenTKMapMaker
                 CurrentContext = ContextTop;
                 glControlTop.MakeCurrent();
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom, 500f / top_zoom, 500f / top_zoom, -500f / top_zoom, -100000, 100000);
+                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X / top_zoom, 500f / top_zoom + (float)top_translate.X / top_zoom,
+                    500f / top_zoom + (float)top_translate.Y / top_zoom, -500f / top_zoom + (float)top_translate.Y / top_zoom, -100000, 100000);
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
@@ -344,28 +344,12 @@ namespace OpenTKMapMaker
             }
         }
 
-        Timer auto_redrawer = new Timer();
-
         private void glControlView_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle)
             {
                 view_selected = !view_selected;
-                auto_redrawer.Interval = 50;
-                if (view_selected)
-                {
-                    auto_redrawer.Start();
-                }
-                else
-                {
-                    auto_redrawer.Stop();
-                }
             }
-        }
-
-        void auto_redrawer_Tick(object sender, EventArgs e)
-        {
-            glControlView.Invalidate();
         }
 
         private void glControlSide_MouseEnter(object sender, EventArgs e)
@@ -398,6 +382,51 @@ namespace OpenTKMapMaker
             glControlTex.Invalidate();
             glControlTop.Invalidate();
             glControlSide.Invalidate();
+        }
+
+        bool top_selected = false;
+
+        Location top_translate = new Location(0, 0, 0);
+
+        private void glControlTop_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (top_selected)
+            {
+                glControlTop.Invalidate();
+                float mx = (float)(e.X - glControlTop.Width / 2) / 25f;
+                float my = (float)(e.Y - glControlTop.Height / 2) / 25f;
+                top_translate.X -= mx;
+                top_translate.Y -= my;
+                SysConsole.Output(OutputType.INFO, "mx:" + mx + ", my: " + my);
+                if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
+                {
+                    OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
+                }
+            }
+        }
+
+        private void glControlTop_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                top_selected = true;
+            }
+        }
+
+        private void PrimaryEditor_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                top_selected = false;
+            }
+        }
+
+        private void glControlTop_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                top_selected = false;
+            }
         }
     }
 

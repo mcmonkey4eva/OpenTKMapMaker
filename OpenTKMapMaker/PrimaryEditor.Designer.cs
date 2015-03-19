@@ -334,7 +334,10 @@
             this.glControlTop.VSync = false;
             this.glControlTop.Load += new System.EventHandler(this.glControlTop_Load);
             this.glControlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTop_Paint);
+            this.glControlTop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlTop_MouseDown);
             this.glControlTop.MouseEnter += new System.EventHandler(this.glControlTop_MouseEnter);
+            this.glControlTop.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlTop_MouseMove);
+            this.glControlTop.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlTop_MouseUp);
             this.glControlTop.Resize += new System.EventHandler(this.glControlTop_Resize);
             // 
             // glControlSide
@@ -407,6 +410,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "PrimaryEditor";
             this.Text = "mcmonkey\'s Map Maker";
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PrimaryEditor_MouseUp);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
