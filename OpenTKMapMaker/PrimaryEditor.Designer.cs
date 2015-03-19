@@ -350,7 +350,10 @@
             this.glControlSide.VSync = false;
             this.glControlSide.Load += new System.EventHandler(this.glControlSide_Load);
             this.glControlSide.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlSide_Paint);
+            this.glControlSide.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlSide_MouseDown);
             this.glControlSide.MouseEnter += new System.EventHandler(this.glControlSide_MouseEnter);
+            this.glControlSide.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlSide_MouseMove);
+            this.glControlSide.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlSide_MouseUp);
             this.glControlSide.Resize += new System.EventHandler(this.glControlSide_Resize);
             // 
             // splitContainer3

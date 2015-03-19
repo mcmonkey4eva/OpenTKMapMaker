@@ -219,7 +219,8 @@ namespace OpenTKMapMaker
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom, 500f / side_zoom, 500f / side_zoom, -500f / side_zoom, -100000, 100000) * Matrix4.CreateRotationX(90);
+            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X / side_zoom, 500f / side_zoom + (float)side_translate.X / side_zoom,
+                500f / side_zoom + (float)side_translate.Y / side_zoom, -500f / side_zoom + (float)side_translate.Y / side_zoom, -100000, 100000) * Matrix4.CreateRotationX(90);
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
@@ -397,7 +398,6 @@ namespace OpenTKMapMaker
                 float my = (float)(e.Y - glControlTop.Height / 2) / 25f;
                 top_translate.X -= mx;
                 top_translate.Y -= my;
-                SysConsole.Output(OutputType.INFO, "mx:" + mx + ", my: " + my);
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
@@ -418,6 +418,7 @@ namespace OpenTKMapMaker
             if (e.Button == MouseButtons.Middle)
             {
                 top_selected = false;
+                side_selected = false;
             }
         }
 
@@ -426,6 +427,45 @@ namespace OpenTKMapMaker
             if (e.Button == MouseButtons.Middle)
             {
                 top_selected = false;
+                side_selected = false;
+            }
+        }
+
+        bool side_selected = false;
+
+        Location side_translate = new Location(0, 0, 0);
+
+        private void glControlSide_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (side_selected)
+            {
+                glControlSide.Invalidate();
+                float mx = (float)(e.X - glControlSide.Width / 2) / 25f;
+                float my = (float)(e.Y - glControlSide.Height / 2) / 25f;
+                side_translate.X -= mx;
+                side_translate.Y -= my;
+                if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
+                {
+                    OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
+                        this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
+                }
+            }
+        }
+
+        private void glControlSide_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                top_selected = false;
+                side_selected = false;
+            }
+        }
+
+        private void glControlSide_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                side_selected = true;
             }
         }
     }
