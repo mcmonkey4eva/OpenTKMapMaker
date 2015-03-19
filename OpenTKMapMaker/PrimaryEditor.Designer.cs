@@ -334,6 +334,7 @@
             this.glControlTop.VSync = false;
             this.glControlTop.Load += new System.EventHandler(this.glControlTop_Load);
             this.glControlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTop_Paint);
+            this.glControlTop.MouseEnter += new System.EventHandler(this.glControlTop_MouseEnter);
             this.glControlTop.Resize += new System.EventHandler(this.glControlTop_Resize);
             // 
             // glControlSide
@@ -346,6 +347,7 @@
             this.glControlSide.VSync = false;
             this.glControlSide.Load += new System.EventHandler(this.glControlSide_Load);
             this.glControlSide.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlSide_Paint);
+            this.glControlSide.MouseEnter += new System.EventHandler(this.glControlSide_MouseEnter);
             this.glControlSide.Resize += new System.EventHandler(this.glControlSide_Resize);
             // 
             // splitContainer3
@@ -378,6 +380,7 @@
             this.glControlView.Load += new System.EventHandler(this.glControlView_Load);
             this.glControlView.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlView_Paint);
             this.glControlView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseClick);
+            this.glControlView.MouseEnter += new System.EventHandler(this.glControlView_MouseEnter);
             this.glControlView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseMove);
             this.glControlView.Resize += new System.EventHandler(this.glControlView_Resize);
             // 
@@ -391,6 +394,7 @@
             this.glControlTex.VSync = false;
             this.glControlTex.Load += new System.EventHandler(this.glControlTex_Load);
             this.glControlTex.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTex_Paint);
+            this.glControlTex.MouseEnter += new System.EventHandler(this.glControlTex_MouseEnter);
             this.glControlTex.Resize += new System.EventHandler(this.glControlTex_Resize);
             // 
             // PrimaryEditor

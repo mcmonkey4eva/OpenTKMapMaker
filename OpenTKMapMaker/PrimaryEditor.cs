@@ -157,7 +157,7 @@ namespace OpenTKMapMaker
                 Render3D(CurrentContext);
                 ortho = combined;
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
-                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + CameraYaw + "/" + CameraPitch, new Location(0, 0, 0));
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlView.Focused ? "@" : "!") + "^e^7" + CameraYaw + "/" + CameraPitch, new Location(0, 0, 0));
                 glControlView.SwapBuffers();
             }
             catch (Exception ex)
@@ -191,7 +191,7 @@ namespace OpenTKMapMaker
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + top_zoom.ToString(), new Location(0, 0, 0));
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTop.Focused ? "@": "!") + "^e^7" + top_zoom.ToString(), new Location(0, 0, 0));
                 GL.Disable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
                 glControlTop.SwapBuffers();
@@ -225,7 +225,7 @@ namespace OpenTKMapMaker
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlSide.Focused ? "@" : "!") + "^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
             GL.Disable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             glControlSide.SwapBuffers();
@@ -246,6 +246,8 @@ namespace OpenTKMapMaker
             CurrentContext = ContextTex;
             glControlTex.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+            ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTex.Focused ? "@" : "!") + "^e^7Textures", new Location(0, 0, 0));
             glControlTex.SwapBuffers();
         }
 
@@ -364,6 +366,38 @@ namespace OpenTKMapMaker
         void auto_redrawer_Tick(object sender, EventArgs e)
         {
             glControlView.Invalidate();
+        }
+
+        private void glControlSide_MouseEnter(object sender, EventArgs e)
+        {
+            glControlSide.Focus();
+            invalidateAll();
+        }
+
+        private void glControlTop_MouseEnter(object sender, EventArgs e)
+        {
+            glControlTop.Focus();
+            invalidateAll();
+        }
+
+        private void glControlTex_MouseEnter(object sender, EventArgs e)
+        {
+            glControlTex.Focus();
+            invalidateAll();
+        }
+
+        private void glControlView_MouseEnter(object sender, EventArgs e)
+        {
+            glControlView.Focus();
+            invalidateAll();
+        }
+
+        public void invalidateAll()
+        {
+            glControlView.Invalidate();
+            glControlTex.Invalidate();
+            glControlTop.Invalidate();
+            glControlSide.Invalidate();
         }
     }
 
