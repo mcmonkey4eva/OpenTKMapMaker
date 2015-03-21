@@ -38,6 +38,14 @@ namespace OpenTKMapMaker
             PickCameraSpawn();
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
             glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
+            tW.Interval = 50;
+            tA.Interval = 50;
+            tS.Interval = 50;
+            tD.Interval = 50;
+            tW.Tick += new EventHandler(tW_Tick);
+            tA.Tick += new EventHandler(tA_Tick);
+            tS.Tick += new EventHandler(tS_Tick);
+            tD.Tick += new EventHandler(tD_Tick);
         }
 
         public static float side_zoom = 1;
@@ -467,6 +475,78 @@ namespace OpenTKMapMaker
             {
                 side_selected = true;
             }
+        }
+        Timer tW = new Timer();
+        Timer tA = new Timer();
+        Timer tS = new Timer();
+        Timer tD = new Timer();
+
+        private void glControlView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.W)
+            {
+                tW_Tick(null, null);
+                tW.Start();
+            }
+            else if (e.KeyCode == Keys.A)
+            {
+                tA_Tick(null, null);
+                tA.Start();
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                tS_Tick(null, null);
+                tS.Start();
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                tD_Tick(null, null);
+                tD.Start();
+            }
+        }
+
+        private void glControlView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.W)
+            {
+                tW.Stop();
+            }
+            else if (e.KeyCode == Keys.A)
+            {
+                tA.Stop();
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                tS.Stop();
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                tD.Stop();
+            }
+        }
+
+        void tD_Tick(object sender, EventArgs e)
+        {
+            CameraPos += Utilities.ForwardVector_Deg(CameraYaw - 90, 0);
+            glControlView.Invalidate();
+        }
+
+        void tS_Tick(object sender, EventArgs e)
+        {
+            CameraPos -= Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
+            glControlView.Invalidate();
+        }
+
+        void tA_Tick(object sender, EventArgs e)
+        {
+            CameraPos += Utilities.ForwardVector_Deg(CameraYaw + 90, 0);
+            glControlView.Invalidate();
+        }
+
+        void tW_Tick(object sender, EventArgs e)
+        {
+            CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
+            glControlView.Invalidate();
         }
     }
 
