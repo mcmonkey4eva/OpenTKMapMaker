@@ -26,6 +26,8 @@ namespace OpenTKMapMaker
 
         public static List<GLContext> Contexts = new List<GLContext>();
 
+        public float mouse_sens = 5.0f;
+
         public PrimaryEditor()
         {
             InitializeComponent();
@@ -342,8 +344,8 @@ namespace OpenTKMapMaker
             if (view_selected)
             {
                 glControlView.Invalidate();
-                float mx = (float)(e.X - glControlView.Width / 2) / 25f;
-                float my = (float)(e.Y - glControlView.Height / 2) / 25f;
+                float mx = (float)(e.X - glControlView.Width / 2) / 25f * mouse_sens / 5.0f;
+                float my = (float)(e.Y - glControlView.Height / 2) / 25f * mouse_sens / 5.0f;
                 CameraYaw -= mx;
                 CameraPitch -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
@@ -402,8 +404,8 @@ namespace OpenTKMapMaker
             if (top_selected)
             {
                 glControlTop.Invalidate();
-                float mx = (float)(e.X - glControlTop.Width / 2) / 25f;
-                float my = (float)(e.Y - glControlTop.Height / 2) / 25f;
+                float mx = (float)(e.X - glControlTop.Width / 2) / 25f * mouse_sens;
+                float my = (float)(e.Y - glControlTop.Height / 2) / 25f * mouse_sens;
                 top_translate.X -= mx;
                 top_translate.Y -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
@@ -448,8 +450,8 @@ namespace OpenTKMapMaker
             if (side_selected)
             {
                 glControlSide.Invalidate();
-                float mx = (float)(e.X - glControlSide.Width / 2) / 25f;
-                float my = (float)(e.Y - glControlSide.Height / 2) / 25f;
+                float mx = (float)(e.X - glControlSide.Width / 2) / 25f * mouse_sens;
+                float my = (float)(e.Y - glControlSide.Height / 2) / 25f * mouse_sens;
                 side_translate.X -= mx;
                 side_translate.Y -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
