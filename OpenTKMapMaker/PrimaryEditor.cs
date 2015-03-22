@@ -187,6 +187,8 @@ namespace OpenTKMapMaker
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
         }
 
+        Matrix4 top_proj;
+
         private void glControlTop_Paint(object sender, PaintEventArgs e)
         {
             try
@@ -196,8 +198,10 @@ namespace OpenTKMapMaker
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
                 ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X, 500f / top_zoom + (float)top_translate.X,
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -100000, 100000);
+                top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext);
+                CurrentContext.Rendering.RenderRectangle((int)top_mousepos.X - 3, (int)top_mousepos.Y - 3, (int)top_mousepos.X + 3, (int)top_mousepos.Y + 3);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -224,6 +228,8 @@ namespace OpenTKMapMaker
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
         }
 
+        Matrix4 side_proj;
+
         private void glControlSide_Paint(object sender, PaintEventArgs e)
         {
             CurrentContext = ContextSide;
@@ -231,8 +237,10 @@ namespace OpenTKMapMaker
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
                 500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateRotationX(90);
+            side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext);
+            CurrentContext.Rendering.RenderRectangle((int)side_mousepos.X - 3, (int)side_mousepos.Y - 3, (int)side_mousepos.X + 3, (int)side_mousepos.Y + 3);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -399,11 +407,14 @@ namespace OpenTKMapMaker
 
         Location top_translate = new Location(0, 0, 0);
 
+        Location top_mousepos = new Location(0, 0, 0);
+
         private void glControlTop_MouseMove(object sender, MouseEventArgs e)
         {
+            Location mpos = new Location((float)e.X / ((float)glControlTop.Width / 2f) - 1f, -((float)e.Y / ((float)glControlTop.Height / 2f) - 1f), 0f);
+            top_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), top_proj.Inverted()));
             if (top_selected)
             {
-                glControlTop.Invalidate();
                 float mx = (float)(e.X - glControlTop.Width / 2) / 25f * mouse_sens;
                 float my = (float)(e.Y - glControlTop.Height / 2) / 25f * mouse_sens;
                 top_translate.X -= mx;
@@ -413,6 +424,7 @@ namespace OpenTKMapMaker
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
                 }
             }
+            glControlTop.Invalidate();
         }
 
         private void glControlTop_MouseDown(object sender, MouseEventArgs e)
@@ -445,11 +457,14 @@ namespace OpenTKMapMaker
 
         Location side_translate = new Location(0, 0, 0);
 
+        Location side_mousepos = new Location(0, 0, 0);
+
         private void glControlSide_MouseMove(object sender, MouseEventArgs e)
         {
+            Location mpos = new Location((float)e.X / ((float)glControlSide.Width / 2f) - 1f, -((float)e.Y / ((float)glControlSide.Height / 2f) - 1f), 0f);
+            side_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), side_proj.Inverted()));
             if (side_selected)
             {
-                glControlSide.Invalidate();
                 float mx = (float)(e.X - glControlSide.Width / 2) / 25f * mouse_sens;
                 float my = (float)(e.Y - glControlSide.Height / 2) / 25f * mouse_sens;
                 side_translate.X -= mx;
@@ -460,6 +475,7 @@ namespace OpenTKMapMaker
                         this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
                 }
             }
+            glControlSide.Invalidate();
         }
 
         private void glControlSide_MouseUp(object sender, MouseEventArgs e)
