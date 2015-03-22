@@ -194,8 +194,8 @@ namespace OpenTKMapMaker
                 CurrentContext = ContextTop;
                 glControlTop.MakeCurrent();
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X / top_zoom, 500f / top_zoom + (float)top_translate.X / top_zoom,
-                    500f / top_zoom + (float)top_translate.Y / top_zoom, -500f / top_zoom + (float)top_translate.Y / top_zoom, -100000, 100000);
+                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X, 500f / top_zoom + (float)top_translate.X,
+                    500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -100000, 100000);
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
@@ -229,8 +229,8 @@ namespace OpenTKMapMaker
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X / side_zoom, 500f / side_zoom + (float)side_translate.X / side_zoom,
-                500f / side_zoom + (float)side_translate.Y / side_zoom, -500f / side_zoom + (float)side_translate.Y / side_zoom, -100000, 100000) * Matrix4.CreateRotationX(90);
+            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
+                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateRotationX(90);
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
@@ -453,7 +453,7 @@ namespace OpenTKMapMaker
                 float mx = (float)(e.X - glControlSide.Width / 2) / 25f * mouse_sens;
                 float my = (float)(e.Y - glControlSide.Height / 2) / 25f * mouse_sens;
                 side_translate.X -= mx;
-                side_translate.Y -= my;
+                side_translate.Y += my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
