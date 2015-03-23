@@ -202,7 +202,6 @@ namespace OpenTKMapMaker
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext);
-                CurrentContext.Rendering.RenderRectangle((int)top_mousepos.X - 3, (int)top_mousepos.Y - 3, (int)top_mousepos.X + 3, (int)top_mousepos.Y + 3);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -241,7 +240,6 @@ namespace OpenTKMapMaker
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext);
-            CurrentContext.Rendering.RenderRectangle((int)side_mousepos.X - 3, (int)side_mousepos.Y - 3, (int)side_mousepos.X + 3, (int)side_mousepos.Y + 3);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
