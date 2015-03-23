@@ -25,6 +25,30 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
+        public virtual bool ApplyVar(string var, string value)
+        {
+            switch (var)
+            {
+                case "position":
+                    Position = Location.FromString(value);
+                    return true;
+                case "angle":
+                    Angle = Location.FromString(value);
+                    return true;
+                case "velocity":
+                    Velocity = Location.FromString(value);
+                    return true;
+                case "angular_velocity":
+                    Angular_Velocity = Location.FromString(value);
+                    return true;
+                case "mass":
+                    Mass = Utilities.StringToFloat(value);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public abstract void Render(GLContext context);
     }
 }

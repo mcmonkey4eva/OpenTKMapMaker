@@ -34,6 +34,21 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
+        public override bool ApplyVar(string var, string value)
+        {
+            switch (var)
+            {
+                case "radius":
+                    Radius = Utilities.StringToFloat(value);
+                    return true;
+                case "color":
+                    Color = Location.FromString(value);
+                    return true;
+                default:
+                    return base.ApplyVar(var, value);
+            }
+        }
+
         public override void Render(GLContext context)
         {
             Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());

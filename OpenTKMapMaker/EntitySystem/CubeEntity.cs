@@ -36,6 +36,29 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
+        public override bool ApplyVar(string var, string value)
+        {
+            switch (var)
+            {
+                case "mins":
+                    Mins = Location.FromString(value);
+                    return true;
+                case "maxes":
+                    Maxes = Location.FromString(value);
+                    return true;
+                case "textures":
+                    string[] texes = value.Split('|');
+                    if (texes.Length != 6)
+                    {
+                        return false;
+                    }
+                    Textures = texes;
+                    return true;
+                default:
+                    return base.ApplyVar(var, value);
+            }
+        }
+
         public string GetTextureString()
         {
             return Textures[0] + "|" + Textures[1] + "|" + Textures[2] + "|" + Textures[3] + "|" + Textures[4] + "|" + Textures[5];
