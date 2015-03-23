@@ -129,6 +129,7 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                GL.Viewport(0, 0, context.Control.Width, context.Control.Height);
             }
             catch (Exception ex)
             {
