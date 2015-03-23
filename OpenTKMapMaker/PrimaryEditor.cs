@@ -12,6 +12,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTKMapMaker.GraphicsSystem;
 using OpenTKMapMaker.Utility;
 using OpenTKMapMaker.EntitySystem;
+using System.IO;
 
 namespace OpenTKMapMaker
 {
@@ -564,6 +565,55 @@ namespace OpenTKMapMaker
         {
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
             glControlView.Invalidate();
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.CheckFileExists = true;
+                ofd.CheckPathExists = true;
+                ofd.Filter = "*.map";
+                ofd.InitialDirectory = Environment.CurrentDirectory + "/data/maps";
+                ofd.Multiselect = false;
+                ofd.ShowReadOnly = false;
+                ofd.Title = "Select a map file...";
+                ofd.ValidateNames = true;
+                DialogResult dr = ofd.ShowDialog();
+                if (dr.HasFlag(DialogResult.OK) || dr.HasFlag(DialogResult.Yes))
+                {
+                    string f = ofd.FileName;
+                    if (!File.Exists(f))
+                    {
+                        throw new Exception("Invalid file!");
+                    }
+                    else
+                    {
+                        string data = File.ReadAllText(f);
+                        ClearMap();
+                        LoadMap(data);
+                        PickCameraSpawn();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, ex.ToString());
+            }
+        }
+
+        public void ClearMap()
+        {
+            Entities.Clear();
+        }
+
+        public void LoadMap(string data)
+        {
         }
     }
 
