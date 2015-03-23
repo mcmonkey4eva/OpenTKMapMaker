@@ -27,5 +27,10 @@ namespace OpenTKMapMaker.EntitySystem
             GL.UniformMatrix4(2, false, ref mat);
             context.Models.Cube.Draw();
         }
+
+        public override string ToString()
+        {
+            return "SPAWNENTITY{location=" + Position + "}";
+        }
     }
 }

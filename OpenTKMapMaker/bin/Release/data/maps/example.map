@@ -5,11 +5,11 @@ general
 }
 cube
 {
-	min: -100, -100, -10;
-	max: 100, 100, 0;
+	mins: -100, -100, -10;
+	maxes: 100, 100, 0;
 	angle: 0, 0, 0;
 	velocity: 0, 0, 0;
-	angle_velocity: 0, 0, 0;
+	angular_velocity: 0, 0, 0;
 	textures: common/example_top|common/example_bottom|common/example_xp|common/example_xm|common/example_yp|common/example_ym;
 	mass: 0;
 }

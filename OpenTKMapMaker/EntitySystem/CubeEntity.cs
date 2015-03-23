@@ -42,9 +42,11 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 case "mins":
                     Mins = Location.FromString(value);
+                    Position = ((Maxes - Mins) / 2) + Mins;
                     return true;
                 case "maxes":
                     Maxes = Location.FromString(value);
+                    Position = ((Maxes - Mins) / 2) + Mins;
                     return true;
                 case "textures":
                     string[] texes = value.Split('|');
@@ -70,6 +72,11 @@ namespace OpenTKMapMaker.EntitySystem
             Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             context.Models.Cube.Draw();
+        }
+
+        public override string ToString()
+        {
+            return "CUBENTITY{mins=" + Mins + ";maxes=" + Maxes + ";textures=" + GetTextureString() + ";mass=" + Mass + ";velocity=" + Velocity + ";angle=" + Angle + ";angular_velocity=" + Angular_Velocity + "}";
         }
     }
 

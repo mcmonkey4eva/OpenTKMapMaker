@@ -55,5 +55,10 @@ namespace OpenTKMapMaker.EntitySystem
             GL.UniformMatrix4(2, false, ref mat);
             context.Models.Cube.Draw();
         }
+
+        public override string ToString()
+        {
+            return "POINTLIGHTENTITY{location=" + Position + ";radius=" + Radius + ";color=" + Color + "}";
+        }
     }
 }
