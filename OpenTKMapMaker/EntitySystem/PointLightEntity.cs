@@ -34,6 +34,11 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
+        public override string GetEntityType()
+        {
+            return "point_light";
+        }
+
         public override bool ApplyVar(string var, string value)
         {
             switch (var)

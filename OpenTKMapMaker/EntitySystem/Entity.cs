@@ -14,6 +14,8 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Angular_Velocity;
         public float Mass = 0;
 
+        public abstract string GetEntityType();
+
         public virtual List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = new List<KeyValuePair<string, string>>();

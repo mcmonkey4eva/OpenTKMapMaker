@@ -36,6 +36,11 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
+        public override string GetEntityType()
+        {
+            return "cube";
+        }
+
         public override bool ApplyVar(string var, string value)
         {
             switch (var)

@@ -35,6 +35,11 @@ namespace OpenTKMapMaker.Utility
             }
         }
 
+        public static Location StringToLocation(string input)
+        {
+            return Location.FromString(input);
+        }
+
         /// <summary>
         /// Converts a string to a double. Returns 0 if the string is not a valid double.
         /// </summary>

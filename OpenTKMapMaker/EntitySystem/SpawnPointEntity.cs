@@ -21,6 +21,11 @@ namespace OpenTKMapMaker.EntitySystem
             Mass = 0;
         }
 
+        public override string GetEntityType()
+        {
+            return "spawn";
+        }
+
         public override void Render(GLContext context)
         {
             Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());

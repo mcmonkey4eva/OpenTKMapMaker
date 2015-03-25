@@ -649,12 +649,37 @@ namespace OpenTKMapMaker
             }
         }
 
+        public Location ambient;
+        public string music;
+
         public void LoadObj(string name, string dat)
         {
             string[] dats = dat.Split(';');
             if (name == "general")
             {
-                // TODO
+                for (int i = 0; i < dats.Length; i++)
+                {
+                    if (dats[i].Length <= 0)
+                    {
+                        continue;
+                    }
+                    string[] datum = dats[i].Split(':');
+                    if (datum.Length != 2)
+                    {
+                        throw new Exception("Invalid key '" + datum + "'!");
+                    }
+                    switch (datum[0])
+                    {
+                        case "ambient":
+                            ambient = Utilities.StringToLocation(datum[1]);
+                            break;
+                        case "music":
+                            music = datum[1];
+                            break;
+                        default:
+                            throw new Exception("Invalid key: " + datum[0].Trim() + "!");
+                    }
+                }
                 return;
             }
             Entity e;
@@ -727,7 +752,24 @@ namespace OpenTKMapMaker
 
         public string SaveToString()
         {
-            return "TODO";
+            StringBuilder sb = new StringBuilder(Entities.Count * 200);
+            sb.Append("general\n");
+            sb.Append("{\n");
+            sb.Append("\tambient: ").Append(ambient.ToString()).Append(";\n");
+            sb.Append("\tmusic: ").Append(music).Append(";\n");
+            sb.Append("}\n");
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                sb.Append(Entities[i].GetEntityType()).Append("\n");
+                sb.Append("{\n");
+                List<KeyValuePair<string, string>> vars = Entities[i].GetVars();
+                for (int v = 0; v < vars.Count; v++)
+                {
+                    sb.Append("\t").Append(vars[v].Key).Append(": ").Append(vars[v].Value).Append(";\n");
+                }
+                sb.Append("}\n");
+            }
+            return sb.ToString();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
