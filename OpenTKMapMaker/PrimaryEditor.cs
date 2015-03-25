@@ -690,6 +690,66 @@ namespace OpenTKMapMaker
             }
             Entities.Add(e);
         }
+
+        public string file = null;
+
+        public bool PickFile()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = Environment.CurrentDirectory;
+            sfd.SupportMultiDottedExtensions = true;
+            sfd.ValidateNames = true;
+            sfd.Title = "Pick a file to save to...";
+            sfd.OverwritePrompt = true;
+            sfd.CheckFileExists = false;
+            sfd.CheckPathExists = true;
+            sfd.Filter = "(*.map)|*.map";
+            DialogResult dr = sfd.ShowDialog();
+            if (dr.HasFlag(DialogResult.OK) || dr.HasFlag(DialogResult.Yes))
+            {
+                file = sfd.FileName;
+                return true;
+            }
+            return false;
+        }
+
+        public void SaveToFile()
+        {
+            try
+            {
+                File.WriteAllText(file, SaveToString());
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, ex.ToString());
+            }
+        }
+
+        public string SaveToString()
+        {
+            return "TODO";
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (file == null)
+            {
+                if (!PickFile())
+                {
+                    return;
+                }
+            }
+            SaveToFile();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!PickFile())
+            {
+                return;
+            }
+            SaveToFile();
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer
