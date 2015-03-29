@@ -74,7 +74,8 @@ namespace OpenTKMapMaker.EntitySystem
         public override void Render(GLContext context)
         {
             context.Textures.White.Bind();
-            Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
+            Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) *Matrix4.CreateTranslation(Mins.ToOVector());
+
             GL.UniformMatrix4(2, false, ref mat);
             context.Models.Cube.Draw();
         }

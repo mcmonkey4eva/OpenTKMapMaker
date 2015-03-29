@@ -29,15 +29,20 @@ namespace OpenTKMapMaker
 
         public float mouse_sens = 5.0f;
 
+        public void LoadEntities()
+        {
+            Entities.Add(new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0)));
+            Entities.Add(new CubeEntity(new Location(-10, -10, 0), new Location(10, 10, 10)));
+            Entities.Add(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
+            Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
+        }
+
         public PrimaryEditor()
         {
             InitializeComponent();
             SysConsole.Init();
             this.FormClosed += new FormClosedEventHandler(PrimaryEditor_FormClosed);
             menuStrip1.Renderer = new MyRenderer();
-            Entities.Add(new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0)));
-            Entities.Add(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
-            Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
             PickCameraSpawn();
             glControlView.MouseWheel += new MouseEventHandler(glControlView_MouseWheel);
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
@@ -97,8 +102,11 @@ namespace OpenTKMapMaker
             CameraPos = new Location(0, 0, 0);
         }
 
-        public void Render3D(GLContext context)
+        public static bool RenderEntities = false;
+
+        public void Render3D(GLContext context, bool render_entities)
         {
+            RenderEntities = render_entities;
             for (int i = 0; i < Entities.Count; i++)
             {
                 Entities[i].Render(context);
@@ -164,7 +172,7 @@ namespace OpenTKMapMaker
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -100000, 100000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
-                Render3D(CurrentContext);
+                Render3D(CurrentContext, true);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -202,7 +210,7 @@ namespace OpenTKMapMaker
                 500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateRotationX(90);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext);
+            Render3D(CurrentContext, true);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);

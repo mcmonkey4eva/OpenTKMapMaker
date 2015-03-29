@@ -13,6 +13,16 @@ cube
 	textures: common/example_top|common/example_bottom|common/example_xp|common/example_xm|common/example_yp|common/example_ym;
 	mass: 0;
 }
+cube
+{
+	mins: -10, -10, 0;
+	maxes: 10, 10, 10;
+	angle: 0, 0, 0;
+	velocity: 0, 0, 0;
+	angular_velocity: 0, 0, 0;
+	textures: common/example_top|common/example_bottom|common/example_xp|common/example_xm|common/example_yp|common/example_ym;
+	mass: 0;
+}
 point_light
 {
 	position: 0, 0, 30;

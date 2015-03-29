@@ -24,6 +24,8 @@ namespace OpenTKMapMaker.EntitySystem
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
             Mass = 0;
+            Internal = new PointLight(Position, 1024, Radius, Color);
+            PrimaryEditor.Lights.Add(Internal);
         }
 
         public float Radius = 0;
@@ -59,9 +61,12 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Render(GLContext context)
         {
-            Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());
-            GL.UniformMatrix4(2, false, ref mat);
-            context.Models.Cube.Draw();
+            if (PrimaryEditor.RenderEntities)
+            {
+                Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());
+                GL.UniformMatrix4(2, false, ref mat);
+                context.Models.Cube.Draw();
+            }
         }
 
         public override string ToString()
@@ -71,7 +76,7 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Reposition(Location pos)
         {
-            // Light.Reposition(pos);
+            Internal.Reposition(pos);
             base.Reposition(pos);
         }
     }

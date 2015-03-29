@@ -28,9 +28,12 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Render(GLContext context)
         {
-            Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());
-            GL.UniformMatrix4(2, false, ref mat);
-            context.Models.Cube.Draw();
+            if (PrimaryEditor.RenderEntities)
+            {
+                Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());
+                GL.UniformMatrix4(2, false, ref mat);
+                context.Models.Cube.Draw();
+            }
         }
 
         public override string ToString()

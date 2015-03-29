@@ -15,6 +15,6 @@ namespace OpenTKMapMaker.GraphicsSystem.LightingSystem
 
         public Location EyePos;
 
-        public abstract void Reposition();
+        public abstract void Reposition(Location pos);
     }
 }

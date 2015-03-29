@@ -10,6 +10,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTKMapMaker.GraphicsSystem;
+using OpenTKMapMaker.GraphicsSystem.LightingSystem;
 using OpenTKMapMaker.Utility;
 using OpenTKMapMaker.EntitySystem;
 using System.IO;
@@ -18,13 +19,18 @@ namespace OpenTKMapMaker
 {
     public partial class PrimaryEditor : Form
     {
+        public static List<LightObject> Lights = new List<LightObject>();
+
         void glControlView_MouseWheel(object sender, MouseEventArgs e)
         {
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * e.Delta / 120f; // 120 = WHEEL_DELTA - By default, at least.
             glControlView.Invalidate();
         }
 
-        GLContext ContextView;
+        public static GLContext ContextView;
+
+        bool view_loaded = false;
+
         private void glControlView_Load(object sender, EventArgs e)
         {
             glControlView.MakeCurrent();
@@ -32,11 +38,80 @@ namespace OpenTKMapMaker
             ContextView = new GLContext();
             ContextView.Control = glControlView;
             InitGL(ContextView);
+            LoadEntities();
+            s_shadow = ContextView.Shaders.GetShader("shadow");
+            s_main = ContextView.Shaders.GetShader("test");
+            s_fbo = ContextView.Shaders.GetShader("fbo");
+            s_shadowadder = ContextView.Shaders.GetShader("shadowadder");
+            view_generateLightHelpers();
+            view_loaded = true;
         }
+
+        int fbo_texture;
+        int fbo_main;
+        int fbo2_texture;
+        int fbo2_main;
+
+        public void view_destroyLightHelpers()
+        {
+            RS4P.Destroy();
+            GL.DeleteFramebuffer(fbo_main);
+            GL.DeleteFramebuffer(fbo2_main);
+            GL.DeleteTexture(fbo_texture);
+            GL.DeleteTexture(fbo2_texture);
+            RS4P = null;
+            fbo_main = 0;
+            fbo2_main = 0;
+            fbo_texture = 0;
+            fbo2_texture = 0;
+        }
+
+        public void view_generateLightHelpers()
+        {
+            RS4P = new RenderSurface4Part(glControlView.Width, glControlView.Height, ContextView.Rendering);
+            // FBO
+            fbo_texture = GL.GenTexture();
+            fbo_main = GL.GenFramebuffer();
+            GL.BindTexture(TextureTarget.Texture2D, fbo_texture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, glControlView.Width, glControlView.Height, 0,
+                OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo_main);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, fbo_texture, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            fbo2_texture = GL.GenTexture();
+            fbo2_main = GL.GenFramebuffer();
+            GL.BindTexture(TextureTarget.Texture2D, fbo2_texture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, glControlView.Width, glControlView.Height, 0,
+                OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo2_main);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, fbo2_texture, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
+        Shader s_shadow;
+        Shader s_main;
+        Shader s_fbo;
+        Shader s_shadowadder;
+        RenderSurface4Part RS4P;
 
         Matrix4 proj;
         Matrix4 view;
         Matrix4 combined;
+
+        void SetViewport()
+        {
+            GL.Viewport(0, 0, CurrentContext.Control.Width, CurrentContext.Control.Height);
+            vpw = CurrentContext.Control.Width;
+            vph = CurrentContext.Control.Height;
+        }
 
         private void glControlView_Paint(object sender, PaintEventArgs e)
         {
@@ -49,6 +124,89 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.DepthTest);
                 if (renderLightingToolStripMenuItem.Checked)
                 {
+                    s_shadow.Bind();
+                    for (int i = 0; i < Lights.Count; i++)
+                    {
+                        for (int x = 0; x < Lights[i].InternalLights.Count; x++)
+                        {
+                            Lights[i].InternalLights[x].Attach();
+                            Render3D(CurrentContext, false);
+                            Lights[i].InternalLights[x].Complete();
+                        }
+                    }
+                    SetViewport();
+                    s_fbo.Bind();
+                    Location CameraTarget = CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
+                    proj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(CameraFOV), (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height, CameraZNear, CameraZFar);
+                    view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
+                    combined = view * proj;
+                    GL.UniformMatrix4(1, false, ref combined);
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    RS4P.Bind();
+                    Render3D(CurrentContext, true);
+                    RS4P.Unbind();
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo_main);
+                    GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo2_main);
+                    GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                    s_shadowadder.Bind();
+                    GL.ActiveTexture(TextureUnit.Texture1);
+                    GL.BindTexture(TextureTarget.Texture2D, RS4P.PositionTexture);
+                    GL.ActiveTexture(TextureUnit.Texture2);
+                    GL.BindTexture(TextureTarget.Texture2D, RS4P.NormalsTexture);
+                    GL.ActiveTexture(TextureUnit.Texture3);
+                    GL.BindTexture(TextureTarget.Texture2D, RS4P.DepthTexture);
+                    Matrix4 mat = Matrix4.CreateOrthographicOffCenter(-1, 1, -1, 1, -1, 1);
+                    GL.UniformMatrix4(1, false, ref mat);
+                    mat = Matrix4.Identity;
+                    GL.UniformMatrix4(2, false, ref mat);
+                    bool first = true;
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, first ? fbo_main : fbo2_main);
+                    GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
+                    for (int i = 0; i < Lights.Count; i++)
+                    {
+                        for (int x = 0; x < Lights[i].InternalLights.Count; x++)
+                        {
+                            GL.BindFramebuffer(FramebufferTarget.Framebuffer, first ? fbo_main : fbo2_main);
+                            GL.ActiveTexture(TextureUnit.Texture0);
+                            GL.BindTexture(TextureTarget.Texture2D, first ? fbo2_texture : fbo_texture);
+                            GL.ActiveTexture(TextureUnit.Texture4);
+                            GL.BindTexture(TextureTarget.Texture2D, Lights[i].InternalLights[x].fbo_depthtex);
+                            Matrix4 smat = Lights[i].InternalLights[x].GetMatrix();
+                            GL.UniformMatrix4(3, false, ref smat);
+                            GL.Uniform3(4, ref Lights[i].InternalLights[x].eye);
+                            GL.Uniform3(8, ref Lights[i].InternalLights[x].color);
+                            GL.Uniform1(9, Lights[i].InternalLights[x].maxrange);
+                            CurrentContext.Rendering.RenderRectangle(-1, -1, 1, 1);
+                            first = !first;
+                            GL.ActiveTexture(TextureUnit.Texture0);
+                            GL.BindTexture(TextureTarget.Texture2D, 0);
+                        }
+                    }
+                    GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                    GL.DrawBuffer(DrawBufferMode.Back);
+                    s_main.Bind();
+                    GL.ActiveTexture(TextureUnit.Texture4);
+                    GL.BindTexture(TextureTarget.Texture2D, first ? fbo2_texture : fbo_texture);
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    GL.BindTexture(TextureTarget.Texture2D, RS4P.DiffuseTexture);
+                    mat = Matrix4.CreateOrthographicOffCenter(-1, 1, -1, 1, -1, 1);
+                    GL.UniformMatrix4(1, false, ref mat);
+                    mat = Matrix4.Identity;
+                    GL.UniformMatrix4(2, false, ref mat);
+                    CurrentContext.Rendering.RenderRectangle(-1, -1, 1, 1);
+                    GL.ActiveTexture(TextureUnit.Texture4);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.ActiveTexture(TextureUnit.Texture3);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.ActiveTexture(TextureUnit.Texture2);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.ActiveTexture(TextureUnit.Texture1);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
                 }
                 else
                 {
@@ -58,13 +216,13 @@ namespace OpenTKMapMaker
                     view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
                     combined = view * proj;
                     GL.UniformMatrix4(1, false, ref combined);
-                    Render3D(CurrentContext);
+                    Render3D(CurrentContext, true);
                 }
                 GL.Disable(EnableCap.DepthTest);
                 CurrentContext.Shaders.ColorMultShader.Bind();
                 ortho = combined;
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
-                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlView.Focused ? "@" : "!") + "^e^7" + CameraYaw + "/" + CameraPitch, new Location(0, 0, 0));
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlView.Focused ? "@" : "!") + "^e^7" + CameraYaw + "/" + CameraPitch + " at " + CameraPos.ToString(), new Location(0, 0, 0));
                 glControlView.SwapBuffers();
             }
             catch (Exception ex)
@@ -80,8 +238,14 @@ namespace OpenTKMapMaker
 
         private void glControlView_Resize(object sender, EventArgs e)
         {
+            if (!view_loaded)
+            {
+                return;
+            }
             glControlView.MakeCurrent();
             GL.Viewport(0, 0, glControlView.Width, glControlView.Height);
+            view_destroyLightHelpers();
+            view_generateLightHelpers();
         }
 
         bool view_selected = false;
