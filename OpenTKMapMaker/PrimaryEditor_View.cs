@@ -259,6 +259,22 @@ namespace OpenTKMapMaker
                 float my = (float)(e.Y - glControlView.Height / 2) / 25f * mouse_sens / 5.0f;
                 CameraYaw -= mx;
                 CameraPitch -= my;
+                while (CameraYaw < 0)
+                {
+                    CameraYaw += 360;
+                }
+                while (CameraYaw > 360)
+                {
+                    CameraYaw -= 360;
+                }
+                if (CameraPitch < -89.9999f)
+                {
+                    CameraPitch = -89.9999f;
+                }
+                if (CameraPitch > 89.9999f)
+                {
+                    CameraPitch = 89.9999f;
+                }
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + splitContainer1.SplitterDistance + splitContainer1.SplitterRectangle.Width + 8 + glControlView.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlView.Height / 2);
