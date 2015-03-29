@@ -39,6 +39,7 @@ namespace OpenTKMapMaker
             Entities.Add(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
             Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
             PickCameraSpawn();
+            glControlView.MouseWheel += new MouseEventHandler(glControlView_MouseWheel);
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
             glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
             tW.Interval = 50;
@@ -49,6 +50,12 @@ namespace OpenTKMapMaker
             tA.Tick += new EventHandler(tA_Tick);
             tS.Tick += new EventHandler(tS_Tick);
             tD.Tick += new EventHandler(tD_Tick);
+        }
+
+        void glControlView_MouseWheel(object sender, MouseEventArgs e)
+        {
+            CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * e.Delta / 120f; // 120 = WHEEL_DELTA - By default, at least.
+            glControlView.Invalidate();
         }
 
         public static float side_zoom = 1;
