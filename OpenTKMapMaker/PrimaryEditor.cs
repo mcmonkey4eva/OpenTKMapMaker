@@ -114,6 +114,10 @@ namespace OpenTKMapMaker
             {
                 Entities[i].Render(context);
             }
+            if (RenderEntities && RenderLines)
+            {
+                context.Rendering.RenderLineBox(CameraPos - new Location(1), CameraPos + new Location(1));
+            }
         }
 
         void PrimaryEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -143,6 +147,7 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Viewport(0, 0, context.Control.Width, context.Control.Height);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
             catch (Exception ex)
             {
@@ -199,7 +204,6 @@ namespace OpenTKMapMaker
             ContextSide.Control = glControlSide;
             InitGL(ContextSide);
             GL.Disable(EnableCap.Texture2D);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
         }
 
         Matrix4 side_proj;
@@ -209,17 +213,16 @@ namespace OpenTKMapMaker
             CurrentContext = ContextSide;
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
-                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateRotationX(90);
+            Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1));
+            ortho = view * Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
+                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext, true, true);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlSide.Focused ? "@" : "!") + "^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
             GL.Disable(EnableCap.Texture2D);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             glControlSide.SwapBuffers();
         }
 

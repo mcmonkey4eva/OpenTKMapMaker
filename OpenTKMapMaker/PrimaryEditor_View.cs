@@ -348,25 +348,25 @@ namespace OpenTKMapMaker
         void tD_Tick(object sender, EventArgs e)
         {
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw - 90, 0);
-            glControlView.Invalidate();
+            invalidateAll();
         }
 
         void tS_Tick(object sender, EventArgs e)
         {
             CameraPos -= Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
-            glControlView.Invalidate();
+            invalidateAll();
         }
 
         void tA_Tick(object sender, EventArgs e)
         {
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw + 90, 0);
-            glControlView.Invalidate();
+            invalidateAll();
         }
 
         void tW_Tick(object sender, EventArgs e)
         {
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
-            glControlView.Invalidate();
+            invalidateAll();
         }
     }
 }
