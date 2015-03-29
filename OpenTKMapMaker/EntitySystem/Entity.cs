@@ -52,5 +52,10 @@ namespace OpenTKMapMaker.EntitySystem
         }
 
         public abstract void Render(GLContext context);
+
+        public virtual void Reposition(Location pos)
+        {
+            Position = pos;
+        }
     }
 }

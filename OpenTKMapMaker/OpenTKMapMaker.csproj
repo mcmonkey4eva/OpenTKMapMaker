@@ -60,6 +60,9 @@
     <Compile Include="GraphicsSystem\FontSet.cs" />
     <Compile Include="GraphicsSystem\Frustum.cs" />
     <Compile Include="GraphicsSystem\GLFont.cs" />
+    <Compile Include="GraphicsSystem\LightingSystem\Light.cs" />
+    <Compile Include="GraphicsSystem\LightingSystem\LightObject.cs" />
+    <Compile Include="GraphicsSystem\LightingSystem\PointLight.cs" />
     <Compile Include="GraphicsSystem\Model.cs" />
     <Compile Include="GraphicsSystem\Plane.cs" />
     <Compile Include="GraphicsSystem\Renderer.cs" />

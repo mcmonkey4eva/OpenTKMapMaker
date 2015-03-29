@@ -7,11 +7,14 @@ using OpenTKMapMaker.GraphicsSystem;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using OpenTKMapMaker.GraphicsSystem.LightingSystem;
 
 namespace OpenTKMapMaker.EntitySystem
 {
     class PointLightEntity: Entity
     {
+        public PointLight Internal = null;
+
         public PointLightEntity(Location pos, float rad, Location col)
         {
             Position = pos;
@@ -64,6 +67,12 @@ namespace OpenTKMapMaker.EntitySystem
         public override string ToString()
         {
             return "POINTLIGHTENTITY{location=" + Position + ";radius=" + Radius + ";color=" + Color + "}";
+        }
+
+        public override void Reposition(Location pos)
+        {
+            // Light.Reposition(pos);
+            base.Reposition(pos);
         }
     }
 }
