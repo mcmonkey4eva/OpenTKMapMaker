@@ -104,8 +104,11 @@ namespace OpenTKMapMaker
 
         public static bool RenderEntities = false;
 
-        public void Render3D(GLContext context, bool render_entities)
+        public static bool RenderLines = false;
+
+        public void Render3D(GLContext context, bool render_entities, bool render_lines)
         {
+            RenderLines = render_lines;
             RenderEntities = render_entities;
             for (int i = 0; i < Entities.Count; i++)
             {
@@ -172,7 +175,7 @@ namespace OpenTKMapMaker
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -100000, 100000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
-                Render3D(CurrentContext, true);
+                Render3D(CurrentContext, true, true);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -210,7 +213,7 @@ namespace OpenTKMapMaker
                 500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateRotationX(90);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext, true);
+            Render3D(CurrentContext, true, true);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);

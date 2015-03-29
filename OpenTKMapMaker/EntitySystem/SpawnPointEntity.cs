@@ -30,9 +30,16 @@ namespace OpenTKMapMaker.EntitySystem
         {
             if (PrimaryEditor.RenderEntities)
             {
-                Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5)).ToOVector());
-                GL.UniformMatrix4(2, false, ref mat);
-                context.Models.Cube.Draw();
+                if (PrimaryEditor.RenderLines)
+                {
+                    context.Rendering.RenderLineBox(Position - new Location(0.5f), Position + new Location(0.5f));
+                }
+                else
+                {
+                    Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5f)).ToOVector());
+                    GL.UniformMatrix4(2, false, ref mat);
+                    context.Models.Cube.Draw();
+                }
             }
         }
 

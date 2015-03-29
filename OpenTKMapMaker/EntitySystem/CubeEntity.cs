@@ -74,10 +74,16 @@ namespace OpenTKMapMaker.EntitySystem
         public override void Render(GLContext context)
         {
             context.Textures.White.Bind();
-            Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) *Matrix4.CreateTranslation(Mins.ToOVector());
-
-            GL.UniformMatrix4(2, false, ref mat);
-            context.Models.Cube.Draw();
+            if (PrimaryEditor.RenderLines)
+            {
+                context.Rendering.RenderLineBox(Mins, Maxes);
+            }
+            else
+            {
+                Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
+                GL.UniformMatrix4(2, false, ref mat);
+                context.Models.Cube.Draw();
+            }
         }
 
         public override string ToString()

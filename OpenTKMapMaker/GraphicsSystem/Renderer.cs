@@ -233,15 +233,13 @@ namespace OpenTKMapMaker.GraphicsSystem
         public TextureEngine Engine;
 
         /// <summary>
-        /// Renders a black line box around a block.
+        /// Renders a black line box.
         /// </summary>
-        /// <param name="block">The block to highlight</param>
-        public void HighlightBlock(Location block)
+        public void RenderLineBox(Location min, Location max)
         {
             Engine.White.Bind();
-            Matrix4 mat = Matrix4.CreateTranslation(block.ToOVector());
+            Matrix4 mat = Matrix4.CreateScale((max - min).ToOVector()) * Matrix4.CreateTranslation(min.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
-            //SetColor(Color4.Black);
             GL.BindVertexArray(box_VAO);
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedShort, IntPtr.Zero);
         }
