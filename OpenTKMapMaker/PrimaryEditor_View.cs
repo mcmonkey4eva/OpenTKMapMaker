@@ -256,7 +256,6 @@ namespace OpenTKMapMaker
             Location mpos = new Location((float)e.X / ((float)glControlView.Width / 2f) - 1f, -((float)e.Y / ((float)glControlView.Height / 2f) - 1f), 0f);
             Vector4 vec = Vector4.Transform(new Vector4(mpos.ToOVector(), 1.0f), combined.Inverted());
             view_mousepos = new Location(vec.X / vec.W, vec.Y / vec.W, vec.Z / vec.W);
-            invalidateAll();
             if (view_selected)
             {
                 invalidateAll();

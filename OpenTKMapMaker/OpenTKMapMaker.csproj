@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\CollisionUtil.cs" />
     <Compile Include="Utility\DataStream.cs" />
     <Compile Include="Utility\FileHandler.cs" />
     <Compile Include="Utility\Location.cs" />
