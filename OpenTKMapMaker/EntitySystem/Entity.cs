@@ -13,6 +13,7 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Velocity;
         public Location Angular_Velocity;
         public float Mass = 0;
+        public bool Selected = false;
 
         public abstract string GetEntityType();
 

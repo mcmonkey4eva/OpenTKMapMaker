@@ -168,14 +168,15 @@ namespace OpenTKMapMaker.Utility
         }
 
 
+
         /// <summary>
         /// Runs a collision check between an AABB and a ray.
         /// </summary>
         /// <param name="Position">The block's position</param>
         /// <param name="Mins">The block's mins</param>
         /// <param name="Maxs">The block's maxs</param>
-        /// <param name="start">The starting location of the moving object</param>
-        /// <param name="end">The ending location of the moving object</param>
+        /// <param name="start">The starting location of the ray</param>
+        /// <param name="end">The ending location of the ray</param>
         /// <param name="normal">The normal of the hit, or NaN if none</param>
         /// <returns>The location of the hit, or NaN if none</returns>
         public static Location AABBClosestBox(Location Position, Location Mins, Location Maxs, Location start, Location end, out Location normal)

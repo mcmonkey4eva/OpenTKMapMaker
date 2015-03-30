@@ -25,16 +25,57 @@ namespace OpenTKMapMaker
 
         public static List<Entity> Entities = new List<Entity>();
 
+        public static List<Entity> Selected = new List<Entity>();
+
+        public static void Select(Entity e)
+        {
+            if (!e.Selected)
+            {
+                Selected.Add(e);
+                e.Selected = true;
+            }
+        }
+
+        public static void Deselect(Entity e)
+        {
+            if (e.Selected)
+            {
+                Selected.Remove(e);
+                e.Selected = false;
+            }
+        }
+
+        public static void Spawn(Entity e)
+        {
+            if (!Entities.Contains(e))
+            {
+                Entities.Add(e);
+                e.Selected = false;
+            }
+        }
+
+        public static void Despawn(Entity e)
+        {
+            if (Entities.Contains(e))
+            {
+                if (e.Selected)
+                {
+                    Selected.Remove(e);
+                }
+                Entities.Remove(e);
+            }
+        }
+
         public static List<GLContext> Contexts = new List<GLContext>();
 
         public float mouse_sens = 5.0f;
 
         public void LoadEntities()
         {
-            Entities.Add(new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0)));
-            Entities.Add(new CubeEntity(new Location(-10, -10, 0), new Location(10, 10, 10)));
-            Entities.Add(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
-            Entities.Add(new SpawnPointEntity(new Location(0, 0, 10)));
+            Spawn(new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0)));
+            Spawn(new CubeEntity(new Location(-10, -10, 0), new Location(10, 10, 10)));
+            Spawn(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
+            Spawn(new SpawnPointEntity(new Location(0, 0, 10)));
         }
 
         public PrimaryEditor()
@@ -475,6 +516,7 @@ namespace OpenTKMapMaker
         public void ClearMap()
         {
             Entities.Clear();
+            Selected.Clear();
         }
 
         public void LoadMap(string data)
@@ -577,7 +619,7 @@ namespace OpenTKMapMaker
                     throw new Exception("Invalid key: " + datum[0].Trim() + "!");
                 }
             }
-            Entities.Add(e);
+            Spawn(e);
         }
 
         public string file = null;
