@@ -392,7 +392,7 @@
             this.glControlView.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlView_Paint);
             this.glControlView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlView_KeyDown);
             this.glControlView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlView_KeyUp);
-            this.glControlView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseClick);
+            this.glControlView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseDown);
             this.glControlView.MouseEnter += new System.EventHandler(this.glControlView_MouseEnter);
             this.glControlView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseMove);
             this.glControlView.Resize += new System.EventHandler(this.glControlView_Resize);

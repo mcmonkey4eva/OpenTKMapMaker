@@ -27,21 +27,23 @@ namespace OpenTKMapMaker
 
         public static List<Entity> Selected = new List<Entity>();
 
-        public static void Select(Entity e)
+        public void Select(Entity e)
         {
             if (!e.Selected)
             {
                 Selected.Add(e);
                 e.Selected = true;
+                invalidateAll();
             }
         }
 
-        public static void Deselect(Entity e)
+        public void Deselect(Entity e)
         {
             if (e.Selected)
             {
                 Selected.Remove(e);
                 e.Selected = false;
+                invalidateAll();
             }
         }
 
@@ -157,9 +159,37 @@ namespace OpenTKMapMaker
             }
             if (RenderEntities && RenderLines)
             {
+                context.Rendering.SetColor(Color4.Cyan);
                 context.Rendering.RenderLineBox(CameraPos - new Location(1), CameraPos + new Location(1)); // TODO: Camera Model
                 context.Rendering.RenderLine(CameraPos, CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * 10);
+                context.Rendering.SetColor(Color4.White);
             }
+        }
+
+        public void renderSelections(GLContext context, bool dtest)
+        {
+            if (dtest)
+            {
+                GL.Disable(EnableCap.DepthTest);
+            }
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            GL.LineWidth(2);
+            context.Textures.White.Bind();
+            context.Rendering.SetColor(Color4.Red);
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i].Selected)
+                {
+                    Entities[i].Render(context);
+                }
+            }
+            if (dtest)
+            {
+                GL.Enable(EnableCap.DepthTest);
+            }
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            GL.LineWidth(1);
+            context.Rendering.SetColor(Color4.White);
         }
 
         void PrimaryEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -206,7 +236,7 @@ namespace OpenTKMapMaker
             ContextTop.Control = glControlTop;
             InitGL(ContextTop);
             GL.Disable(EnableCap.Texture2D);
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            GL.Disable(EnableCap.DepthTest);
         }
 
         Matrix4 top_proj;
@@ -219,16 +249,15 @@ namespace OpenTKMapMaker
                 glControlTop.MakeCurrent();
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
                 ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X, 500f / top_zoom + (float)top_translate.X,
-                    500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -100000, 100000);
+                    500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -1000000, 1000000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
                 Render3D(CurrentContext, true, true);
+                renderSelections(CurrentContext, false);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
                 CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTop.Focused ? "@": "!") + "^e^7" + top_zoom.ToString(), new Location(0, 0, 0));
                 GL.Disable(EnableCap.Texture2D);
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
                 glControlTop.SwapBuffers();
             }
             catch (Exception ex)
@@ -246,6 +275,7 @@ namespace OpenTKMapMaker
             ContextSide.Control = glControlSide;
             InitGL(ContextSide);
             GL.Disable(EnableCap.Texture2D);
+            GL.Disable(EnableCap.DepthTest);
         }
 
         Matrix4 side_proj;
@@ -257,10 +287,11 @@ namespace OpenTKMapMaker
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1));
             ortho = view * Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
-                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -100000, 100000) * Matrix4.CreateScale(-1, 1, 1);
+                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext, true, true);
+            renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlSide.Focused ? "@" : "!") + "^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
@@ -408,6 +439,52 @@ namespace OpenTKMapMaker
                 top_selected = true;
                 OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
             }
+            else if (e.Button == MouseButtons.Right)
+            {
+                Entity hit = RayTraceEntity(new Location(top_mousepos.X, top_mousepos.Y, 1000000), new Location(top_mousepos.X, top_mousepos.Y, -1000000));
+                if (hit != null)
+                {
+                    if (hit.Selected)
+                    {
+                        Deselect(hit);
+                    }
+                    else
+                    {
+                        Select(hit);
+                    }
+                }
+            }
+        }
+
+        public Entity RayTraceEntity(Location start, Location end)
+        {
+            Location hitloc = end;
+            Entity hitent = null;
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                Location mins;
+                Location maxes;
+                Location hit;
+                Location normal;
+                if (Entities[i] is CubeEntity)
+                {
+                    mins = ((CubeEntity)Entities[i]).Mins;
+                    maxes = ((CubeEntity)Entities[i]).Maxes;
+                    hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out normal);
+                }
+                else
+                {
+                    mins = new Location(-0.5f);
+                    maxes = new Location(0.5f);
+                    hit = CollisionUtil.RayTraceBox(Entities[i].Position, mins, maxes, start, hitloc, out normal);
+                }
+                if ((hit - start).LengthSquared() < (hitloc - start).LengthSquared())
+                {
+                    hitent = Entities[i];
+                    hitloc = hit;
+                }
+            }
+            return hitent;
         }
 
         private void PrimaryEditor_MouseUp(object sender, MouseEventArgs e)
@@ -469,6 +546,21 @@ namespace OpenTKMapMaker
                 side_selected = true;
                 OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
                     this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                Entity hit = RayTraceEntity(new Location(side_mousepos.X, 1000000, side_mousepos.Z), new Location(side_mousepos.X, -1000000, side_mousepos.Z));
+                if (hit != null)
+                {
+                    if (hit.Selected)
+                    {
+                        Deselect(hit);
+                    }
+                    else
+                    {
+                        Select(hit);
+                    }
+                }
             }
         }
 

@@ -179,7 +179,7 @@ namespace OpenTKMapMaker.Utility
         /// <param name="end">The ending location of the ray</param>
         /// <param name="normal">The normal of the hit, or NaN if none</param>
         /// <returns>The location of the hit, or NaN if none</returns>
-        public static Location AABBClosestBox(Location Position, Location Mins, Location Maxs, Location start, Location end, out Location normal)
+        public static Location RayTraceBox(Location Position, Location Mins, Location Maxs, Location start, Location end, out Location normal)
         {
             Location velocity = end - start;
             Location RealMins = Position + Mins;

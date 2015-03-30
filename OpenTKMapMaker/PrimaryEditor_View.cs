@@ -207,6 +207,9 @@ namespace OpenTKMapMaker
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, 0);
+                    CurrentContext.Shaders.ColorMultShader.Bind();
+                    GL.UniformMatrix4(1, false, ref combined);
+                    renderSelections(CurrentContext, true);
                 }
                 else
                 {
@@ -217,6 +220,7 @@ namespace OpenTKMapMaker
                     combined = view * proj;
                     GL.UniformMatrix4(1, false, ref combined);
                     Render3D(CurrentContext, true, false);
+                    renderSelections(CurrentContext, true);
                 }
                 GL.Disable(EnableCap.DepthTest);
                 CurrentContext.Shaders.ColorMultShader.Bind();
@@ -286,11 +290,26 @@ namespace OpenTKMapMaker
             }
         }
 
-        private void glControlView_MouseClick(object sender, MouseEventArgs e)
+        private void glControlView_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle)
             {
                 view_selected = !view_selected;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000);
+                if (hit != null)
+                {
+                    if (hit.Selected)
+                    {
+                        Deselect(hit);
+                    }
+                    else
+                    {
+                        Select(hit);
+                    }
+                }
             }
         }
 
