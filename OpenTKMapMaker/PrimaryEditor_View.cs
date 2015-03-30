@@ -220,7 +220,6 @@ namespace OpenTKMapMaker
                 }
                 GL.Disable(EnableCap.DepthTest);
                 CurrentContext.Shaders.ColorMultShader.Bind();
-                ortho = combined;
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlView.Focused ? "@" : "!") + "^e^7" + CameraYaw + "/" + CameraPitch + " at " + CameraPos.ToString(), new Location(0, 0, 0));
                 glControlView.SwapBuffers();
@@ -250,8 +249,14 @@ namespace OpenTKMapMaker
 
         bool view_selected = false;
 
+        Location view_mousepos = new Location(0, 0, 0);
+
         private void glControlView_MouseMove(object sender, MouseEventArgs e)
         {
+            Location mpos = new Location((float)e.X / ((float)glControlView.Width / 2f) - 1f, -((float)e.Y / ((float)glControlView.Height / 2f) - 1f), 0f);
+            Vector4 vec = Vector4.Transform(new Vector4(mpos.ToOVector(), 1.0f), combined.Inverted());
+            view_mousepos = new Location(vec.X / vec.W, vec.Y / vec.W, vec.Z / vec.W);
+            invalidateAll();
             if (view_selected)
             {
                 invalidateAll();
