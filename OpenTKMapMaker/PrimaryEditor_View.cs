@@ -254,7 +254,7 @@ namespace OpenTKMapMaker
         {
             if (view_selected)
             {
-                glControlView.Invalidate();
+                invalidateAll();
                 float mx = (float)(e.X - glControlView.Width / 2) / 25f * mouse_sens / 5.0f;
                 float my = (float)(e.Y - glControlView.Height / 2) / 25f * mouse_sens / 5.0f;
                 CameraYaw -= mx;

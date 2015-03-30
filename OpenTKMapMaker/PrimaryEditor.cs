@@ -116,7 +116,8 @@ namespace OpenTKMapMaker
             }
             if (RenderEntities && RenderLines)
             {
-                context.Rendering.RenderLineBox(CameraPos - new Location(1), CameraPos + new Location(1));
+                context.Rendering.RenderLineBox(CameraPos - new Location(1), CameraPos + new Location(1)); // TODO: Camera Model
+                context.Rendering.RenderLine(CameraPos, CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * 10);
             }
         }
 

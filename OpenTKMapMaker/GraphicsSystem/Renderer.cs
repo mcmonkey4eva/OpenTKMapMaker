@@ -11,6 +11,8 @@ namespace OpenTKMapMaker.GraphicsSystem
 {
     /// <summary>
     /// Rendering utility.
+    /// 
+    /// TODO: Make the objects in this class more abstract!
     /// </summary>
     public class Renderer
     {
@@ -21,6 +23,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             GenerateBoxVBO();
             GenerateSquareVBO();
+            GenerateLineVBO();
         }
 
         uint box_VBO;
@@ -36,6 +39,13 @@ namespace OpenTKMapMaker.GraphicsSystem
         uint square_TexCoordVBO;
         uint square_ColorVBO;
         uint square_VAO;
+
+        uint line_VBO;
+        uint line_IndexVBO;
+        uint line_NormalVBO;
+        uint line_TexCoordVBO;
+        uint line_ColorVBO;
+        uint line_VAO;
 
         void GenerateSquareVBO()
         {
@@ -110,6 +120,85 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.EnableVertexAttribArray(2);
             GL.EnableVertexAttribArray(3);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, square_IndexVBO);
+            // Clean up
+            GL.BindVertexArray(0);
+            GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
+            GL.DisableVertexAttribArray(3);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+        }
+
+        void GenerateLineVBO()
+        {
+            Vector3[] vecs = new Vector3[2];
+            ushort[] inds = new ushort[2];
+            Vector3[] norms = new Vector3[2];
+            Vector3[] texs = new Vector3[2];
+            Vector4[] cols = new Vector4[2];
+            for (ushort u = 0; u < 2; u++)
+            {
+                inds[u] = u;
+            }
+            for (int n = 0; n < 2; n++)
+            {
+                norms[n] = new Vector3(0, 0, 1);
+            }
+            for (int c = 0; c < 2; c++)
+            {
+                cols[c] = new Vector4(1, 1, 1, 1);
+            }
+            vecs[0] = new Vector3(0, 0, 0);
+            texs[0] = new Vector3(0, 0, 0);
+            vecs[1] = new Vector3(1, 0, 0);
+            texs[1] = new Vector3(1, 0, 0);
+            // Vertex buffer
+            GL.GenBuffers(1, out line_VBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vecs.Length * Vector3.SizeInBytes),
+                    vecs, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // Normal buffer
+            GL.GenBuffers(1, out line_NormalVBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_NormalVBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(norms.Length * Vector3.SizeInBytes),
+                    norms, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // TexCoord buffer
+            GL.GenBuffers(1, out line_TexCoordVBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_TexCoordVBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(texs.Length * Vector3.SizeInBytes),
+                    texs, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // Color buffer
+            GL.GenBuffers(1, out line_ColorVBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_ColorVBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(cols.Length * Vector4.SizeInBytes),
+                    cols, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            // Index buffer
+            GL.GenBuffers(1, out line_IndexVBO);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, line_IndexVBO);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(inds.Length * sizeof(ushort)),
+                    inds, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            // VAO
+            GL.GenVertexArrays(1, out line_VAO);
+            GL.BindVertexArray(line_VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_VBO);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_NormalVBO);
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_TexCoordVBO);
+            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, line_ColorVBO);
+            GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
+            GL.EnableVertexAttribArray(3);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, line_IndexVBO);
             // Clean up
             GL.BindVertexArray(0);
             GL.DisableVertexAttribArray(0);
@@ -242,6 +331,22 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(box_VAO);
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedShort, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Render a line between two points.
+        /// </summary>
+        /// <param name="start">The initial point</param>
+        /// <param name="end">The ending point</param>
+        public void RenderLine(Location start, Location end)
+        {
+            float len = (float)(end - start).Length();
+            Location vecang = Utilities.VectorToAngles(start - end);
+            Matrix4 mat = Matrix4.CreateScale(len, len, len) * Matrix4.CreateRotationZ((float)(vecang.X * Utilities.PI180))
+                * Matrix4.CreateRotationY((float)(-vecang.Y * Utilities.PI180)) * Matrix4.CreateTranslation(start.ToOVector());
+            GL.UniformMatrix4(2, false, ref mat);
+            GL.BindVertexArray(line_VAO);
+            GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedShort, IntPtr.Zero);
         }
 
         public void SetColor(Color4 c)
