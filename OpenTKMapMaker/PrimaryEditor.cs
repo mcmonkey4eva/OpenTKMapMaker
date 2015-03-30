@@ -119,10 +119,6 @@ namespace OpenTKMapMaker
                 context.Rendering.RenderLineBox(CameraPos - new Location(1), CameraPos + new Location(1)); // TODO: Camera Model
                 context.Rendering.RenderLine(CameraPos, CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * 10);
             }
-            if (RenderEntities)
-            {
-                context.Rendering.RenderLineBox(view_mousepos - new Location(0.1f), view_mousepos + new Location(0.1f));
-            }
         }
 
         void PrimaryEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -369,6 +365,7 @@ namespace OpenTKMapMaker
             if (e.Button == MouseButtons.Middle)
             {
                 top_selected = true;
+                OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
             }
         }
 
@@ -429,6 +426,8 @@ namespace OpenTKMapMaker
             if (e.Button == MouseButtons.Middle)
             {
                 side_selected = true;
+                OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
+                    this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
             }
         }
 
