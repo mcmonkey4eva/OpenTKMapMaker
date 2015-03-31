@@ -33,6 +33,14 @@ namespace OpenTKMapMaker.GraphicsSystem.LightingSystem
             Reposition(EyePos);
         }
 
+        public void Destroy()
+        {
+            for (int i = 0; i < InternalLights.Count; i++)
+            {
+                InternalLights[i].Destroy();
+            }
+        }
+
         public override void Reposition(Location pos)
         {
             EyePos = pos;

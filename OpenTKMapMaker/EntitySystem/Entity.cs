@@ -58,5 +58,12 @@ namespace OpenTKMapMaker.EntitySystem
         {
             Position = pos;
         }
+
+        /// <summary>
+        /// Called when the entity's vars have all been pushed.
+        /// </summary>
+        public virtual void Recalculate()
+        {
+        }
     }
 }

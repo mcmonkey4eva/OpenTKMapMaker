@@ -711,6 +711,7 @@ namespace OpenTKMapMaker
                     throw new Exception("Invalid key: " + datum[0].Trim() + "!");
                 }
             }
+            e.Recalculate();
             Spawn(e);
         }
 

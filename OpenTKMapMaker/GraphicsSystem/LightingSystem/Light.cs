@@ -62,6 +62,13 @@ namespace OpenTKMapMaker.GraphicsSystem.LightingSystem
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
+        public void Destroy()
+        {
+            GL.DeleteFramebuffer(fbo_main);
+            GL.DeleteTexture(fbo_texture);
+            GL.DeleteTexture(fbo_depthtex);
+        }
+
         public void Attach()
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo_main);
