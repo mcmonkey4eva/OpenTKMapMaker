@@ -165,6 +165,7 @@ namespace OpenTKMapMaker
                     bool first = true;
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, first ? fbo_main : fbo2_main);
                     GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
+                    GL.Disable(EnableCap.CullFace);
                     for (int i = 0; i < Lights.Count; i++)
                     {
                         for (int x = 0; x < Lights[i].InternalLights.Count; x++)
@@ -209,6 +210,7 @@ namespace OpenTKMapMaker
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     CurrentContext.Shaders.ColorMultShader.Bind();
                     GL.UniformMatrix4(1, false, ref combined);
+                    GL.Enable(EnableCap.CullFace);
                     renderSelections(CurrentContext, true);
                 }
                 else

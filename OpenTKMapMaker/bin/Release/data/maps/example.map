@@ -28,7 +28,7 @@ point_light
 	position: 0, 0, 30;
 	radius: 100;
 	color: 1.0, 1.0, 0.5;
-	texture_size: 32;
+	texture_size: 128;
 }
 spawn
 {

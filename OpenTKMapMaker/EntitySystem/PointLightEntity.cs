@@ -15,9 +15,11 @@ namespace OpenTKMapMaker.EntitySystem
     {
         public PointLight Internal = null;
 
+        bool generated = false;
+
         public int texturesize = 128;
 
-        public PointLightEntity(Location pos, float rad, Location col)
+        public PointLightEntity(Location pos, float rad, Location col, bool generate)
         {
             Position = pos;
             Radius = rad;
@@ -26,18 +28,25 @@ namespace OpenTKMapMaker.EntitySystem
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
             Mass = 0;
-            Generate(); // TODO: Don't generate if not needed (EG, from a map load - recalculate is coming)
+            if (generate)
+            {
+                Generate();
+            }
         }
 
         public override void Recalculate()
         {
-            Internal.Destroy();
-            PrimaryEditor.Lights.Remove(Internal);
+            if (generated)
+            {
+                Internal.Destroy();
+                PrimaryEditor.Lights.Remove(Internal);
+            }
             Generate();
         }
 
         public void Generate()
         {
+            generated = true;
             Internal = new PointLight(Position, texturesize, Radius, Color);
             PrimaryEditor.Lights.Add(Internal);
         }

@@ -76,7 +76,7 @@ namespace OpenTKMapMaker
         {
             Spawn(new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0)));
             Spawn(new CubeEntity(new Location(-10, -10, 0), new Location(10, 10, 10)));
-            Spawn(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f)));
+            Spawn(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f), true));
             Spawn(new SpawnPointEntity(new Location(0, 0, 10)));
         }
 
@@ -220,6 +220,8 @@ namespace OpenTKMapMaker
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Viewport(0, 0, context.Control.Width, context.Control.Height);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                GL.Enable(EnableCap.CullFace);
+                GL.CullFace(CullFaceMode.Front);
             }
             catch (Exception ex)
             {
@@ -687,7 +689,7 @@ namespace OpenTKMapMaker
                     e = new CubeEntity(new Location(0), new Location(0));
                     break;
                 case "point_light":
-                    e = new PointLightEntity(new Location(0), 1, new Location(1));
+                    e = new PointLightEntity(new Location(0), 1, new Location(1), false);
                     break;
                 case "spawn":
                     e = new SpawnPointEntity(new Location(0));
