@@ -346,6 +346,7 @@ namespace OpenTKMapMaker
                 tD_Tick(null, null);
                 tD.Start();
             }
+            PrimaryEditor_KeyDown(sender, e);
         }
 
         private void glControlView_KeyUp(object sender, KeyEventArgs e)

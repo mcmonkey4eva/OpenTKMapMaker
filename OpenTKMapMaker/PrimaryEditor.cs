@@ -795,6 +795,29 @@ namespace OpenTKMapMaker
         {
             renderLightingToolStripMenuItem.Checked = !renderLightingToolStripMenuItem.Checked;
         }
+
+        private void PrimaryEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                List<Entity> ents = new List<Entity>(Selected);
+                for (int i = 0; i < ents.Count; i++)
+                {
+                    Despawn(ents[i]);
+                }
+                invalidateAll();
+            }
+        }
+        
+        private void glControlTop_KeyDown(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyDown(sender, e);
+        }
+
+        private void glControlSide_KeyDown(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyDown(sender, e);
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer
