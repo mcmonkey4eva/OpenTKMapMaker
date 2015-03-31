@@ -110,10 +110,12 @@ namespace OpenTKMapMaker.GraphicsSystem
                 switch (args[0])
                 {
                     case "mtllib":
-                        break; // TODO: Maybe enable materials?
+                        break; // TODO: Maybe calculate basic materials?
                     case "usemtl":
                         break;
-                    case "s": // TODO: use 'smooth shading'?
+                    case "s": // Disregard, shading style is assumed by the engine, no need for the models to individually enable/disable it
+                        break;
+                    case "l": // Disregard, no need to render lines
                         break;
                     case "o":
                         currentMesh = new ModelMesh(args[1]);
@@ -134,6 +136,7 @@ namespace OpenTKMapMaker.GraphicsSystem
                         int v1 = Utilities.StringToInt(a3s[0]);
                         int v2 = Utilities.StringToInt(a2s[0]);
                         int v3 = Utilities.StringToInt(a1s[0]);
+                        // TODO: Handle missing texture coords gently?
                         Plane plane = new Plane(result.Vertices[v1 - 1], result.Vertices[v2 - 1], result.Vertices[v3 - 1]);
                         currentMesh.Faces.Add(new ModelFace(v1, v2, v3,
                             Utilities.StringToInt(a1s[1]), Utilities.StringToInt(a2s[1]),
@@ -181,7 +184,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         Vector3[] Positions;
         Vector3[] Normals;
         Vector2[] TexCoords;
-        ushort[] Indices;
+        uint[] Indices;
         Vector3[] Colors;
 
         public void GenerateVBO()
@@ -189,7 +192,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             List<Vector3> Vecs = new List<Vector3>(100);
             List<Vector3> Norms = new List<Vector3>(100);
             List<Vector2> Texs = new List<Vector2>(100);
-            List<ushort> Inds = new List<ushort>(100);
+            List<uint> Inds = new List<uint>(100);
             List<Vector3> Cols = new List<Vector3>(100);
             for (int i = 0; i < Meshes.Count; i++)
             {
@@ -199,19 +202,19 @@ namespace OpenTKMapMaker.GraphicsSystem
                     Norms.Add(new Vector3((float)normal.X, (float)normal.Y, (float)normal.Z));
                     Location vec1 = Vertices[Meshes[i].Faces[x].L1 - 1];
                     Vecs.Add(new Vector3((float)vec1.X, (float)vec1.Y, (float)vec1.Z));
-                    Inds.Add((ushort)(Vecs.Count - 1));
+                    Inds.Add((uint)(Vecs.Count - 1));
                     Location tex1 = TextureCoords[Meshes[i].Faces[x].T1 - 1];
                     Texs.Add(new Vector2((float)tex1.X, (float)tex1.Y));
                     Norms.Add(new Vector3((float)normal.X, (float)normal.Y, (float)normal.Z));
                     Location vec2 = Vertices[Meshes[i].Faces[x].L2 - 1];
                     Vecs.Add(new Vector3((float)vec2.X, (float)vec2.Y, (float)vec2.Z));
-                    Inds.Add((ushort)(Vecs.Count - 1));
+                    Inds.Add((uint)(Vecs.Count - 1));
                     Location tex2 = TextureCoords[Meshes[i].Faces[x].T2 - 1];
                     Texs.Add(new Vector2((float)tex2.X, (float)tex2.Y));
                     Norms.Add(new Vector3((float)normal.X, (float)normal.Y, (float)normal.Z));
                     Location vec3 = Vertices[Meshes[i].Faces[x].L3 - 1];
                     Vecs.Add(new Vector3((float)vec3.X, (float)vec3.Y, (float)vec3.Z));
-                    Inds.Add((ushort)(Vecs.Count - 1));
+                    Inds.Add((uint)(Vecs.Count - 1));
                     Location tex3 = TextureCoords[Meshes[i].Faces[x].T3 - 1];
                     Texs.Add(new Vector2((float)tex3.X, (float)tex3.Y));
                     Cols.Add(new Vector3(1, 1, 1));
@@ -251,7 +254,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             // Index buffer
             GL.GenBuffers(1, out VBOIndices);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, VBOIndices);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(Indices.Length * sizeof(ushort)),
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(Indices.Length * sizeof(uint)),
                 Indices, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             // VAO
@@ -295,7 +298,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public void Draw()
         {
             GL.BindVertexArray(VAO);
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
 
         /// <summary>
