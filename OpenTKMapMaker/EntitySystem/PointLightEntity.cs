@@ -24,7 +24,7 @@ namespace OpenTKMapMaker.EntitySystem
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
             Mass = 0;
-            Internal = new PointLight(Position, 1024, Radius, Color);
+            Internal = new PointLight(Position, 256, Radius, Color);
             PrimaryEditor.Lights.Add(Internal);
         }
 
