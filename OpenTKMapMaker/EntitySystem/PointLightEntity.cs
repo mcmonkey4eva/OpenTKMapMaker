@@ -15,6 +15,8 @@ namespace OpenTKMapMaker.EntitySystem
     {
         public PointLight Internal = null;
 
+        public int texturesize = 256;
+
         public PointLightEntity(Location pos, float rad, Location col)
         {
             Position = pos;
@@ -24,7 +26,12 @@ namespace OpenTKMapMaker.EntitySystem
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
             Mass = 0;
-            Internal = new PointLight(Position, 256, Radius, Color);
+            Generate(); // TODO: Delay me til after vars are parsed. Possibly re-execute after every var update. Perhaps global entity 'recalculate' method?
+        }
+
+        public void Generate()
+        {
+            Internal = new PointLight(Position, texturesize, Radius, Color);
             PrimaryEditor.Lights.Add(Internal);
         }
 
@@ -36,6 +43,7 @@ namespace OpenTKMapMaker.EntitySystem
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("radius", Radius.ToString()));
             vars.Add(new KeyValuePair<string, string>("color", Color.ToString()));
+            vars.Add(new KeyValuePair<string, string>("texture_size", texturesize.ToString()));
             return vars;
         }
 
@@ -53,6 +61,15 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "color":
                     Color = Location.FromString(value);
+                    return true;
+                case "texture_size":
+                    texturesize = Utilities.StringToInt(value);
+                    // Restrict to valid sizes
+                    if (!(texturesize == 32 || texturesize == 64 || texturesize == 128 || texturesize == 256 || texturesize == 1024 || texturesize == 2048 || texturesize == 4096))
+                    {
+                        SysConsole.Output(OutputType.ERROR, "Tried to set PointLightEntity texture_size to " + texturesize + ", which is not valid!");
+                        texturesize = 256;
+                    }
                     return true;
                 default:
                     return base.ApplyVar(var, value);
