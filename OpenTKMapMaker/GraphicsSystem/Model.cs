@@ -136,11 +136,12 @@ namespace OpenTKMapMaker.GraphicsSystem
                         int v1 = Utilities.StringToInt(a3s[0]);
                         int v2 = Utilities.StringToInt(a2s[0]);
                         int v3 = Utilities.StringToInt(a1s[0]);
+                        int t1 = Utilities.StringToInt(a1s[1]);
+                        int t2 = Utilities.StringToInt(a2s[1]);
+                        int t3 = Utilities.StringToInt(a3s[1]);
                         // TODO: Handle missing texture coords gently?
                         Plane plane = new Plane(result.Vertices[v1 - 1], result.Vertices[v2 - 1], result.Vertices[v3 - 1]);
-                        currentMesh.Faces.Add(new ModelFace(v1, v2, v3,
-                            Utilities.StringToInt(a1s[1]), Utilities.StringToInt(a2s[1]),
-                            Utilities.StringToInt(a3s[1]), plane.Normal));
+                        currentMesh.Faces.Add(new ModelFace(v1, v2, v3, t1, t2, t3, plane.Normal));
                         break;
                     default:
                         SysConsole.Output(OutputType.WARNING, "Invalid model key '" + args[0] + "'");
@@ -189,6 +190,7 @@ namespace OpenTKMapMaker.GraphicsSystem
 
         public void GenerateVBO()
         {
+            GL.BindVertexArray(0);
             List<Vector3> Vecs = new List<Vector3>(100);
             List<Vector3> Norms = new List<Vector3>(100);
             List<Vector2> Texs = new List<Vector2>(100);
@@ -299,15 +301,16 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             GL.BindVertexArray(VAO);
             GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.BindVertexArray(0);
         }
 
         /// <summary>
-        /// Alll the mesh's vertices.
+        /// Alll the models's vertices.
         /// </summary>
         public List<Location> Vertices;
 
         /// <summary>
-        /// Alll the mesh's texture coords.
+        /// Alll the models's texture coords.
         /// </summary>
         public List<Location> TextureCoords;
     }

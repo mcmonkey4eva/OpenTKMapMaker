@@ -17,7 +17,7 @@ namespace OpenTKMapMaker.EntitySystem
 
         bool generated = false;
 
-        public int texturesize = 128;
+        public int texturesize = 256;
 
         public PointLightEntity(Location pos, float rad, Location col, bool generate)
         {
