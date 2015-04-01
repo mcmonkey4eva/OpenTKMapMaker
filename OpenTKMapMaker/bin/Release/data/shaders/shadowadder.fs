@@ -51,7 +51,11 @@ void main()
 	vec4 fs = f_spos / f_spos.w / 2.0 + 0.5;
 	//fs.x = (fs.x - 0.5) / 0.75 + 0.5;
 	fs.z -= 0.001;
-	float depth = textureProj(tex, fs);
+	float depth = textureProj(tex, fs + vec4(0.00, -0.005, 0.0, 0.0));
+	float depth2 = textureProj(tex, fs + vec4(0.005, 0.0, 0.0, 0.0));
+	float depth3 = textureProj(tex, fs + vec4(0.0, 0.005, 0.0, 0.0));
+	float depth4 = textureProj(tex, fs + vec4(-0.005, 0.0, 0.0, 0.0));
+	depth = (depth + depth2 + depth3 + depth4) / 4;
 	fs = f_spos / f_spos.w / 2.0 + vec4(0.5);
 	if (fs.x < 0.0 || fs.x > 1.0
 		|| fs.y < 0.0 || fs.y > 1.0
