@@ -55,6 +55,7 @@ void main()
 	float depth2 = textureProj(tex, fs + vec4(0.005, 0.0, 0.0, 0.0));
 	float depth3 = textureProj(tex, fs + vec4(0.0, 0.005, 0.0, 0.0));
 	float depth4 = textureProj(tex, fs + vec4(-0.005, 0.0, 0.0, 0.0));
+	// TODO: Make blurring (and blur quality) optional!
 	depth = (depth + depth2 + depth3 + depth4) / 4;
 	fs = f_spos / f_spos.w / 2.0 + vec4(0.5);
 	if (fs.x < 0.0 || fs.x > 1.0
