@@ -193,6 +193,7 @@ namespace OpenTKMapMaker
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
                     GL.DrawBuffer(DrawBufferMode.Back);
                     s_main.Bind();
+                    GL.Uniform3(5, ambient.ToOVector());
                     GL.ActiveTexture(TextureUnit.Texture4);
                     GL.BindTexture(TextureTarget.Texture2D, first ? fbo2_texture : fbo_texture);
                     GL.ActiveTexture(TextureUnit.Texture0);
