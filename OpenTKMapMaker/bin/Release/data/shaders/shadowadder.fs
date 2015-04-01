@@ -5,6 +5,7 @@ layout (binding = 1) uniform sampler2D positiontex;
 layout (binding = 2) uniform sampler2D normaltex;
 layout (binding = 3) uniform sampler2D depthtex;
 layout (binding = 4) uniform sampler2DShadow tex;
+layout (binding = 5) uniform sampler2D renderhinttex;
 
 layout (location = 0) in vec2 f_texcoord;
 
@@ -15,7 +16,6 @@ out vec4 color;
 
 layout (location = 5) uniform vec3 diffuse_albedo = vec3(0.7, 0.7, 0.7);
 layout (location = 6) uniform vec3 specular_albedo = vec3(0.7, 0.7, 0.7);
-layout (location = 7) uniform float specular_power = 200.0;
 layout (location = 8) uniform vec3 light_color = vec3(1.0, 1.0, 1.0);
 layout (location = 9) uniform float light_radius = 30.0;
 
@@ -23,6 +23,7 @@ void main()
 {
 	vec3 normal = texture(normaltex, f_texcoord).xyz;
 	vec3 position = texture(positiontex, f_texcoord).xyz;
+	vec4 renderhint = texture(renderhinttex, f_texcoord);
 	vec4 f_spos = shadow_matrix * vec4(position, 1.0);
 	if (position == vec3(0.0))
 	{
@@ -47,7 +48,7 @@ void main()
 	vec3 V = normalize(-position);
 	vec3 R = reflect(L, N);
 	vec4 diffuse = vec4(max(dot(N, -L), 0.0) * diffuse_albedo, 1.0);
-	vec4 specular = vec4(pow(max(dot(R, V), 0.0), specular_power) * specular_albedo, 1.0);
+	vec4 specular = vec4(pow(max(dot(R, V), 0.0), renderhint.y * 1000.0) * specular_albedo * renderhint.x, 1.0);
 	vec4 fs = f_spos / f_spos.w / 2.0 + 0.5;
 	//fs.x = (fs.x - 0.5) / 0.75 + 0.5;
 	fs.z -= 0.001;
@@ -64,5 +65,6 @@ void main()
 	{
 		depth = 0.0;
 	}
-	color = prelight_color + vec4(depth, depth, depth, 1.0) * atten * mix(vec4(1.0), diffuse + specular, bvec4(1.0)) * vec4(light_color, 1.0);
+	color = vec4((prelight_color + vec4(depth, depth, depth, 1.0) *
+	atten * (mix(vec4(1.0), diffuse + specular, bvec4(1.0)) * vec4(light_color, 1.0))).xyz, 1.0);
 }

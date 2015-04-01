@@ -5,6 +5,7 @@ layout (binding = 1) uniform sampler2D positiontex;
 layout (binding = 2) uniform sampler2D normaltex;
 layout (binding = 3) uniform sampler2D depthtex;
 layout (binding = 4) uniform sampler2D shtex;
+layout (binding = 5) uniform sampler2D renderhinttex;
 
 layout (location = 0) in vec2 f_texcoord;
 

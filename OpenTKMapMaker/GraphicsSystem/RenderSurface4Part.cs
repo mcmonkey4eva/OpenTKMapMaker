@@ -18,6 +18,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public uint PositionTexture;
         public uint NormalsTexture;
         public uint DepthTexture;
+        public uint RenderhintTexture;
         public Renderer Rendering;
         public RenderSurface4Part(int _width, int _height, Renderer rendering)
         {
@@ -59,6 +60,14 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (uint)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareMode, (int)TextureCompareMode.CompareRefToTexture);
             GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTexture, 0);
+            GL.GenTextures(1, out RenderhintTexture);
+            GL.BindTexture(TextureTarget.Texture2D, RenderhintTexture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba16f, Width, Height, 0, PixelFormat.Rgba, PixelType.Float, IntPtr.Zero);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (uint)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (uint)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (uint)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (uint)TextureWrapMode.ClampToEdge);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment3, TextureTarget.Texture2D, RenderhintTexture, 0);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 
@@ -69,18 +78,19 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.DeleteTexture(PositionTexture);
             GL.DeleteTexture(NormalsTexture);
             GL.DeleteTexture(DepthTexture);
+            GL.DeleteTexture(RenderhintTexture);
         }
         
         public void Bind()
         {
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
             GL.Viewport(0, 0, Width, Height);
+            GL.DrawBuffers(4, new DrawBuffersEnum[] { DrawBuffersEnum.ColorAttachment0,
+                DrawBuffersEnum.ColorAttachment1, DrawBuffersEnum.ColorAttachment2, DrawBuffersEnum.ColorAttachment3 });
             GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.Enable(EnableCap.Texture2D);
-            GL.DrawBuffers(3, new DrawBuffersEnum[] {
-                DrawBuffersEnum.ColorAttachment0, DrawBuffersEnum.ColorAttachment1, DrawBuffersEnum.ColorAttachment2 });
         }
 
         public void Unbind()
@@ -104,6 +114,10 @@ namespace OpenTKMapMaker.GraphicsSystem
             else if (type == 3)
             {
                 texture = DepthTexture;
+            }
+            else if (type == 4)
+            {
+                texture = RenderhintTexture;
             }
             GL.BindTexture(TextureTarget.Texture2D, texture);
             Rendering.RenderRectangle(x, y, x + width, y + height);
