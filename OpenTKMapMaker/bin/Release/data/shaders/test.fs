@@ -26,7 +26,11 @@ vec4 regularize(vec4 input) // TODO: Is this working the best it can?
 
 void main()
 {
-	vec4 tex_color = texture(colortex, f_texcoord);
 	vec4 shadow_light_color = texture(shtex, f_texcoord);
-	color = regularize(vec4(ambient, 1.0) + shadow_light_color) * tex_color;
+	vec4 light_color = regularize(vec4(ambient, 0.0) + shadow_light_color);
+	if (light_color.w > 1.0)
+	{
+		light_color.w = 1.0;
+	}
+	color = light_color;
 }

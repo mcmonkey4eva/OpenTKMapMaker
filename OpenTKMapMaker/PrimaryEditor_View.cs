@@ -160,6 +160,8 @@ namespace OpenTKMapMaker
                     GL.BindTexture(TextureTarget.Texture2D, RS4P.DepthTexture);
                     GL.ActiveTexture(TextureUnit.Texture5);
                     GL.BindTexture(TextureTarget.Texture2D, RS4P.RenderhintTexture);
+                    GL.ActiveTexture(TextureUnit.Texture6);
+                    GL.BindTexture(TextureTarget.Texture2D, RS4P.DiffuseTexture);
                     Matrix4 mat = Matrix4.CreateOrthographicOffCenter(-1, 1, -1, 1, -1, 1);
                     GL.UniformMatrix4(1, false, ref mat);
                     mat = Matrix4.Identity;
@@ -200,6 +202,8 @@ namespace OpenTKMapMaker
                     mat = Matrix4.Identity;
                     GL.UniformMatrix4(2, false, ref mat);
                     CurrentContext.Rendering.RenderRectangle(-1, -1, 1, 1);
+                    GL.ActiveTexture(TextureUnit.Texture6);
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.ActiveTexture(TextureUnit.Texture5);
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.ActiveTexture(TextureUnit.Texture4);
