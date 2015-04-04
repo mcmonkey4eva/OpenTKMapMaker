@@ -431,7 +431,20 @@ namespace OpenTKMapMaker
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
                 }
             }
-            glControlTop.Invalidate();
+            if (top_moving)
+            {
+                Location vec = top_ppos - top_mousepos;
+                top_ppos = top_mousepos;
+                for (int i = 0; i < Selected.Count; i++)
+                {
+                    Selected[i].Reposition(Selected[i].Position + vec);
+                }
+                invalidateAll();
+            }
+            else
+            {
+                glControlTop.Invalidate();
+            }
         }
 
         private void glControlTop_MouseDown(object sender, MouseEventArgs e)
@@ -456,7 +469,15 @@ namespace OpenTKMapMaker
                     }
                 }
             }
+            else if (e.Button == MouseButtons.Left)
+            {
+                top_moving = true;
+                top_ppos = top_mousepos;
+            }
         }
+
+        bool top_moving = false;
+        Location top_ppos = new Location(0);
 
         public Entity RayTraceEntity(Location start, Location end)
         {
@@ -496,6 +517,10 @@ namespace OpenTKMapMaker
                 top_selected = false;
                 side_selected = false;
             }
+            else if (e.Button == MouseButtons.Left)
+            {
+                top_moving = false;
+            }
         }
 
         private void glControlTop_MouseUp(object sender, MouseEventArgs e)
@@ -504,6 +529,10 @@ namespace OpenTKMapMaker
             {
                 top_selected = false;
                 side_selected = false;
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                top_moving = false;
             }
         }
 

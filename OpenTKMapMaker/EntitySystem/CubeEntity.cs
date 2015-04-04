@@ -86,6 +86,13 @@ namespace OpenTKMapMaker.EntitySystem
             }
         }
 
+        public override void Reposition(Location pos)
+        {
+            Maxes += Position - pos;
+            Mins += Position - pos;
+            base.Reposition(pos);
+        }
+
         public override string ToString()
         {
             return "CUBENTITY{mins=" + Mins + ";maxes=" + Maxes + ";textures=" + GetTextureString() + ";mass=" + Mass + ";velocity=" + Velocity + ";angle=" + Angle + ";angular_velocity=" + Angular_Velocity + "}";
