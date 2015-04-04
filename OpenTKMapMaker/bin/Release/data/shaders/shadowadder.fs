@@ -27,7 +27,7 @@ void main()
 	vec4 renderhint = texture(renderhinttex, f_texcoord);
 	vec4 diffuset = texture(diffusetex, f_texcoord);
 	vec4 f_spos = shadow_matrix * vec4(position, 1.0);
-	if (position == vec3(0.0))
+	if (position == vec3(0.0) && normal == vec3(0.0)) // TODO: Does this make any sense?
 	{
 		f_spos = vec4(999999999.0, 999999999.0, -999999999.0, 1.0);
 		position = vec3(999999999.0, 999999999.0, -999999999.0);
@@ -52,7 +52,6 @@ void main()
 	vec4 diffuse = vec4(max(dot(N, -L), 0.0) * diffuse_albedo, 1.0);
 	vec3 specular = vec3(pow(max(dot(R, V), 0.0), renderhint.y * 1000.0) * specular_albedo * renderhint.x);
 	vec4 fs = f_spos / f_spos.w / 2.0 + 0.5;
-	//fs.x = (fs.x - 0.5) / 0.75 + 0.5;
 	fs.z -= 0.001;
 	float depth = textureProj(tex, fs + vec4(0.00, -0.005, 0.0, 0.0));
 	float depth2 = textureProj(tex, fs + vec4(0.005, 0.0, 0.0, 0.0));
