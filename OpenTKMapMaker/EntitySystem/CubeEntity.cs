@@ -88,8 +88,8 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Reposition(Location pos)
         {
-            Maxes += Position - pos;
-            Mins += Position - pos;
+            Maxes += pos - Position;
+            Mins += pos - Position;
             base.Reposition(pos);
         }
 
