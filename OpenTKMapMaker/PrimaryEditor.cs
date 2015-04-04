@@ -437,7 +437,7 @@ namespace OpenTKMapMaker
                 top_ppos = top_mousepos;
                 for (int i = 0; i < Selected.Count; i++)
                 {
-                    Selected[i].Reposition(Selected[i].Position + (Selected[i] is PointLightEntity ? -vec: vec));
+                    Selected[i].Reposition(Selected[i].Position - (Selected[i] is CubeEntity ? -vec: vec));
                 }
                 invalidateAll();
             }
