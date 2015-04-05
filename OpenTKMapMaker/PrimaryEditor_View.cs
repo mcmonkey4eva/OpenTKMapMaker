@@ -378,6 +378,7 @@ namespace OpenTKMapMaker
             {
                 tD.Stop();
             }
+            PrimaryEditor_KeyUp(sender, e);
         }
 
         void tD_Tick(object sender, EventArgs e)

@@ -340,6 +340,7 @@
             this.glControlTop.Load += new System.EventHandler(this.glControlTop_Load);
             this.glControlTop.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTop_Paint);
             this.glControlTop.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlTop_KeyDown);
+            this.glControlTop.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlTop_KeyUp);
             this.glControlTop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlTop_MouseDown);
             this.glControlTop.MouseEnter += new System.EventHandler(this.glControlTop_MouseEnter);
             this.glControlTop.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlTop_MouseMove);
@@ -357,6 +358,7 @@
             this.glControlSide.Load += new System.EventHandler(this.glControlSide_Load);
             this.glControlSide.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlSide_Paint);
             this.glControlSide.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlSide_KeyDown);
+            this.glControlSide.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlSide_KeyUp);
             this.glControlSide.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlSide_MouseDown);
             this.glControlSide.MouseEnter += new System.EventHandler(this.glControlSide_MouseEnter);
             this.glControlSide.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlSide_MouseMove);
@@ -409,6 +411,7 @@
             this.glControlTex.VSync = false;
             this.glControlTex.Load += new System.EventHandler(this.glControlTex_Load);
             this.glControlTex.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTex_Paint);
+            this.glControlTex.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlTex_KeyUp);
             this.glControlTex.MouseEnter += new System.EventHandler(this.glControlTex_MouseEnter);
             this.glControlTex.Resize += new System.EventHandler(this.glControlTex_Resize);
             // 
@@ -423,6 +426,7 @@
             this.Name = "PrimaryEditor";
             this.Text = "mcmonkey\'s Map Maker";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PrimaryEditor_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.PrimaryEditor_KeyUp);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PrimaryEditor_MouseUp);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

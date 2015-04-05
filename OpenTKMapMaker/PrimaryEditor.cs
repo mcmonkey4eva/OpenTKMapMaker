@@ -839,8 +839,25 @@ namespace OpenTKMapMaker
                 }
                 invalidateAll();
             }
+            else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.A)
+            {
+                bool val = Selected.Count != Entities.Count;
+                List<Entity> ents = new List<Entity>(Selected);
+                for (int i = 0; i < ents.Count; i++)
+                {
+                    Deselect(ents[i]);
+                }
+                if (val)
+                {
+                    for (int i = 0; i < Entities.Count; i++)
+                    {
+                        Select(Entities[i]);
+                    }
+                }
+                invalidateAll();
+            }
         }
-        
+
         private void glControlTop_KeyDown(object sender, KeyEventArgs e)
         {
             PrimaryEditor_KeyDown(sender, e);
@@ -849,6 +866,25 @@ namespace OpenTKMapMaker
         private void glControlSide_KeyDown(object sender, KeyEventArgs e)
         {
             PrimaryEditor_KeyDown(sender, e);
+        }
+
+        private void PrimaryEditor_KeyUp(object sender, KeyEventArgs e)
+        {
+        }
+
+        private void glControlTop_KeyUp(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyUp(sender, e);
+        }
+
+        private void glControlSide_KeyUp(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyUp(sender, e);
+        }
+
+        private void glControlTex_KeyUp(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyUp(sender, e);
         }
     }
 
