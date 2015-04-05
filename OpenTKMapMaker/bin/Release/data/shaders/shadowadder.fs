@@ -12,13 +12,13 @@ layout (location = 0) in vec2 f_texcoord;
 
 layout (location = 3) uniform mat4 shadow_matrix;
 layout (location = 4) uniform vec3 light_pos = vec3(5.0, 5.0, 5.0);
-
-out vec4 color;
-
 layout (location = 5) uniform vec3 diffuse_albedo = vec3(0.7, 0.7, 0.7);
 layout (location = 6) uniform float specular_albedo = 0.7;
 layout (location = 8) uniform vec3 light_color = vec3(1.0, 1.0, 1.0);
 layout (location = 9) uniform float light_radius = 30.0;
+layout (location = 10) uniform vec3 eye_pos = vec3(0.0, 0.0, 0.0);
+
+out vec4 color;
 
 void main()
 {
@@ -27,7 +27,7 @@ void main()
 	vec4 renderhint = texture(renderhinttex, f_texcoord);
 	vec4 diffuset = texture(diffusetex, f_texcoord);
 	vec4 f_spos = shadow_matrix * vec4(position, 1.0);
-	if (position == vec3(0.0) && normal == vec3(0.0)) // TODO: Does this make any sense?
+	if (position == vec3(0.0) && normal == vec3(0.0))
 	{
 		f_spos = vec4(999999999.0, 999999999.0, -999999999.0, 1.0);
 		position = vec3(999999999.0, 999999999.0, -999999999.0);
@@ -37,7 +37,11 @@ void main()
 	vec3 light_path = light_pos - position;
 	float light_length = length(light_path);
 	float atten;
-	if (light_radius == 0)
+	if (light_length == 0.0)
+	{
+		light_length = 0.00001;
+	}
+	if (light_radius == 0.0)
 	{
 		atten = 1.0;
 	}
@@ -47,7 +51,7 @@ void main()
 		atten = clamp(1.0 - (d * d), 0.0, 1.0);
 	}
 	vec3 L = light_path / light_length;
-	vec3 V = normalize(-position);
+	vec3 V = normalize(position - eye_pos);
 	vec3 R = reflect(L, N);
 	vec4 diffuse = vec4(max(dot(N, -L), 0.0) * diffuse_albedo, 1.0);
 	vec3 specular = vec3(pow(max(dot(R, V), 0.0), renderhint.y * 1000.0) * specular_albedo * renderhint.x);
@@ -68,5 +72,5 @@ void main()
 	}
 	color = vec4((prelight_color + (vec4(depth, depth, depth, 1.0) *
 		atten * (mix(vec4(1.0), diffuse, bvec4(1.0)) * vec4(light_color, 1.0)) * diffuset) +
-		(vec4(specular, 0.0) * vec4(light_color, 1.0) * atten)).xyz, diffuset.w);
+		(vec4(min(specular, 1.0), 0.0) * vec4(light_color, 1.0) * atten * depth)).xyz, diffuset.w);
 }

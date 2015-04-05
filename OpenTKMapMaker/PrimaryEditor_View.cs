@@ -166,6 +166,7 @@ namespace OpenTKMapMaker
                     GL.UniformMatrix4(1, false, ref mat);
                     mat = Matrix4.Identity;
                     GL.UniformMatrix4(2, false, ref mat);
+                    GL.Uniform3(10, CameraPos.ToOVector());
                     bool first = true;
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, first ? fbo_main : fbo2_main);
                     GL.DrawBuffer(DrawBufferMode.ColorAttachment0);
