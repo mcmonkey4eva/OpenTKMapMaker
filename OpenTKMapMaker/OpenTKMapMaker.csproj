@@ -70,6 +70,7 @@
     <Compile Include="GraphicsSystem\Shader.cs" />
     <Compile Include="GraphicsSystem\Texture.cs" />
     <Compile Include="GraphicsSystem\TextVBO.cs" />
+    <Compile Include="GraphicsSystem\VBO.cs" />
     <Compile Include="PrimaryEditor.cs">
       <SubType>Form</SubType>
     </Compile>

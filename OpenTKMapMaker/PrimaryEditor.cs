@@ -222,6 +222,7 @@ namespace OpenTKMapMaker
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
                 GL.Enable(EnableCap.CullFace);
                 GL.CullFace(CullFaceMode.Front);
+                GL.Enable(EnableCap.Multisample); // TODO: Actually use multi-sampling
             }
             catch (Exception ex)
             {
