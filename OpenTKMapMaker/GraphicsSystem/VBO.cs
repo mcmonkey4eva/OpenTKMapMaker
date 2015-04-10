@@ -239,13 +239,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             generated = true;
         }
 
-        public void Render()
+        public void Render(bool texture)
         {
             if (!generated)
             {
                 return;
             }
-            if (Tex != null)
+            if (texture && Tex != null)
             {
                 Tex.Bind();
             }

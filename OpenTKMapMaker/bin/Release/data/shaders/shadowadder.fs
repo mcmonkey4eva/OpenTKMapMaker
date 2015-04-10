@@ -33,7 +33,7 @@ void main()
 		position = vec3(999999999.0, 999999999.0, -999999999.0);
 	}
 	vec4 prelight_color = texture(pre_lighttex, f_texcoord);
-	vec3 N = normalize(normal);
+	vec3 N = normalize(-normal);
 	vec3 light_path = light_pos - position;
 	float light_length = length(light_path);
 	float atten;

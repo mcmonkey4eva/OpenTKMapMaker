@@ -153,10 +153,13 @@ namespace OpenTKMapMaker
 
         public static bool RenderLines = false;
 
-        public void Render3D(GLContext context, bool render_entities, bool render_lines)
+        public static bool RenderTextures = false;
+
+        public void Render3D(GLContext context, bool render_entities, bool render_lines, bool render_textures)
         {
             RenderLines = render_lines;
             RenderEntities = render_entities;
+            RenderTextures = render_textures;
             for (int i = 0; i < Entities.Count; i++)
             {
                 Entities[i].Render(context);
@@ -259,7 +262,7 @@ namespace OpenTKMapMaker
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -1000000, 1000000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
-                Render3D(CurrentContext, true, true);
+                Render3D(CurrentContext, true, true, false);
                 renderSelections(CurrentContext, false);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
@@ -297,7 +300,7 @@ namespace OpenTKMapMaker
                 500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext, true, true);
+            Render3D(CurrentContext, true, true, false);
             renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);

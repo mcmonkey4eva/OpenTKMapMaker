@@ -86,7 +86,7 @@ namespace OpenTKMapMaker.EntitySystem
                 GL.UniformMatrix4(2, false, ref mat);
                 for (int i = 0; i < VBOs.Count; i++)
                 {
-                    VBOs[i].Render();
+                    VBOs[i].Render(PrimaryEditor.RenderTextures);
                 }
             }
         }

@@ -141,7 +141,7 @@ namespace OpenTKMapMaker.GraphicsSystem
                         int t3 = Utilities.StringToInt(a3s[1]);
                         // TODO: Handle missing texture coords gently?
                         Plane plane = new Plane(result.Vertices[v1 - 1], result.Vertices[v2 - 1], result.Vertices[v3 - 1]);
-                        currentMesh.Faces.Add(new ModelFace(v1, v2, v3, t1, t2, t3, plane.Normal));
+                        currentMesh.Faces.Add(new ModelFace(v1, v2, v3, t1, t2, t3, -plane.Normal));
                         break;
                     default:
                         SysConsole.Output(OutputType.WARNING, "Invalid model key '" + args[0] + "'");
