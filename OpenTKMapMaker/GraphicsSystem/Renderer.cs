@@ -58,11 +58,11 @@ namespace OpenTKMapMaker.GraphicsSystem
             vecs[3] = new Vector3(0, 0, 0);
             texs[3] = new Vector3(0, 0, 0);
             Square = new VBO();
-            Square.vecs = vecs;
-            Square.inds = inds;
-            Square.norms = norms;
-            Square.texs = texs;
-            Square.cols = cols;
+            Square.Vertices = vecs.ToList();
+            Square.Indices = inds.ToList();
+            Square.Normals = norms.ToList();
+            Square.TexCoords = texs.ToList();
+            Square.Colors = cols.ToList();
             Square.GenerateVBO();
         }
 
@@ -90,11 +90,11 @@ namespace OpenTKMapMaker.GraphicsSystem
             vecs[1] = new Vector3(1, 0, 0);
             texs[1] = new Vector3(1, 0, 0);
             Line = new VBO();
-            Line.vecs = vecs;
-            Line.inds = inds;
-            Line.norms = norms;
-            Line.texs = texs;
-            Line.cols = cols;
+            Line.Vertices = vecs.ToList();
+            Line.Indices = inds.ToList();
+            Line.Normals = norms.ToList();
+            Line.TexCoords = texs.ToList();
+            Line.Colors = cols.ToList();
             Line.GenerateVBO();
         }
 
@@ -148,11 +148,11 @@ namespace OpenTKMapMaker.GraphicsSystem
             vecs[i] = new Vector3(0, 1, 0); i++;
             vecs[i] = new Vector3(0, 1, 1); i++;
             Box = new VBO();
-            Box.vecs = vecs;
-            Box.inds = inds;
-            Box.norms = norms;
-            Box.texs = texs;
-            Box.cols = cols;
+            Box.Vertices = vecs.ToList();
+            Box.Indices = inds.ToList();
+            Box.Normals = norms.ToList();
+            Box.TexCoords = texs.ToList();
+            Box.Colors = cols.ToList();
             Box.GenerateVBO();
         }
 

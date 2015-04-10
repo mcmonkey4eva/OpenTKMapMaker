@@ -25,7 +25,9 @@ namespace OpenTKMapMaker.EntitySystem
 
         public Location Mins;
         public Location Maxes;
-        public string[] Textures = new string[] { "TOP", "BOTTOM", "XP", "XM", "YP", "YM" };
+        public string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
+
+        public List<VBO> VBOs = new List<VBO>();
 
         public override List<KeyValuePair<string, string>> GetVars()
         {
@@ -82,7 +84,10 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
                 GL.UniformMatrix4(2, false, ref mat);
-                context.Models.Cube.Draw();
+                for (int i = 0; i < VBOs.Count; i++)
+                {
+                    VBOs[i].Render();
+                }
             }
         }
 
@@ -91,6 +96,42 @@ namespace OpenTKMapMaker.EntitySystem
             Maxes += pos - Position;
             Mins += pos - Position;
             base.Reposition(pos);
+        }
+
+        public override void Recalculate()
+        {
+            PrimaryEditor.ContextView.Control.MakeCurrent();
+            for (int i = 0; i < VBOs.Count; i++)
+            {
+                VBOs[i].Destroy();
+            }
+            VBOs.Clear();
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[0])).AddSide(new Location(0, 0, 1));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[1])).AddSide(new Location(0, 0, -1));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[2])).AddSide(new Location(1, 0, 0));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[3])).AddSide(new Location(-1, 0, 0));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[4])).AddSide(new Location(0, 1, 0));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[5])).AddSide(new Location(0, -1, 0));
+            for (int i = 0; i < VBOs.Count; i++)
+            {
+                VBOs[i].GenerateVBO();
+            }
+        }
+
+        VBO GetVBOFor(Texture tex)
+        {
+            for (int i = 0; i < VBOs.Count; i++)
+            {
+                if (VBOs[i].Tex.Original_InternalID == tex.Original_InternalID)
+                {
+                    return VBOs[i];
+                }
+            }
+            VBO vbo = new VBO();
+            vbo.Tex = tex;
+            vbo.Prepare();
+            VBOs.Add(vbo);
+            return vbo;
         }
 
         public override string ToString()

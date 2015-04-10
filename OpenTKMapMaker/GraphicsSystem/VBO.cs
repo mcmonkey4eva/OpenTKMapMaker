@@ -9,7 +9,7 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.GraphicsSystem
 {
-    class VBO
+    public class VBO
     {
         uint _VertexVBO;
         uint _IndexVBO;
@@ -18,24 +18,170 @@ namespace OpenTKMapMaker.GraphicsSystem
         uint _ColorVBO;
         public uint _VAO;
 
-        public Vector3[] vecs;
-        public ushort[] inds;
-        public Vector3[] norms;
-        public Vector3[] texs;
-        public Vector4[] cols;
+        public Texture Tex;
+
+        public List<Vector3> Vertices;
+        public List<ushort> Indices;
+        public List<Vector3> Normals;
+        public List<Vector3> TexCoords;
+        public List<Vector4> Colors;
+
+        public void AddSide(Location normal)
+        {
+            // TODO: IMPROVE!
+            for (int i = 0; i < 6; i++)
+            {
+                Normals.Add(normal.ToOVector());
+                Colors.Add(new Vector4(1f, 1f, 1f, 1f));
+                Indices.Add((ushort)Indices.Count);
+            }
+            if (normal.Z == 1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 1));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 1));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                // T2
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 1));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 1));
+            }
+            else if (normal.Z == -1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+                // T2
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+            }
+            else if (normal.X == 1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 0));
+                // T2
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 1));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 0));
+            }
+            else if (normal.X == -1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 1));
+                // T2
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 1));
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 1));
+            }
+            else if (normal.Y == 1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(0, 1, 1));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 1, 0));
+                // T2
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, 1));
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 1, 0));
+            }
+            else if (normal.Y == -1)
+            {
+                // T1
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(0, 0, 1));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 0, 1));
+                // T2
+                TexCoords.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 0, 1));
+                TexCoords.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, 0, 0));
+            }
+            else
+            {
+                throw new Exception("Lazy code can't handle unique normals! Only axis-aligned, normalized normals!");
+            }
+        }
+
+        public void Prepare()
+        {
+            Vertices = new List<Vector3>();
+            Indices = new List<ushort>();
+            Normals = new List<Vector3>();
+            TexCoords = new List<Vector3>();
+            Colors = new List<Vector4>();
+        }
+
+        bool generated = false;
 
         public void Destroy()
         {
-            GL.DeleteVertexArray(_VAO);
-            GL.DeleteBuffer(_VertexVBO);
-            GL.DeleteBuffer(_IndexVBO);
-            GL.DeleteBuffer(_NormalVBO);
-            GL.DeleteBuffer(_TexCoordVBO);
-            GL.DeleteBuffer(_ColorVBO);
+            if (generated)
+            {
+                GL.DeleteVertexArray(_VAO);
+                GL.DeleteBuffer(_VertexVBO);
+                GL.DeleteBuffer(_IndexVBO);
+                GL.DeleteBuffer(_NormalVBO);
+                GL.DeleteBuffer(_TexCoordVBO);
+                GL.DeleteBuffer(_ColorVBO);
+            }
         }
 
         public void GenerateVBO()
         {
+            if (generated)
+            {
+                Destroy();
+            }
+            if (Vertices.Count == 0)
+            {
+                return;
+            }
+            Vector3[] vecs = Vertices.ToArray();
+            ushort[] inds = Indices.ToArray();
+            Vector3[] norms = Normals.ToArray();
+            Vector3[] texs = TexCoords.ToArray();
+            Vector4[] cols = Colors.ToArray();
             // Vertex buffer
             GL.GenBuffers(1, out _VertexVBO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _VertexVBO);
@@ -90,6 +236,22 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.DisableVertexAttribArray(3);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            generated = true;
+        }
+
+        public void Render()
+        {
+            if (!generated)
+            {
+                return;
+            }
+            if (Tex != null)
+            {
+                Tex.Bind();
+            }
+            GL.BindVertexArray(_VAO);
+            GL.DrawElements(PrimitiveType.Triangles, Vertices.Count, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.BindVertexArray(0);
         }
     }
 }
