@@ -27,6 +27,36 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Maxes;
         public string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
 
+        public bool ContainsPoint(Location point)
+        {
+            return CollisionUtil.BoxContainsPoint(Mins, Maxes, point);
+        }
+
+        public void Include(Location point, int exclude)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (i != exclude)
+                {
+                    if (point[i] > Position[i])
+                    {
+                        if (point[i] > Maxes[i] || CollisionUtil.BoxContainsPoint(Mins, Maxes, point))
+                        {
+                            Maxes[i] = point[i];
+                        }
+                    }
+                    else
+                    {
+                        if (point[i] < Mins[i] || CollisionUtil.BoxContainsPoint(Mins, Maxes, point))
+                        {
+                            Mins[i] = point[i];
+                        }
+                    }
+                }
+            }
+            Position = ((Maxes - Mins) / 2) + Mins;
+        }
+
         public List<VBO> VBOs = new List<VBO>();
 
         public override List<KeyValuePair<string, string>> GetVars()

@@ -175,6 +175,9 @@ namespace OpenTKMapMaker
 
         public void renderSelections(GLContext context, bool dtest)
         {
+            bool rt = RenderTextures;
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            RenderTextures = false;
             if (dtest)
             {
                 GL.Disable(EnableCap.DepthTest);
@@ -197,6 +200,7 @@ namespace OpenTKMapMaker
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.LineWidth(1);
             context.Rendering.SetColor(Color4.White);
+            RenderTextures = rt;
         }
 
         void PrimaryEditor_FormClosed(object sender, FormClosedEventArgs e)
@@ -449,6 +453,18 @@ namespace OpenTKMapMaker
                 }
                 invalidateAll();
             }
+            else if (top_stretching)
+            {
+                if (Selected.Count != 1)
+                {
+                    top_stretching = false;
+                }
+                else
+                {
+                    ((CubeEntity)Selected[0]).Include(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z), 2);
+                }
+                invalidateAll();
+            }
             else
             {
                 glControlTop.Invalidate();
@@ -479,11 +495,20 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Left)
             {
-                top_moving = true;
+                if (Selected.Count == 1 && Selected[0] is CubeEntity
+                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z)))
+                {
+                    top_stretching = true;
+                }
+                else if (Selected.Count > 0)
+                {
+                    top_moving = true;
+                }
                 top_ppos = top_mousepos;
             }
         }
 
+        bool top_stretching = false;
         bool top_moving = false;
         Location top_ppos = new Location(0);
 
@@ -528,20 +553,13 @@ namespace OpenTKMapMaker
             else if (e.Button == MouseButtons.Left)
             {
                 top_moving = false;
+                top_stretching = false;
             }
         }
 
         private void glControlTop_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle)
-            {
-                top_selected = false;
-                side_selected = false;
-            }
-            else if (e.Button == MouseButtons.Left)
-            {
-                top_moving = false;
-            }
+            PrimaryEditor_MouseUp(sender, e);
         }
 
         bool side_selected = false;
@@ -571,11 +589,7 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle)
-            {
-                top_selected = false;
-                side_selected = false;
-            }
+            PrimaryEditor_MouseUp(sender, e);
         }
 
         private void glControlSide_MouseDown(object sender, MouseEventArgs e)

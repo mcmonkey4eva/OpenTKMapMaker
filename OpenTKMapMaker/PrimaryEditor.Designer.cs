@@ -399,6 +399,7 @@
             this.glControlView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseDown);
             this.glControlView.MouseEnter += new System.EventHandler(this.glControlView_MouseEnter);
             this.glControlView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseMove);
+            this.glControlView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseUp);
             this.glControlView.Resize += new System.EventHandler(this.glControlView_Resize);
             // 
             // glControlTex

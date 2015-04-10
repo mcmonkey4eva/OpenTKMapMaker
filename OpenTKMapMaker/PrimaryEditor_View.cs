@@ -405,5 +405,10 @@ namespace OpenTKMapMaker
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
             invalidateAll();
         }
+
+        private void glControlView_MouseUp(object sender, MouseEventArgs e)
+        {
+            PrimaryEditor_MouseUp(sender, e);
+        }
     }
 }
