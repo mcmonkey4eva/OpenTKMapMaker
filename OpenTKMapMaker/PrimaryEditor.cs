@@ -43,7 +43,6 @@ namespace OpenTKMapMaker
         {
             if (e.Selected)
             {
-                e.OnDespawn();
                 Selected.Remove(e);
                 e.Selected = false;
                 invalidateAll();
@@ -63,6 +62,7 @@ namespace OpenTKMapMaker
         {
             if (Entities.Contains(e))
             {
+                e.OnDespawn();
                 if (e.Selected)
                 {
                     Selected.Remove(e);
