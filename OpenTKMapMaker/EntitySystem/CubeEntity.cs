@@ -32,14 +32,14 @@ namespace OpenTKMapMaker.EntitySystem
             return CollisionUtil.BoxContainsPoint(Mins, Maxes, point);
         }
 
-        public void Include(Location point, int exclude)
+        public void Include(Location point)
         {
-            if (PrimaryEditor.top_stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
-            if (PrimaryEditor.top_stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
-            if (PrimaryEditor.top_stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
-            if (PrimaryEditor.top_stretch_y == -1 && point.Y < Maxes.Y) { Mins.Y = point.Y; }
-            if (PrimaryEditor.top_stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
-            if (PrimaryEditor.top_stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
+            if (PrimaryEditor.stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
+            if (PrimaryEditor.stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
+            if (PrimaryEditor.stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
+            if (PrimaryEditor.stretch_y == -1 && point.Y < Maxes.Y) { Mins.Y = point.Y; }
+            if (PrimaryEditor.stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
+            if (PrimaryEditor.stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
             Position = ((Maxes - Mins) / 2) + Mins;
         }
 

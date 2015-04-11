@@ -448,7 +448,7 @@ namespace OpenTKMapMaker
                 Location mmpos = top_mousepos;
                 if (!ModifierKeys.HasFlag(Keys.Control))
                 {
-                    mmpos = new Location((int)top_mousepos.X, (int)top_mousepos.Y, (int)top_mousepos.Z);
+                    mmpos = new Location((int)top_mousepos.X, (int)top_mousepos.Y, 0);
                 }
                 Location vec = top_ppos - mmpos;
                 top_ppos = mmpos;
@@ -467,7 +467,7 @@ namespace OpenTKMapMaker
                 else
                 {
                     ((CubeEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.X : (int)top_mousepos.X,
-                        ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.Y : (int)top_mousepos.Y, Selected[0].Position.Z), 2);
+                        ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.Y : (int)top_mousepos.Y, Selected[0].Position.Z));
                 }
                 invalidateAll();
             }
@@ -506,9 +506,9 @@ namespace OpenTKMapMaker
                 {
                     top_stretching = true;
                     CubeEntity ce = (CubeEntity)Selected[0];
-                    top_stretch_x = top_mousepos.X > ce.Maxes.X ? 1 : (top_mousepos.X < ce.Mins.X ? -1 : 0);
-                    top_stretch_y = top_mousepos.Y > ce.Maxes.Y ? 1 : (top_mousepos.Y < ce.Mins.Y ? -1 : 0);
-                    top_stretch_z = top_mousepos.Z > ce.Maxes.Z ? 1 : (top_mousepos.Z < ce.Mins.Z ? -1 : 0);
+                    stretch_x = top_mousepos.X > ce.Maxes.X ? 1 : (top_mousepos.X < ce.Mins.X ? -1 : 0);
+                    stretch_y = top_mousepos.Y > ce.Maxes.Y ? 1 : (top_mousepos.Y < ce.Mins.Y ? -1 : 0);
+                    stretch_z = 0;
                 }
                 else if (Selected.Count > 0)
                 {
@@ -519,9 +519,9 @@ namespace OpenTKMapMaker
         }
 
         bool top_stretching = false;
-        public static int top_stretch_x = 0;
-        public static int top_stretch_y = 0;
-        public static int top_stretch_z = 0;
+        public static int stretch_x = 0;
+        public static int stretch_y = 0;
+        public static int stretch_z = 0;
 
         bool top_moving = false;
         Location top_ppos = new Location(0);
@@ -568,6 +568,8 @@ namespace OpenTKMapMaker
             {
                 top_moving = false;
                 top_stretching = false;
+                side_moving = false;
+                side_stretching = false;
             }
         }
 
@@ -581,6 +583,11 @@ namespace OpenTKMapMaker
         Location side_translate = new Location(0, 0, 0);
 
         Location side_mousepos = new Location(0, 0, 0);
+
+        bool side_stretching = false;
+
+        bool side_moving = false;
+        Location side_ppos = new Location(0);
 
         private void glControlSide_MouseMove(object sender, MouseEventArgs e)
         {
@@ -598,7 +605,38 @@ namespace OpenTKMapMaker
                         this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
                 }
             }
-            glControlSide.Invalidate();
+            if (side_moving)
+            {
+                Location mmpos = side_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    mmpos = new Location((int)side_mousepos.X, 0, (int)side_mousepos.Z);
+                }
+                Location vec = side_ppos - mmpos;
+                side_ppos = mmpos;
+                for (int i = 0; i < Selected.Count; i++)
+                {
+                    Selected[i].Reposition(Selected[i].Position - vec);
+                }
+                invalidateAll();
+            }
+            else if (side_stretching)
+            {
+                if (Selected.Count != 1)
+                {
+                    side_stretching = false;
+                }
+                else
+                {
+                    ((CubeEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? side_mousepos.X : (int)side_mousepos.X,
+                        Selected[0].Position.Y, ModifierKeys.HasFlag(Keys.Control) ? side_mousepos.Z : (int)side_mousepos.Z));
+                }
+                invalidateAll();
+            }
+            else
+            {
+                glControlSide.Invalidate();
+            }
         }
 
         private void glControlSide_MouseUp(object sender, MouseEventArgs e)
@@ -628,6 +666,23 @@ namespace OpenTKMapMaker
                         Select(hit);
                     }
                 }
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                if (Selected.Count == 1 && Selected[0] is CubeEntity
+                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(side_mousepos.X, Selected[0].Position.Y, side_mousepos.Z)))
+                {
+                    side_stretching = true;
+                    CubeEntity ce = (CubeEntity)Selected[0];
+                    stretch_x = side_mousepos.X > ce.Maxes.X ? 1 : (side_mousepos.X < ce.Mins.X ? -1 : 0);
+                    stretch_y = 0;
+                    stretch_z = side_mousepos.Z > ce.Maxes.Z ? 1 : (side_mousepos.Z < ce.Mins.Z ? -1 : 0);
+                }
+                else if (Selected.Count > 0)
+                {
+                    side_moving = true;
+                }
+                side_ppos = side_mousepos;
             }
         }
 
