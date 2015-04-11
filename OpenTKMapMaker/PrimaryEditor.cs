@@ -445,8 +445,13 @@ namespace OpenTKMapMaker
             }
             if (top_moving)
             {
-                Location vec = top_ppos - top_mousepos;
-                top_ppos = top_mousepos;
+                Location mmpos = top_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    mmpos = new Location((int)top_mousepos.X, (int)top_mousepos.Y, (int)top_mousepos.Z);
+                }
+                Location vec = top_ppos - mmpos;
+                top_ppos = mmpos;
                 for (int i = 0; i < Selected.Count; i++)
                 {
                     Selected[i].Reposition(Selected[i].Position - vec);
