@@ -951,11 +951,34 @@ namespace OpenTKMapMaker
 
         private void glControlTop_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Space)
+            {
+                MakeCuboidAt(new Location(top_mousepos.X, top_mousepos.Y, 0));
+            }
             PrimaryEditor_KeyDown(sender, e);
+        }
+
+        public void MakeCuboidAt(Location spot)
+        {
+            spot = new Location((int)spot.X, (int)spot.Y, (int)spot.Z);
+            CubeEntity ce = new CubeEntity(spot - new Location(1), spot + new Location(1));
+            ce.Recalculate();
+            List<Entity> es = new List<Entity>(Selected);
+            for (int i = 0; i < es.Count; i++)
+            {
+                Deselect(es[i]);
+            }
+            Spawn(ce);
+            Select(ce);
+            invalidateAll();
         }
 
         private void glControlSide_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Space)
+            {
+                MakeCuboidAt(new Location(side_mousepos.X, 0, side_mousepos.Z));
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
