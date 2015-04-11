@@ -461,7 +461,8 @@ namespace OpenTKMapMaker
                 }
                 else
                 {
-                    ((CubeEntity)Selected[0]).Include(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z), 2);
+                    ((CubeEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.X : (int)top_mousepos.X,
+                        ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.Y : (int)top_mousepos.Y, Selected[0].Position.Z), 2);
                 }
                 invalidateAll();
             }
