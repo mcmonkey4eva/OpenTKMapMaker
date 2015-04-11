@@ -27,6 +27,8 @@ namespace OpenTKMapMaker
 
         public static List<Entity> Selected = new List<Entity>();
 
+        public ContextMenuStrip entityTypeChooser;
+
         public void Select(Entity e)
         {
             if (!e.Selected)
@@ -41,6 +43,7 @@ namespace OpenTKMapMaker
         {
             if (e.Selected)
             {
+                e.OnDespawn();
                 Selected.Remove(e);
                 e.Selected = false;
                 invalidateAll();
@@ -82,6 +85,43 @@ namespace OpenTKMapMaker
             Spawn(ce);
             Spawn(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f), true));
             Spawn(new SpawnPointEntity(new Location(0, 0, 10)));
+
+            entityTypeChooser = new ContextMenuStrip();
+            entityTypeChooser.Items.Add("Cuboid");
+            entityTypeChooser.Items.Add("Light");
+            entityTypeChooser.Items.Add("Spawnpoint");
+            entityTypeChooser.Items.Add("Cancel.");
+            entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
+            entityTypeChooser.CreateControl();
+        }
+
+        void entityTypeChooser_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (Selected.Count != 1)
+            {
+                return;
+            }
+            Entity sel = Selected[0];
+            Entity ent;
+            // TODO:n Abstractify this switch into a registry. Also abstractify everything entity related.
+            switch (e.ClickedItem.Text)
+            {
+                case "Cuboid":
+                    ent = new CubeEntity(sel.Position - new Location(1), sel.Position + new Location(1));
+                    break;
+                case "Light":
+                    ent = new PointLightEntity(sel.Position, 50, new Location(1, 1, 1), false);
+                    break;
+                case "Spawnpoint":
+                    ent = new SpawnPointEntity(sel.Position);
+                    break;
+                default:
+                    return;
+            }
+            ent.Recalculate();
+            Spawn(ent);
+            Despawn(sel);
+            Select(ent);
         }
 
         public PrimaryEditor()
@@ -930,6 +970,10 @@ namespace OpenTKMapMaker
                 }
                 invalidateAll();
             }
+            else if (e.KeyCode == Keys.T && Selected.Count == 1)
+            {
+                entityTypeChooser.Show(glControlTop, 0, 0);
+            }
             else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.A)
             {
                 bool val = Selected.Count != Entities.Count;
@@ -999,6 +1043,11 @@ namespace OpenTKMapMaker
         private void glControlTex_KeyUp(object sender, KeyEventArgs e)
         {
             PrimaryEditor_KeyUp(sender, e);
+        }
+
+        private void glControlTex_KeyDown(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyDown(sender, e);
         }
     }
 

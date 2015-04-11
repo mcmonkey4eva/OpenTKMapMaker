@@ -36,16 +36,16 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Recalculate()
         {
-            if (generated)
-            {
-                Internal.Destroy();
-                PrimaryEditor.Lights.Remove(Internal);
-            }
             Generate();
         }
 
         public void Generate()
         {
+            if (generated)
+            {
+                Internal.Destroy();
+                PrimaryEditor.Lights.Remove(Internal);
+            }
             generated = true;
             Internal = new PointLight(Position, texturesize, Radius, Color);
             PrimaryEditor.Lights.Add(Internal);
@@ -118,6 +118,15 @@ namespace OpenTKMapMaker.EntitySystem
         {
             Internal.Reposition(pos);
             base.Reposition(pos);
+        }
+
+        public override void OnDespawn()
+        {
+            Internal.Destroy();
+            if (!PrimaryEditor.Lights.Remove(Internal))
+            {
+                SysConsole.Output(OutputType.ERROR, "Failed to destroy light properly?!");
+            }
         }
     }
 }

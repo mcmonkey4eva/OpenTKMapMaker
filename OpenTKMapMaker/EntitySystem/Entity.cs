@@ -65,5 +65,12 @@ namespace OpenTKMapMaker.EntitySystem
         public virtual void Recalculate()
         {
         }
+
+        /// <summary>
+        /// Called when the entity is removed from the world.
+        /// </summary>
+        public virtual void OnDespawn()
+        {
+        }
     }
 }

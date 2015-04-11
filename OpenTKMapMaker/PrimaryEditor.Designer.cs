@@ -325,7 +325,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.glControlSide);
             this.splitContainer2.Size = new System.Drawing.Size(312, 496);
-            this.splitContainer2.SplitterDistance = 235;
+            this.splitContainer2.SplitterDistance = 222;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
             // 
@@ -352,7 +352,7 @@
             this.glControlSide.BackColor = System.Drawing.Color.Black;
             this.glControlSide.Location = new System.Drawing.Point(0, 0);
             this.glControlSide.Name = "glControlSide";
-            this.glControlSide.Size = new System.Drawing.Size(309, 231);
+            this.glControlSide.Size = new System.Drawing.Size(309, 266);
             this.glControlSide.TabIndex = 0;
             this.glControlSide.VSync = false;
             this.glControlSide.Load += new System.EventHandler(this.glControlSide_Load);
@@ -380,7 +380,7 @@
             // 
             this.splitContainer3.Panel2.Controls.Add(this.glControlTex);
             this.splitContainer3.Size = new System.Drawing.Size(620, 496);
-            this.splitContainer3.SplitterDistance = 234;
+            this.splitContainer3.SplitterDistance = 222;
             this.splitContainer3.TabIndex = 0;
             this.splitContainer3.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer3_SplitterMoved);
             // 
@@ -407,11 +407,12 @@
             this.glControlTex.BackColor = System.Drawing.Color.Black;
             this.glControlTex.Location = new System.Drawing.Point(0, 0);
             this.glControlTex.Name = "glControlTex";
-            this.glControlTex.Size = new System.Drawing.Size(617, 231);
+            this.glControlTex.Size = new System.Drawing.Size(617, 267);
             this.glControlTex.TabIndex = 0;
             this.glControlTex.VSync = false;
             this.glControlTex.Load += new System.EventHandler(this.glControlTex_Load);
             this.glControlTex.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTex_Paint);
+            this.glControlTex.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlTex_KeyDown);
             this.glControlTex.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlTex_KeyUp);
             this.glControlTex.MouseEnter += new System.EventHandler(this.glControlTex_MouseEnter);
             this.glControlTex.Resize += new System.EventHandler(this.glControlTex_Resize);
