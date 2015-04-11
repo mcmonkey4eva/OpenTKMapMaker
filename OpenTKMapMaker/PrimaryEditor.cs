@@ -499,6 +499,10 @@ namespace OpenTKMapMaker
                     && !((CubeEntity)Selected[0]).ContainsPoint(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z)))
                 {
                     top_stretching = true;
+                    CubeEntity ce = (CubeEntity)Selected[0];
+                    top_stretch_x = top_mousepos.X > ce.Maxes.X ? 1 : (top_mousepos.X < ce.Mins.X ? -1 : 0);
+                    top_stretch_y = top_mousepos.Y > ce.Maxes.Y ? 1 : (top_mousepos.Y < ce.Mins.Y ? -1 : 0);
+                    top_stretch_z = top_mousepos.Z > ce.Maxes.Z ? 1 : (top_mousepos.Z < ce.Mins.Z ? -1 : 0);
                 }
                 else if (Selected.Count > 0)
                 {
@@ -509,6 +513,10 @@ namespace OpenTKMapMaker
         }
 
         bool top_stretching = false;
+        public static int top_stretch_x = 0;
+        public static int top_stretch_y = 0;
+        public static int top_stretch_z = 0;
+
         bool top_moving = false;
         Location top_ppos = new Location(0);
 

@@ -34,26 +34,12 @@ namespace OpenTKMapMaker.EntitySystem
 
         public void Include(Location point, int exclude)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                if (i != exclude)
-                {
-                    if (point[i] > Position[i])
-                    {
-                        if (point[i] > Maxes[i] || CollisionUtil.BoxContainsPoint(Mins, Maxes, point))
-                        {
-                            Maxes[i] = point[i];
-                        }
-                    }
-                    else
-                    {
-                        if (point[i] < Mins[i] || CollisionUtil.BoxContainsPoint(Mins, Maxes, point))
-                        {
-                            Mins[i] = point[i];
-                        }
-                    }
-                }
-            }
+            if (PrimaryEditor.top_stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
+            if (PrimaryEditor.top_stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
+            if (PrimaryEditor.top_stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
+            if (PrimaryEditor.top_stretch_y == -1 && point.Y < Maxes.Y) { Mins.Y = point.Y; }
+            if (PrimaryEditor.top_stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
+            if (PrimaryEditor.top_stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
             Position = ((Maxes - Mins) / 2) + Mins;
         }
 
