@@ -671,7 +671,8 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Right)
             {
-                Entity hit = RayTraceEntity(new Location(top_mousepos.X, top_mousepos.Y, 1000000), new Location(top_mousepos.X, top_mousepos.Y, -1000000));
+                Location normal;
+                Entity hit = RayTraceEntity(new Location(top_mousepos.X, top_mousepos.Y, 1000000), new Location(top_mousepos.X, top_mousepos.Y, -1000000), out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)
@@ -711,32 +712,34 @@ namespace OpenTKMapMaker
         bool top_moving = false;
         Location top_ppos = new Location(0);
 
-        public Entity RayTraceEntity(Location start, Location end)
+        public Entity RayTraceEntity(Location start, Location end, out Location normal)
         {
             Location hitloc = end;
             Entity hitent = null;
+            normal = new Location(0, 0, 0);
             for (int i = 0; i < Entities.Count; i++)
             {
                 Location mins;
                 Location maxes;
                 Location hit;
-                Location normal;
+                Location _normal;
                 if (Entities[i] is CubeEntity)
                 {
                     mins = ((CubeEntity)Entities[i]).Mins;
                     maxes = ((CubeEntity)Entities[i]).Maxes;
-                    hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out normal);
+                    hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out _normal);
                 }
                 else
                 {
                     mins = new Location(-0.5f);
                     maxes = new Location(0.5f);
-                    hit = CollisionUtil.RayTraceBox(Entities[i].Position, mins, maxes, start, hitloc, out normal);
+                    hit = CollisionUtil.RayTraceBox(Entities[i].Position, mins, maxes, start, hitloc, out _normal);
                 }
                 if ((hit - start).LengthSquared() < (hitloc - start).LengthSquared())
                 {
                     hitent = Entities[i];
                     hitloc = hit;
+                    normal = _normal;
                 }
             }
             return hitent;
@@ -839,7 +842,8 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Right)
             {
-                Entity hit = RayTraceEntity(new Location(side_mousepos.X, 1000000, side_mousepos.Z), new Location(side_mousepos.X, -1000000, side_mousepos.Z));
+                Location normal;
+                Entity hit = RayTraceEntity(new Location(side_mousepos.X, 1000000, side_mousepos.Z), new Location(side_mousepos.X, -1000000, side_mousepos.Z), out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)

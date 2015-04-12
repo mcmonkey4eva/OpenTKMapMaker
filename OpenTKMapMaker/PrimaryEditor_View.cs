@@ -311,7 +311,8 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Right)
             {
-                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000);
+                Location normal;
+                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)
@@ -364,7 +365,22 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.P)
             {
-                // TODO: Paint
+                Location normal;
+                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
+                if (hit != null && hit is CubeEntity)
+                {
+                    CubeEntity ce = (CubeEntity)hit;
+                    string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
+                    string tex = ContextView.Textures.LoadedTextures[tex_sel].Name;
+                    if (normal.Z == 1) { ce.Textures[0] = tex; }
+                    else if (normal.Z == -1) { ce.Textures[1] = tex; }
+                    else if (normal.X == 1) { ce.Textures[2] = tex; }
+                    else if (normal.X == -1) { ce.Textures[3] = tex; }
+                    else if (normal.Y == 1) { ce.Textures[4] = tex; }
+                    else if (normal.Y == -1) { ce.Textures[5] = tex; }
+                    ce.Recalculate();
+                    glControlView.Invalidate();
+                }
             }
             PrimaryEditor_KeyDown(sender, e);
         }
