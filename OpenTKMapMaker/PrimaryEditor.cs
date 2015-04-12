@@ -79,7 +79,7 @@ namespace OpenTKMapMaker
 
         public void LoadEntities()
         {
-            CubeEntity ce = new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0));
+            CubeEntity ce = new CubeEntity(new Location(-80, -80, -10), new Location(80, 80, 0));
             ce.Recalculate();
             Spawn(ce);
             PointLightEntity ple = new PointLightEntity(new Location(0, 0, 50), 100, new Location(1, 1, 1), false);
