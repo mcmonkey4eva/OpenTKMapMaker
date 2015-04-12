@@ -18,6 +18,8 @@ namespace OpenTKMapMaker
 {
     public partial class PrimaryEditor : Form
     {
+        public static PrimaryEditor PRFMain;
+
         public static Matrix4 ortho;
 
         public static int vpw;
@@ -126,6 +128,7 @@ namespace OpenTKMapMaker
 
         public PrimaryEditor()
         {
+            PRFMain = this;
             InitializeComponent();
             SysConsole.Init();
             this.FormClosed += new FormClosedEventHandler(PrimaryEditor_FormClosed);
@@ -142,6 +145,18 @@ namespace OpenTKMapMaker
             tA.Tick += new EventHandler(tA_Tick);
             tS.Tick += new EventHandler(tS_Tick);
             tD.Tick += new EventHandler(tD_Tick);
+            this.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
+            glControlView.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
+        }
+
+        EntityControlForm ecf = null;
+
+        void PrimaryEditor_GotFocus(object sender, EventArgs e)
+        {
+            if (ecf != null && ecf.Visible)
+            {
+                ecf.Focus();
+            }
         }
 
         public static float side_zoom = 1;
@@ -543,20 +558,29 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseEnter(object sender, EventArgs e)
         {
-            glControlSide.Focus();
-            invalidateAll();
+            if (ecf == null || !ecf.Visible)
+            {
+                glControlSide.Focus();
+                invalidateAll();
+            }
         }
 
         private void glControlTop_MouseEnter(object sender, EventArgs e)
         {
-            glControlTop.Focus();
-            invalidateAll();
+            if (ecf == null || !ecf.Visible)
+            {
+                glControlTop.Focus();
+                invalidateAll();
+            }
         }
 
         private void glControlTex_MouseEnter(object sender, EventArgs e)
         {
-            glControlTex.Focus();
-            invalidateAll();
+            if (ecf == null || !ecf.Visible)
+            {
+                glControlTex.Focus();
+                invalidateAll();
+            }
         }
 
         public void invalidateAll()
@@ -1078,6 +1102,11 @@ namespace OpenTKMapMaker
             else if (e.KeyCode == Keys.T && Selected.Count == 1)
             {
                 entityTypeChooser.Show(glControlTop, 0, 0);
+            }
+            else if (e.KeyCode == Keys.N && Selected.Count == 1)
+            {
+                ecf = new EntityControlForm(Selected[0]);
+                ecf.Show();
             }
             else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.A)
             {

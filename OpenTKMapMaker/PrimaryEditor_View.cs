@@ -328,8 +328,11 @@ namespace OpenTKMapMaker
 
         private void glControlView_MouseEnter(object sender, EventArgs e)
         {
-            glControlView.Focus();
-            invalidateAll();
+            if (ecf == null || !ecf.Visible)
+            {
+                glControlView.Focus();
+                invalidateAll();
+            }
         }
 
         Timer tW = new Timer();

@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityControlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EntityControlForm.Designer.cs">
+      <DependentUpon>EntityControlForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EntitySystem\CubeEntity.cs" />
     <Compile Include="EntitySystem\Entity.cs" />
     <Compile Include="EntitySystem\PointLightEntity.cs" />
@@ -90,6 +96,9 @@
     <Compile Include="Utility\TextStyle.cs" />
     <Compile Include="Utility\UnknownFileException.cs" />
     <Compile Include="Utility\Utilities.cs" />
+    <EmbeddedResource Include="EntityControlForm.resx">
+      <DependentUpon>EntityControlForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PrimaryEditor.resx">
       <DependentUpon>PrimaryEditor.cs</DependentUpon>
     </EmbeddedResource>

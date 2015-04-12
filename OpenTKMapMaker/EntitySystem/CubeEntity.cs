@@ -49,7 +49,7 @@ namespace OpenTKMapMaker.EntitySystem
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("mins", Mins.ToString()));
-            vars.Add(new KeyValuePair<string, string>("maxes", Mins.ToString()));
+            vars.Add(new KeyValuePair<string, string>("maxes", Maxes.ToString()));
             vars.Add(new KeyValuePair<string, string>("textures", GetTextureString()));
             return vars;
         }
@@ -116,6 +116,7 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Recalculate()
         {
+            Position = ((Maxes - Mins) / 2) + Mins;
             PrimaryEditor.ContextView.Control.MakeCurrent();
             for (int i = 0; i < VBOs.Count; i++)
             {
