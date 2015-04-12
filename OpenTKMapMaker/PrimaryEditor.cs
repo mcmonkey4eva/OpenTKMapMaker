@@ -362,6 +362,7 @@ namespace OpenTKMapMaker
             ContextTex.Control = glControlTex;
             InitGL(ContextTex);
             GL.Enable(EnableCap.Texture2D);
+            glControlTex.MouseWheel += new MouseEventHandler(glControlTex_MouseWheel);
             if (ContextView != null)
             {
                 for (int i = 0; i < ContextView.Textures.LoadedTextures.Count; i++)
@@ -371,7 +372,27 @@ namespace OpenTKMapMaker
             }
         }
 
+        void glControlTex_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta < 0 && canscrolldown)
+            {
+                tex_scroll += 64;
+                glControlTex.Invalidate();
+            }
+            else if (e.Delta > 0 && tex_scroll > 0)
+            {
+                tex_scroll -= 64;
+                glControlTex.Invalidate();
+            }
+            if (tex_scroll < 0)
+            {
+                tex_scroll = 0;
+            }
+        }
+
         int tex_scroll = 0;
+
+        bool canscrolldown = false;
 
         void ViewTextures_OnTextureLoaded(object sender, TextureLoadedEventArgs e)
         {
@@ -399,7 +420,7 @@ namespace OpenTKMapMaker
                 for (int i = 0; i < CurrentContext.Textures.LoadedTextures.Count; i++)
                 {
                     Texture t = CurrentContext.Textures.LoadedTextures[i];
-                    if (yp + 138 > tex_scroll)
+                    if (yp + 138 > tex_scroll && yp - tex_scroll < CurrentContext.Control.Height)
                     {
                         t.Bind();
                         CurrentContext.Rendering.RenderRectangle(xp, yp - tex_scroll, xp + 128, yp + 128 - tex_scroll);
@@ -409,11 +430,17 @@ namespace OpenTKMapMaker
                         {
                             tname.Append(t.Name[0]);
                         }
+                        int count = 0;
                         for (int x = 1; x < t.Name.Length; x++)
                         {
                             if (CurrentContext.FontSets.SlightlyBigger.MeasureFancyText("^S" + t.Name.Substring(start, x - start)) >= 128)
                             {
                                 tname.Append("\n");
+                                count++;
+                                if (count >= 5)
+                                {
+                                    break;
+                                }
                                 start = x;
                             }
                             tname.Append(t.Name[x]);
@@ -421,16 +448,31 @@ namespace OpenTKMapMaker
                         CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + tname, new Location(xp, yp - tex_scroll, 0));
                     }
                     xp += 138;
-                    if (xp + 148 > CurrentContext.Control.Width)
+                    if (xp + 158 > CurrentContext.Control.Width)
                     {
                         yp += 138;
                         xp = 5;
                     }
-                    if (yp > CurrentContext.Control.Height)
+                    if (yp - tex_scroll + 138 > CurrentContext.Control.Height)
                     {
-                        break;
+                        canscrolldown = true;
+                    }
+                    else
+                    {
+                        canscrolldown = false;
                     }
                 }
+                CurrentContext.Textures.White.Bind();
+                CurrentContext.Rendering.SetColor(Color4.White);
+                CurrentContext.Rendering.RenderRectangle(CurrentContext.Control.Width - 20, 0, CurrentContext.Control.Width, CurrentContext.Control.Height);
+                int scrollpos = (int)(((float)tex_scroll / (float)yp) * (float)CurrentContext.Control.Height);
+                int scrollpos2 = (int)(((float)(tex_scroll + CurrentContext.Control.Height) / (float)yp) * (float)CurrentContext.Control.Height);
+                if (scrollpos2 > CurrentContext.Control.Height)
+                {
+                    scrollpos2 = CurrentContext.Control.Height;
+                }
+                CurrentContext.Rendering.SetColor(Color4.Gray);
+                CurrentContext.Rendering.RenderRectangle(CurrentContext.Control.Width - 18, scrollpos, CurrentContext.Control.Width - 2, scrollpos2);
             }
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTex.Focused ? "@" : "!") + "^e^7Textures", new Location(0, 0, 0));
             glControlTex.SwapBuffers();
