@@ -131,7 +131,7 @@ namespace OpenTKMapMaker
                         for (int x = 0; x < Lights[i].InternalLights.Count; x++)
                         {
                             Lights[i].InternalLights[x].Attach();
-                            Render3D(CurrentContext, false, false, false);
+                            Render3D(CurrentContext, false, false, false, false);
                             Lights[i].InternalLights[x].Complete();
                         }
                     }
@@ -144,7 +144,7 @@ namespace OpenTKMapMaker
                     GL.UniformMatrix4(1, false, ref combined);
                     GL.ActiveTexture(TextureUnit.Texture0);
                     RS4P.Bind();
-                    Render3D(CurrentContext, true, false, true);
+                    Render3D(CurrentContext, true, false, true, true);
                     RS4P.Unbind();
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo_main);
                     GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
@@ -232,7 +232,7 @@ namespace OpenTKMapMaker
                     view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
                     combined = view * proj;
                     GL.UniformMatrix4(1, false, ref combined);
-                    Render3D(CurrentContext, true, false, true);
+                    Render3D(CurrentContext, true, false, true, false);
                     renderSelections(CurrentContext, true);
                 }
                 GL.Disable(EnableCap.DepthTest);

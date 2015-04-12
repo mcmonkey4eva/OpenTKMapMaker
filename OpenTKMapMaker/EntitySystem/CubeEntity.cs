@@ -118,6 +118,7 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
                 GL.UniformMatrix4(2, false, ref mat);
+                context.Rendering.SetMinimumLight(0.0f);
                 for (int i = 0; i < VBOs.Count; i++)
                 {
                     VBOs[i].Render(PrimaryEditor.RenderTextures);

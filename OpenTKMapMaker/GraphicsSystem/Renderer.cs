@@ -197,6 +197,15 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.Uniform3(3, ref col);
         }
 
+        public void SetMinimumLight(float min)
+        {
+            if (PrimaryEditor.RenderLights)
+            {
+                SysConsole.Output(OutputType.INFO, "Rendering light at a minimum strength of " + min);
+                GL.Uniform1(5, min);
+            }
+        }
+
         /// <summary>
         /// Renders a 2D rectangle.
         /// </summary>
