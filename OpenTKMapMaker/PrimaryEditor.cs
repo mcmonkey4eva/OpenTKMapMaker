@@ -441,7 +441,7 @@ namespace OpenTKMapMaker
                 return;
             }
             ContextTex.Control.MakeCurrent();
-            ContextView.Textures.GetTexture(e.Tex.Name);
+            ContextTex.Textures.GetTexture(e.Tex.Name);
             ContextView.Control.MakeCurrent();
         }
 
