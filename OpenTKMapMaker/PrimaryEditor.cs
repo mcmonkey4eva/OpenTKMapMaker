@@ -82,19 +82,9 @@ namespace OpenTKMapMaker
             CubeEntity ce = new CubeEntity(new Location(-100, -100, -10), new Location(100, 100, 0));
             ce.Recalculate();
             Spawn(ce);
-            ce = new CubeEntity(new Location(-10, -10, 0), new Location(10, 10, 10));
-            ce.Recalculate();
-            Spawn(ce);
-            Spawn(new PointLightEntity(new Location(0, 0, 30), 100, new Location(1f, 1f, 1f), true));
-            Spawn(new SpawnPointEntity(new Location(0, 0, 10)));
-
-            entityTypeChooser = new ContextMenuStrip();
-            entityTypeChooser.Items.Add("Cuboid");
-            entityTypeChooser.Items.Add("Light");
-            entityTypeChooser.Items.Add("Spawnpoint");
-            entityTypeChooser.Items.Add("Cancel.");
-            entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
-            entityTypeChooser.CreateControl();
+            PointLightEntity ple = new PointLightEntity(new Location(0, 0, 50), 100, new Location(1, 1, 1), false);
+            ple.Recalculate();
+            Spawn(ple);
         }
 
         void entityTypeChooser_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -147,6 +137,13 @@ namespace OpenTKMapMaker
             tD.Tick += new EventHandler(tD_Tick);
             this.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
             glControlView.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
+            entityTypeChooser = new ContextMenuStrip();
+            entityTypeChooser.Items.Add("Cuboid");
+            entityTypeChooser.Items.Add("Light");
+            entityTypeChooser.Items.Add("Spawnpoint");
+            entityTypeChooser.Items.Add("Cancel.");
+            entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
+            entityTypeChooser.CreateControl();
         }
 
         EntityControlForm ecf = null;
