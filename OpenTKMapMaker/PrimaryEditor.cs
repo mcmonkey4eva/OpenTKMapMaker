@@ -361,6 +361,27 @@ namespace OpenTKMapMaker
             ContextTex = new GLContext();
             ContextTex.Control = glControlTex;
             InitGL(ContextTex);
+            GL.Enable(EnableCap.Texture2D);
+            if (ContextView != null)
+            {
+                for (int i = 0; i < ContextView.Textures.LoadedTextures.Count; i++)
+                {
+                    ContextTex.Textures.GetTexture(ContextView.Textures.LoadedTextures[i].Name);
+                }
+            }
+        }
+
+        int tex_scroll = 0;
+
+        void ViewTextures_OnTextureLoaded(object sender, TextureLoadedEventArgs e)
+        {
+            if (ContextTex == null)
+            {
+                return;
+            }
+            ContextTex.Control.MakeCurrent();
+            ContextView.Textures.GetTexture(e.Tex.Name);
+            ContextView.Control.MakeCurrent();
         }
 
         private void glControlTex_Paint(object sender, PaintEventArgs e)
@@ -369,6 +390,48 @@ namespace OpenTKMapMaker
             glControlTex.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+            int xp = 5;
+            int yp = 20;
+            if (CurrentContext.Control.Width > 138)
+            {
+                CurrentContext.Shaders.ColorMultShader.Bind();
+                GL.UniformMatrix4(1, false, ref ortho);
+                for (int i = 0; i < CurrentContext.Textures.LoadedTextures.Count; i++)
+                {
+                    Texture t = CurrentContext.Textures.LoadedTextures[i];
+                    if (yp + 138 > tex_scroll)
+                    {
+                        t.Bind();
+                        CurrentContext.Rendering.RenderRectangle(xp, yp - tex_scroll, xp + 128, yp + 128 - tex_scroll);
+                        StringBuilder tname = new StringBuilder(t.Name.Length);
+                        int start = 0;
+                        if (t.Name.Length > 0)
+                        {
+                            tname.Append(t.Name[0]);
+                        }
+                        for (int x = 1; x < t.Name.Length; x++)
+                        {
+                            if (CurrentContext.FontSets.SlightlyBigger.MeasureFancyText("^S" + t.Name.Substring(start, x - start)) >= 128)
+                            {
+                                tname.Append("\n");
+                                start = x;
+                            }
+                            tname.Append(t.Name[x]);
+                        }
+                        CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^!^e^7" + tname, new Location(xp, yp - tex_scroll, 0));
+                    }
+                    xp += 138;
+                    if (xp + 148 > CurrentContext.Control.Width)
+                    {
+                        yp += 138;
+                        xp = 5;
+                    }
+                    if (yp > CurrentContext.Control.Height)
+                    {
+                        break;
+                    }
+                }
+            }
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTex.Focused ? "@" : "!") + "^e^7Textures", new Location(0, 0, 0));
             glControlTex.SwapBuffers();
         }

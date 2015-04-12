@@ -38,6 +38,7 @@ namespace OpenTKMapMaker
             ContextView = new GLContext();
             ContextView.Control = glControlView;
             InitGL(ContextView);
+            ContextView.Textures.OnTextureLoaded += new EventHandler<TextureLoadedEventArgs>(ViewTextures_OnTextureLoaded);
             LoadEntities();
             s_shadow = ContextView.Shaders.GetShader("shadow");
             s_main = ContextView.Shaders.GetShader("test");

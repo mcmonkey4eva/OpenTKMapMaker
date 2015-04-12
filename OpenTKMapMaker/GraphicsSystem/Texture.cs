@@ -97,8 +97,14 @@ namespace OpenTKMapMaker.GraphicsSystem
                 Loaded.Engine = this;
             }
             LoadedTextures.Add(Loaded);
+            if (OnTextureLoaded != null)
+            {
+                OnTextureLoaded(this, new TextureLoadedEventArgs(Loaded));
+            }
             return Loaded;
         }
+
+        public event EventHandler<TextureLoadedEventArgs> OnTextureLoaded;
 
         /// <summary>
         /// Loads a texture from file.
@@ -230,6 +236,16 @@ namespace OpenTKMapMaker.GraphicsSystem
             bmp.UnlockBits(bmp_data);
         }
 
+    }
+
+    public class TextureLoadedEventArgs: EventArgs
+    {
+        public TextureLoadedEventArgs(Texture t)
+        {
+            Tex = t;
+        }
+
+        public Texture Tex;
     }
 
     /// <summary>

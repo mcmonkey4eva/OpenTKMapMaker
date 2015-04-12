@@ -487,19 +487,19 @@ namespace OpenTKMapMaker.GraphicsSystem
             }
         }
 
-        public static Location MeasureFancyLinesOfText(string text, FontSet set)
+        public Location MeasureFancyLinesOfText(string text)
         {
             string[] data = text.Split('\n');
             float len = 0;
             for (int i = 0; i < data.Length; i++)
             {
-                float newlen = MeasureFancyText(data[i], set);
+                float newlen = MeasureFancyText(data[i]);
                 if (newlen > len)
                 {
                     len = newlen;
                 }
             }
-            return new Location(len, data.Length * set.font_default.Height, 0);
+            return new Location(len, data.Length * font_default.Height, 0);
         }
 
         /// <summary>
@@ -509,13 +509,13 @@ namespace OpenTKMapMaker.GraphicsSystem
         /// <param name="line">The text to measure</param>
         /// <param name="set">The FontSet to get fonts from</param>
         /// <returns>the X-width of the text</returns>
-        public static float MeasureFancyText(string line, FontSet set)
+        public float MeasureFancyText(string line)
         {
             bool bold = false;
             bool italic = false;
             bool sub = false;
             float MeasWidth = 0;
-            GLFont font = set.font_default;
+            GLFont font = font_default;
             int start = 0;
             line = line.Replace("^q", "\"");
             for (int x = 0; x < line.Length; x++)
@@ -534,26 +534,26 @@ namespace OpenTKMapMaker.GraphicsSystem
                         switch (line[x])
                         {
                             case 'r':
-                                font = set.font_default;
+                                font = font_default;
                                 bold = false;
                                 sub = false;
                                 italic = false;
                                 break;
                             case 'S':
                             case 'l':
-                                font = bold && italic ? set.font_bolditalichalf : bold ? set.font_boldhalf :
-                                    italic ? set.font_italichalf : set.font_half;
+                                font = bold && italic ? font_bolditalichalf : bold ? font_boldhalf :
+                                    italic ? font_italichalf : font_half;
                                 sub = true;
                                 break;
                             case 'i':
                                 italic = true;
-                                font = (sub) ? (bold ? set.font_bolditalichalf : set.font_italichalf) :
-                                    (bold ? set.font_bolditalic : set.font_italic);
+                                font = (sub) ? (bold ? font_bolditalichalf : font_italichalf) :
+                                    (bold ? font_bolditalic : font_italic);
                                 break;
                             case 'b':
                                 bold = true;
-                                font = (sub) ? (italic ? set.font_bolditalichalf : set.font_boldhalf) :
-                                    (italic ? set.font_bolditalic : set.font_bold);
+                                font = (sub) ? (italic ? font_bolditalichalf : font_boldhalf) :
+                                    (italic ? font_bolditalic : font_bold);
                                 break;
                             default:
                                 break;
