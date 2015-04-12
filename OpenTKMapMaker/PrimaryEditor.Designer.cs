@@ -426,7 +426,10 @@
             this.glControlTex.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlTex_Paint);
             this.glControlTex.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlTex_KeyDown);
             this.glControlTex.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlTex_KeyUp);
+            this.glControlTex.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.glControlTex_MouseDoubleClick);
+            this.glControlTex.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlTex_MouseDown);
             this.glControlTex.MouseEnter += new System.EventHandler(this.glControlTex_MouseEnter);
+            this.glControlTex.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlTex_MouseUp);
             this.glControlTex.Resize += new System.EventHandler(this.glControlTex_Resize);
             // 
             // PrimaryEditor

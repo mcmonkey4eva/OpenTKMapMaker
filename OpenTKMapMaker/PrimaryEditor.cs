@@ -420,6 +420,8 @@ namespace OpenTKMapMaker
             ContextView.Control.MakeCurrent();
         }
 
+        int tex_sel = 0;
+
         private void glControlTex_Paint(object sender, PaintEventArgs e)
         {
             CurrentContext = ContextTex;
@@ -437,6 +439,19 @@ namespace OpenTKMapMaker
                     Texture t = CurrentContext.Textures.LoadedTextures[i];
                     if (yp + 138 > tex_scroll && yp - tex_scroll < CurrentContext.Control.Height)
                     {
+                        if (texmouseDown && texMPos.X >= xp && texMPos.X <= xp + 128 && texMPos.Y >= yp - tex_scroll && texMPos.Y <= yp + 128 - tex_scroll)
+                        {
+                            tex_sel = i;
+                            texmouseDown = false;
+                            glControlTex.Invalidate();
+                        }
+                        if (tex_sel == i)
+                        {
+                            CurrentContext.Textures.White.Bind();
+                            CurrentContext.Rendering.SetColor(Color4.Red);
+                            CurrentContext.Rendering.RenderRectangle(xp - 3, yp - tex_scroll - 3, xp + 128 + 3, yp + 128 - tex_scroll + 3);
+                            CurrentContext.Rendering.SetColor(Color4.White);
+                        }
                         t.Bind();
                         CurrentContext.Rendering.RenderRectangle(xp, yp - tex_scroll, xp + 128, yp + 128 - tex_scroll);
                         StringBuilder tname = new StringBuilder(t.Name.Length);
@@ -488,6 +503,7 @@ namespace OpenTKMapMaker
                 }
                 CurrentContext.Rendering.SetColor(Color4.Gray);
                 CurrentContext.Rendering.RenderRectangle(CurrentContext.Control.Width - 18, scrollpos, CurrentContext.Control.Width - 2, scrollpos2);
+                CurrentContext.Rendering.SetColor(Color4.White);
             }
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTex.Focused ? "@" : "!") + "^e^7Textures", new Location(0, 0, 0));
             glControlTex.SwapBuffers();
@@ -1186,6 +1202,26 @@ namespace OpenTKMapMaker
 
         private void PrimaryEditor_Resize(object sender, EventArgs e)
         {
+        }
+
+        private void glControlTex_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+        }
+
+        bool texmouseDown = false;
+
+        Location texMPos = new Location(0, 0, 0);
+
+        private void glControlTex_MouseDown(object sender, MouseEventArgs e)
+        {
+            texmouseDown = true;
+            glControlTex.Invalidate();
+            texMPos = new Location(e.X, e.Y, 0);
+        }
+
+        private void glControlTex_MouseUp(object sender, MouseEventArgs e)
+        {
+            texmouseDown = false;
         }
     }
 

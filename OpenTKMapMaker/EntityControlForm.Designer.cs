@@ -89,7 +89,7 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label1);
             this.Name = "EntityControlForm";
-            this.Text = "EntityControlForm";
+            this.Text = "Entity Editor";
             this.ResumeLayout(false);
             this.PerformLayout();
 

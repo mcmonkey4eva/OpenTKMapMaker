@@ -362,6 +362,10 @@ namespace OpenTKMapMaker
                 tD_Tick(null, null);
                 tD.Start();
             }
+            else if (e.KeyCode == Keys.P)
+            {
+                // TODO: Paint
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
