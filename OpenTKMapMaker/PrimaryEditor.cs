@@ -1260,6 +1260,16 @@ namespace OpenTKMapMaker
         {
             texmouseDown = false;
         }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<Entity> ents = new List<Entity>(Entities);
+            for (int i = 0; i < ents.Count; i++)
+            {
+                Despawn(ents[i]);
+            }
+            LoadEntities();
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer
