@@ -24,11 +24,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             GenerateBoxVBO();
             GenerateSquareVBO();
             GenerateLineVBO();
+            GenerateBackgridVBO();
         }
 
         VBO Square;
         VBO Line;
         VBO Box;
+        VBO Backgrid;
 
         void GenerateSquareVBO()
         {
@@ -64,6 +66,42 @@ namespace OpenTKMapMaker.GraphicsSystem
             Square.TexCoords = texs.ToList();
             Square.Colors = cols.ToList();
             Square.GenerateVBO();
+        }
+
+        void GenerateBackgridVBO()
+        {
+            Vector3[] vecs = new Vector3[4];
+            ushort[] inds = new ushort[4];
+            Vector3[] norms = new Vector3[4];
+            Vector3[] texs = new Vector3[4];
+            Vector4[] cols = new Vector4[4];
+            for (ushort u = 0; u < 4; u++)
+            {
+                inds[u] = u;
+            }
+            for (int n = 0; n < 4; n++)
+            {
+                norms[n] = new Vector3(0, 0, 1);
+            }
+            for (int c = 0; c < 4; c++)
+            {
+                cols[c] = new Vector4(1, 1, 1, 1);
+            }
+            vecs[0] = new Vector3(10000, -10000, 0);
+            texs[0] = new Vector3(1000, -1000, 0);
+            vecs[1] = new Vector3(10000, 10000, 0);
+            texs[1] = new Vector3(1000, 1000, 0);
+            vecs[2] = new Vector3(-10000, 10000, 0);
+            texs[2] = new Vector3(-1000, 1000, 0);
+            vecs[3] = new Vector3(-10000, -10000, 0);
+            texs[3] = new Vector3(-1000, -1000, 0);
+            Backgrid = new VBO();
+            Backgrid.Vertices = vecs.ToList();
+            Backgrid.Indices = inds.ToList();
+            Backgrid.Normals = norms.ToList();
+            Backgrid.TexCoords = texs.ToList();
+            Backgrid.Colors = cols.ToList();
+            Backgrid.GenerateVBO();
         }
 
         void GenerateLineVBO()
@@ -219,6 +257,16 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.UniformMatrix4(2, false, ref mat);
 
             GL.BindVertexArray(Square._VAO);
+            GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedShort, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Renders a 2D backgrid.
+        /// </summary>
+        public void RenderBackgrid(Matrix4 mat)
+        {
+            GL.UniformMatrix4(2, false, ref mat);
+            GL.BindVertexArray(Backgrid._VAO);
             GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedShort, IntPtr.Zero);
         }
     }

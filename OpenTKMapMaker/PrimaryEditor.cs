@@ -161,9 +161,13 @@ namespace OpenTKMapMaker
         void glControlSide_MouseWheel(object sender, MouseEventArgs e)
         {
             side_zoom *= (e.Delta >= 0 ? 1.1f : 0.9f);
-            if (side_zoom == 0f)
+            if (side_zoom < 0.1f)
             {
-                side_zoom = 0.001f;
+                side_zoom = 0.1f;
+            }
+            else if (side_zoom > 300f)
+            {
+                side_zoom = 300f;
             }
             glControlSide.Invalidate();
         }
@@ -173,9 +177,13 @@ namespace OpenTKMapMaker
         void glControlTop_MouseWheel(object sender, MouseEventArgs e)
         {
             top_zoom *= (e.Delta >= 0 ? 1.1f : 0.9f);
-            if (top_zoom == 0f)
+            if (top_zoom < 0.1f)
             {
-                top_zoom = 0.001f;
+                top_zoom = 0.1f;
+            }
+            else if (top_zoom > 300f)
+            {
+                top_zoom = 300f;
             }
             glControlTop.Invalidate();
         }
@@ -297,6 +305,8 @@ namespace OpenTKMapMaker
             }
         }
 
+        Texture top_backgrid;
+
         GLContext ContextTop;
         private void glControlTop_Load(object sender, EventArgs e)
         {
@@ -307,6 +317,7 @@ namespace OpenTKMapMaker
             InitGL(ContextTop);
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
+            top_backgrid = ContextTop.Textures.GetTexture("mapmaker/backgrid");
         }
 
         Matrix4 top_proj;
@@ -322,6 +333,9 @@ namespace OpenTKMapMaker
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -1000000, 1000000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
+                top_backgrid.Bind();
+                CurrentContext.Rendering.RenderBackgrid(Matrix4.Identity);
+                CurrentContext.Textures.White.Bind();
                 Render3D(CurrentContext, true, true, false, false);
                 renderSelections(CurrentContext, false);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
@@ -336,6 +350,8 @@ namespace OpenTKMapMaker
             }
         }
 
+        Texture side_backgrid;
+
         GLContext ContextSide;
         private void glControlSide_Load(object sender, EventArgs e)
         {
@@ -346,6 +362,7 @@ namespace OpenTKMapMaker
             InitGL(ContextSide);
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
+            side_backgrid = ContextSide.Textures.GetTexture("mapmaker/backgrid");
         }
 
         Matrix4 side_proj;
@@ -356,8 +373,14 @@ namespace OpenTKMapMaker
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1));
-            ortho = view * Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
-                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1);
+            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
+                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000);
+            side_proj = ortho;
+            GL.UniformMatrix4(1, false, ref ortho);
+            side_backgrid.Bind();
+            CurrentContext.Rendering.RenderBackgrid(Matrix4.Identity);
+            CurrentContext.Textures.White.Bind();
+            ortho = view * ortho * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext, true, true, false, false);
