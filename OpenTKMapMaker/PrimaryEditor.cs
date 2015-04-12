@@ -1154,6 +1154,10 @@ namespace OpenTKMapMaker
         {
             PrimaryEditor_KeyDown(sender, e);
         }
+
+        private void PrimaryEditor_Resize(object sender, EventArgs e)
+        {
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer

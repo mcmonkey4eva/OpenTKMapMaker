@@ -331,6 +331,9 @@
             // 
             // glControlTop
             // 
+            this.glControlTop.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlTop.BackColor = System.Drawing.Color.Black;
             this.glControlTop.Location = new System.Drawing.Point(0, 0);
             this.glControlTop.Name = "glControlTop";
@@ -349,6 +352,9 @@
             // 
             // glControlSide
             // 
+            this.glControlSide.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlSide.BackColor = System.Drawing.Color.Black;
             this.glControlSide.Location = new System.Drawing.Point(0, 0);
             this.glControlSide.Name = "glControlSide";
@@ -386,6 +392,9 @@
             // 
             // glControlView
             // 
+            this.glControlView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlView.BackColor = System.Drawing.Color.Black;
             this.glControlView.Location = new System.Drawing.Point(0, 0);
             this.glControlView.Name = "glControlView";
@@ -404,6 +413,9 @@
             // 
             // glControlTex
             // 
+            this.glControlTex.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlTex.BackColor = System.Drawing.Color.Black;
             this.glControlTex.Location = new System.Drawing.Point(0, 0);
             this.glControlTex.Name = "glControlTex";
@@ -430,6 +442,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PrimaryEditor_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.PrimaryEditor_KeyUp);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PrimaryEditor_MouseUp);
+            this.Resize += new System.EventHandler(this.PrimaryEditor_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
