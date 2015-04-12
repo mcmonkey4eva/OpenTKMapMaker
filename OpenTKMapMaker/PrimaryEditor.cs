@@ -809,8 +809,8 @@ namespace OpenTKMapMaker
             {
                 float mx = (float)(e.X - glControlSide.Width / 2) / 25f * mouse_sens;
                 float my = (float)(e.Y - glControlSide.Height / 2) / 25f * mouse_sens;
-                side_translate.X -= mx;
-                side_translate.Y += my;
+                side_translate.X += mx;
+                side_translate.Y -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
