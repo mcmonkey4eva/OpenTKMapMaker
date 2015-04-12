@@ -26,7 +26,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public List<Vector3> TexCoords;
         public List<Vector4> Colors;
 
-        public void AddSide(Location normal)
+        public void AddSide(Location normal, float xscale, float yscale, float xshift, float yshift, float rotation)
         {
             // TODO: IMPROVE!
             for (int i = 0; i < 6; i++)
@@ -35,106 +35,122 @@ namespace OpenTKMapMaker.GraphicsSystem
                 Colors.Add(new Vector4(1f, 1f, 1f, 1f));
                 Indices.Add((ushort)Indices.Count);
             }
+            float aX = 0;
+            float aY = 0;
+            float bX = 1;
+            float bY = 0;
+            float cX = 1;
+            float cY = 1;
+            float dX = 0;
+            float dY = 1;
             if (normal.Z == 1)
             {
                 // T1
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(0, 0, 1));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 1, 1));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 // T2
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(0, 0, 1));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 0, 1));
             }
             else if (normal.Z == -1)
             {
                 // T1
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(1, 1, 0));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(0, 1, 0));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
                 // T2
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 0, 0));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(1, 1, 0));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
             }
             else if (normal.X == 1)
             {
                 // T1
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(1, 1, 0));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 0, 0));
                 // T2
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 0, 1));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 0, 0));
             }
             else if (normal.X == -1)
             {
+                /*float aX = 0;
+                  float aY = 0;
+                  float bX = 1;
+                  float bY = 0;
+                  float cX = 1;
+                  float cY = 1;
+                  float dX = 0;
+                  float dY = 1;*/
                 // T1
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(0, 1, 0));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(0, 1, 1));
                 // T2
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(0, 1, 1));
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(0, 0, 1));
             }
             else if (normal.Y == 1)
             {
                 // T1
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(0, 1, 1));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 1, 0));
                 // T2
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 1, 0));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 1, 0));
             }
             else if (normal.Y == -1)
             {
                 // T1
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
-                TexCoords.Add(new Vector3(0, 1, 0));
+                TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(0, 0, 1));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 0, 1));
                 // T2
-                TexCoords.Add(new Vector3(0, 0, 0));
+                TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
-                TexCoords.Add(new Vector3(1, 1, 0));
+                TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 0, 1));
-                TexCoords.Add(new Vector3(1, 0, 0));
+                TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(1, 0, 0));
             }
             else

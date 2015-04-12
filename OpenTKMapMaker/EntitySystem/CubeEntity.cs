@@ -123,12 +123,12 @@ namespace OpenTKMapMaker.EntitySystem
                 VBOs[i].Destroy();
             }
             VBOs.Clear();
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[0])).AddSide(new Location(0, 0, 1));
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[1])).AddSide(new Location(0, 0, -1));
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[2])).AddSide(new Location(1, 0, 0));
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[3])).AddSide(new Location(-1, 0, 0));
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[4])).AddSide(new Location(0, 1, 0));
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[5])).AddSide(new Location(0, -1, 0));
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[0])).AddSide(new Location(0, 0, 1), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[1])).AddSide(new Location(0, 0, -1), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[2])).AddSide(new Location(1, 0, 0), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[3])).AddSide(new Location(-1, 0, 0), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[4])).AddSide(new Location(0, 1, 0), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[5])).AddSide(new Location(0, -1, 0), 1, 1, 0, 0, 0);
             for (int i = 0; i < VBOs.Count; i++)
             {
                 VBOs[i].GenerateVBO();
