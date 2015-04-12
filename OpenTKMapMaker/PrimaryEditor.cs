@@ -362,6 +362,7 @@ namespace OpenTKMapMaker
             InitGL(ContextSide);
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
             side_backgrid = ContextSide.Textures.GetTexture("mapmaker/backgrid");
         }
 
@@ -374,13 +375,13 @@ namespace OpenTKMapMaker
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1));
             ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
-                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000);
+                500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             side_backgrid.Bind();
             CurrentContext.Rendering.RenderBackgrid(Matrix4.Identity);
             CurrentContext.Textures.White.Bind();
-            ortho = view * ortho * Matrix4.CreateScale(-1, 1, 1);
+            ortho = view * ortho;
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
             Render3D(CurrentContext, true, true, false, false);
