@@ -1128,6 +1128,14 @@ namespace OpenTKMapMaker
                 ecf = new EntityControlForm(Selected[0]);
                 ecf.Show();
             }
+            else if (e.KeyCode == Keys.Escape && Selected.Count > 0)
+            {
+                List<Entity> ents = new List<Entity>(Selected);
+                for (int i = 0; i < ents.Count; i++)
+                {
+                    Deselect(ents[i]);
+                }
+            }
             else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.A)
             {
                 bool val = Selected.Count != Entities.Count;
