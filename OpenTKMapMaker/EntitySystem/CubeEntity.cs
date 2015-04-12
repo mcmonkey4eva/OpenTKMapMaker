@@ -26,6 +26,8 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Mins;
         public Location Maxes;
         public string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
+        public TextureCoordinates[] Coords = new TextureCoordinates[] { new TextureCoordinates(), new TextureCoordinates(),
+            new TextureCoordinates(), new TextureCoordinates(), new TextureCoordinates(), new TextureCoordinates() };
 
         public bool ContainsPoint(Location point)
         {
@@ -51,6 +53,7 @@ namespace OpenTKMapMaker.EntitySystem
             vars.Add(new KeyValuePair<string, string>("mins", Mins.ToString()));
             vars.Add(new KeyValuePair<string, string>("maxes", Maxes.ToString()));
             vars.Add(new KeyValuePair<string, string>("textures", GetTextureString()));
+            vars.Add(new KeyValuePair<string,string>("coords", GetCoordString()));
             return vars;
         }
 
@@ -79,6 +82,16 @@ namespace OpenTKMapMaker.EntitySystem
                     }
                     Textures = texes;
                     return true;
+                case "coords":
+                    string[] coords = value.Split('|');
+                    if (coords.Length != 6)
+                    {
+                        return false;
+                    }
+                    Coords = new TextureCoordinates[] { TextureCoordinates.FromString(coords[0]), TextureCoordinates.FromString(coords[1]),
+                        TextureCoordinates.FromString(coords[2]), TextureCoordinates.FromString(coords[3]),
+                        TextureCoordinates.FromString(coords[4]), TextureCoordinates.FromString(coords[5]) };
+                    return true;
                 default:
                     return base.ApplyVar(var, value);
             }
@@ -87,6 +100,11 @@ namespace OpenTKMapMaker.EntitySystem
         public string GetTextureString()
         {
             return Textures[0] + "|" + Textures[1] + "|" + Textures[2] + "|" + Textures[3] + "|" + Textures[4] + "|" + Textures[5];
+        }
+
+        public string GetCoordString()
+        {
+            return Coords[0] + "|" + Coords[1] + "|" + Coords[2] + "|" + Coords[3] + "|" + Coords[4] + "|" + Coords[5];
         }
 
         public override void Render(GLContext context)
@@ -114,6 +132,7 @@ namespace OpenTKMapMaker.EntitySystem
             base.Reposition(pos);
         }
 
+
         public override void Recalculate()
         {
             Position = ((Maxes - Mins) / 2) + Mins;
@@ -123,12 +142,12 @@ namespace OpenTKMapMaker.EntitySystem
                 VBOs[i].Destroy();
             }
             VBOs.Clear();
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[0])).AddSide(new Location(0, 0, 1), 1, 1, 0, 0, 0);
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[1])).AddSide(new Location(0, 0, -1), 1, 1, 0, 0, 0);
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[2])).AddSide(new Location(1, 0, 0), 1, 1, 0, 0, 0);
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[3])).AddSide(new Location(-1, 0, 0), 1, 1, 0, 0, 0);
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[4])).AddSide(new Location(0, 1, 0), 1, 1, 0, 0, 0);
-            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[5])).AddSide(new Location(0, -1, 0), 1, 1, 0, 0, 0);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[0])).AddSide(new Location(0, 0, 1), Coords[0]);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[1])).AddSide(new Location(0, 0, -1), Coords[1]);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[2])).AddSide(new Location(1, 0, 0), Coords[2]);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[3])).AddSide(new Location(-1, 0, 0), Coords[3]);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[4])).AddSide(new Location(0, 1, 0), Coords[4]);
+            GetVBOFor(PrimaryEditor.ContextView.Textures.GetTexture(Textures[5])).AddSide(new Location(0, -1, 0), Coords[5]);
             for (int i = 0; i < VBOs.Count; i++)
             {
                 VBOs[i].GenerateVBO();
@@ -153,7 +172,8 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override string ToString()
         {
-            return "CUBENTITY{mins=" + Mins + ";maxes=" + Maxes + ";textures=" + GetTextureString() + ";mass=" + Mass + ";velocity=" + Velocity + ";angle=" + Angle + ";angular_velocity=" + Angular_Velocity + "}";
+            return "CUBENTITY{mins=" + Mins + ";maxes=" + Maxes + ";textures=" + GetTextureString() + ";coords=" + GetCoordString() + ";mass=" + Mass
+                + ";velocity=" + Velocity + ";angle=" + Angle + ";angular_velocity=" + Angular_Velocity + "}";
         }
     }
 

@@ -26,7 +26,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public List<Vector3> TexCoords;
         public List<Vector4> Colors;
 
-        public void AddSide(Location normal, float xscale, float yscale, float xshift, float yshift, float rotation)
+        public void AddSide(Location normal, TextureCoordinates tc)
         {
             // TODO: IMPROVE!
             for (int i = 0; i < 6; i++)
@@ -35,14 +35,14 @@ namespace OpenTKMapMaker.GraphicsSystem
                 Colors.Add(new Vector4(1f, 1f, 1f, 1f));
                 Indices.Add((ushort)Indices.Count);
             }
-            float aX = 0;
-            float aY = 0;
-            float bX = 1;
-            float bY = 0;
-            float cX = 1;
-            float cY = 1;
-            float dX = 0;
-            float dY = 1;
+            float aX = (tc.xflip ? 1 : 0) + tc.xshift;
+            float aY = (tc.yflip ? 1 : 0) + tc.yshift;
+            float bX = (tc.xflip ? 0 : 1) * tc.xscale + tc.xshift;
+            float bY = (tc.yflip ? 1 : 0) + tc.yshift;
+            float cX = (tc.xflip ? 0 : 1) * tc.xscale + tc.xshift;
+            float cY = (tc.yflip ? 0 : 1) * tc.yscale + tc.yshift;
+            float dX = (tc.xflip ? 1 : 0) + tc.xshift;
+            float dY = (tc.yflip ? 0 : 1) * tc.yscale + tc.yshift;
             if (normal.Z == 1)
             {
                 // T1
@@ -96,14 +96,6 @@ namespace OpenTKMapMaker.GraphicsSystem
             }
             else if (normal.X == -1)
             {
-                /*float aX = 0;
-                  float aY = 0;
-                  float bX = 1;
-                  float bY = 0;
-                  float cX = 1;
-                  float cY = 1;
-                  float dX = 0;
-                  float dY = 1;*/
                 // T1
                 TexCoords.Add(new Vector3(cX, cY, 0));
                 Vertices.Add(new Vector3(0, 0, 0));
@@ -268,6 +260,44 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.BindVertexArray(_VAO);
             GL.DrawElements(PrimitiveType.Triangles, Vertices.Count, DrawElementsType.UnsignedShort, IntPtr.Zero);
             GL.BindVertexArray(0);
+        }
+    }
+
+    public class TextureCoordinates
+    {
+        public TextureCoordinates()
+        {
+            xscale = 1;
+            yscale = 1;
+            xshift = 0;
+            yshift = 0;
+            xflip = false;
+            yflip = false;
+        }
+
+        public float xscale;
+        public float yscale;
+        public float xshift;
+        public float yshift;
+        public bool xflip;
+        public bool yflip;
+
+        public override string ToString()
+        {
+            return xscale + "/" + yscale + "/" + xshift + "/" + yshift + "/" + (xflip ? "t" : "f") + "/" + (yflip ? "t" : "f");
+        }
+
+        public static TextureCoordinates FromString(string str)
+        {
+            TextureCoordinates tc = new TextureCoordinates();
+            string[] data = str.Split('/');
+            tc.xscale = Utilities.StringToFloat(data[0]);
+            tc.yscale = Utilities.StringToFloat(data[1]);
+            tc.xshift = Utilities.StringToFloat(data[2]);
+            tc.yshift = Utilities.StringToFloat(data[3]);
+            tc.xflip = data[4] == "t";
+            tc.yflip = data[5] == "t";
+            return tc;
         }
     }
 }
