@@ -11,8 +11,6 @@ namespace OpenTKMapMaker.GraphicsSystem
 {
     /// <summary>
     /// Rendering utility.
-    /// 
-    /// TODO: Make the objects in this class more abstract!
     /// </summary>
     public class Renderer
     {

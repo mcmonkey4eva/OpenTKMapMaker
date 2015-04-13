@@ -109,9 +109,9 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override void Render(GLContext context)
         {
-            context.Textures.White.Bind();
             if (PrimaryEditor.RenderLines)
             {
+                context.Textures.White.Bind();
                 context.Rendering.RenderLineBox(Mins, Maxes);
             }
             else
