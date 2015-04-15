@@ -237,7 +237,6 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             if (PrimaryEditor.RenderLights)
             {
-                SysConsole.Output(OutputType.INFO, "Rendering light at a minimum strength of " + min);
                 GL.Uniform1(5, min);
             }
         }
