@@ -955,7 +955,7 @@ namespace OpenTKMapMaker
             {
                 if (data[i] == '{')
                 {
-                    string objo = data.Substring(start, i - start);
+                    string objo = data.Substring(start, i - start).Trim();
                     int obj_start = i + 1;
                     for (int x = i + 1; x < data.Length; x++)
                     {
@@ -977,10 +977,6 @@ namespace OpenTKMapMaker
                     start = i + 1;
                 }
             }
-            for (int i = 0; i < Entities.Count; i++)
-            {
-                SysConsole.Output(OutputType.INFO, "Entity " + i + ": " + Entities[i].ToString());
-            }
         }
 
         public Location ambient;
@@ -997,10 +993,15 @@ namespace OpenTKMapMaker
                     {
                         continue;
                     }
-                    string[] datum = dats[i].Split(':');
+                    string trimmed = dats[i].Trim();
+                    if (trimmed.Length == 0)
+                    {
+                        continue;
+                    }
+                    string[] datum = trimmed.Split(':');
                     if (datum.Length != 2)
                     {
-                        throw new Exception("Invalid key '" + datum + "'!");
+                        throw new Exception("Invalid key '" + dats[i] + "'!");
                     }
                     switch (datum[0])
                     {
@@ -1037,10 +1038,15 @@ namespace OpenTKMapMaker
                 {
                     continue;
                 }
-                string[] datum = dats[i].Split(':');
+                string trimmed = dats[i].Trim();
+                if (trimmed.Length == 0)
+                {
+                    continue;
+                }
+                string[] datum = trimmed.Split(':');
                 if (datum.Length != 2)
                 {
-                    throw new Exception("Invalid key '" + datum + "'!");
+                    throw new Exception("Invalid key '" + dats[i] + "'!");
                 }
                 if (!e.ApplyVar(datum[0].Trim(), datum[1].Trim()))
                 {
