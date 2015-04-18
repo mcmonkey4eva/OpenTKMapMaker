@@ -14,6 +14,7 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Angular_Velocity;
         public float Mass = 0;
         public bool Selected = false;
+        public float Friction = 0;
 
         public abstract string GetEntityType();
 
@@ -25,6 +26,7 @@ namespace OpenTKMapMaker.EntitySystem
             vars.Add(new KeyValuePair<string, string>("velocity", Velocity.ToString()));
             vars.Add(new KeyValuePair<string, string>("angular_velocity", Angular_Velocity.ToString()));
             vars.Add(new KeyValuePair<string, string>("mass", Mass.ToString()));
+            vars.Add(new KeyValuePair<string, string>("friction", Friction.ToString()));
             return vars;
         }
 
@@ -46,6 +48,9 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "mass":
                     Mass = Utilities.StringToFloat(value);
+                    return true;
+                case "friction":
+                    Friction = Utilities.StringToFloat(value);
                     return true;
                 default:
                     return false;
