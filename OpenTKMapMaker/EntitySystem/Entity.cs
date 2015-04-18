@@ -12,9 +12,9 @@ namespace OpenTKMapMaker.EntitySystem
         public Location Angle;
         public Location Velocity;
         public Location Angular_Velocity;
-        public float Mass = 0;
+        public float Mass = 0f;
         public bool Selected = false;
-        public float Friction = 0;
+        public float Friction = 0.5f;
 
         public abstract string GetEntityType();
 
