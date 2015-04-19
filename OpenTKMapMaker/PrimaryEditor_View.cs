@@ -125,7 +125,6 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.DepthTest);
                 if (renderLightingToolStripMenuItem.Checked)
                 {
-                    GL.CullFace(CullFaceMode.Back);
                     s_shadow.Bind();
                     for (int i = 0; i < Lights.Count; i++)
                     {
@@ -136,7 +135,6 @@ namespace OpenTKMapMaker
                             Lights[i].InternalLights[x].Complete();
                         }
                     }
-                    GL.CullFace(CullFaceMode.Front);
                     SetViewport();
                     s_fbo.Bind();
                     Location CameraTarget = CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
