@@ -125,6 +125,7 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.DepthTest);
                 if (renderLightingToolStripMenuItem.Checked)
                 {
+                    GL.CullFace(CullFaceMode.Back);
                     s_shadow.Bind();
                     for (int i = 0; i < Lights.Count; i++)
                     {
