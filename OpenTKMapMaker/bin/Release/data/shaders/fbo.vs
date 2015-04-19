@@ -16,6 +16,11 @@ void main(void)
 {
 	f_texcoord = texcoords;
 	f_position = mv_matrix * position;
-	f_normal = normal;
+	mat4 mv_mat_simple = mv_matrix;
+	mv_mat_simple[3][0] = 0.0;
+	mv_mat_simple[3][1] = 0.0;
+	mv_mat_simple[3][2] = 0.0;
+	vec4 nnormal = mv_mat_simple * vec4(normal, 1.0);
+	f_normal = nnormal.xyz / nnormal.w;
 	gl_Position = proj_matrix * mv_matrix * position;
 }
