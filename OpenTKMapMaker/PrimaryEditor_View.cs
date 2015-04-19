@@ -135,6 +135,7 @@ namespace OpenTKMapMaker
                             Lights[i].InternalLights[x].Complete();
                         }
                     }
+                    GL.CullFace(CullFaceMode.Front);
                     SetViewport();
                     s_fbo.Bind();
                     Location CameraTarget = CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
