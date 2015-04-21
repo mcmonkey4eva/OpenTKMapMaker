@@ -5,6 +5,28 @@ OpenTK Map Maker, an open project to provide a level editor / map maker for any 
 
 Built within OpenTK, a C# binding of OpenGL for the 3D rendering, as well as WinForms to provide a basic menu system.
 
+### Controls
+
+Mouse over or click any view to select it.
+
+3D View (Top Right):
+
+WASD to move camera
+
+Middle click to capture mouse - move mouse while captured to look around.
+
+P to paint a texture onto the surface hovered over (Texture selected from the bottom right texture list)
+
+Right mouse to select/deselect the object under the mouse
+
+Top and Side View (Left):
+
+Middle click and drag to move around
+
+Middle mouse wheel scroll to zoom in/out
+
+Right mouse to select/deselect the object under the mouse
+
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
