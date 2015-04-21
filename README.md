@@ -27,6 +27,14 @@ Middle mouse wheel scroll to zoom in/out
 
 Right mouse to select/deselect the object under the mouse
 
+Left mouse and drag to move or resize objects
+
+Space to spawn a new block under the mouse
+
+Anywhere:
+
+N to open the entity settings view (While a single entity is selected)
+
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
