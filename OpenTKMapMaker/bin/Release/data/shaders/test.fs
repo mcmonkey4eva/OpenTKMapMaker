@@ -15,13 +15,13 @@ layout (location = 5) uniform vec3 ambient = vec3(0.05, 0.05, 0.05);
 
 out vec4 color;
 
-vec4 regularize(vec4 input) // TODO: Is this working the best it can?
+vec4 regularize(vec4 input_r) // TODO: Is this working the best it can?
 {
-	if (input.x <= 1.0 && input.y <= 1.0 && input.z <= 1.0)
+	if (input_r.x <= 1.0 && input_r.y <= 1.0 && input_r.z <= 1.0)
 	{
-		return input;
+		return input_r;
 	}
-	return vec4(input.xyz / ((input.x >= input.y && input.x >= input.z) ? input.x: ((input.y >= input.z) ? input.y: input.z)), input.w);
+	return vec4(input_r.xyz / ((input_r.x >= input_r.y && input_r.x >= input_r.z) ? input_r.x: ((input_r.y >= input_r.z) ? input_r.y: input_r.z)), input_r.w);
 }
 
 void main()
