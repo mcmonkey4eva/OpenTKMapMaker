@@ -56,7 +56,7 @@ void main()
 	vec4 diffuse = vec4(max(dot(N, -L), 0.0) * diffuse_albedo, 1.0);
 	vec3 specular = vec3(pow(max(dot(R, V), 0.0), renderhint.y * 1000.0) * specular_albedo * renderhint.x);
 	vec4 fs = f_spos / f_spos.w / 2.0 + 0.5;
-	fs.z -= 0.00005;
+	fs.z -= 0.0005 / (light_length / 5.0 / (light_radius / 100.0));
 	float depth = textureProj(tex, fs + vec4(0.00, -0.0005, 0.0, 0.0));
 	float depth2 = textureProj(tex, fs + vec4(0.0005, 0.0, 0.0, 0.0));
 	float depth3 = textureProj(tex, fs + vec4(0.0, 0.0005, 0.0, 0.0));
