@@ -31,6 +31,10 @@ Left mouse and drag to move or resize objects
 
 Space to spawn a new block under the mouse
 
+Arrow Keys (Up/Down/Left/Right) to move the view around
+
+WASD to move the view around more precisely
+
 Anywhere:
 
 T key to change entity type
