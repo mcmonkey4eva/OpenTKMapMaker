@@ -594,7 +594,7 @@ namespace OpenTKMapMaker
 
         void ResizeTex()
         {
-            glControlTex.Size = splitContainer3.Panel2.ClientSize;
+            glControlTex.Size = splitContainer4.Panel2.ClientSize;
         }
 
         void ResizeTop()
@@ -1460,6 +1460,11 @@ namespace OpenTKMapMaker
                 SysConsole.Output(OutputType.ERROR, ex.ToString());
             }
             invalidateAll();
+        }
+
+        private void splitContainer4_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 
