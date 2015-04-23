@@ -329,7 +329,8 @@ namespace OpenTKMapMaker
                 CurrentContext = ContextTop;
                 glControlTop.MakeCurrent();
                 GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
-                ortho = Matrix4.CreateOrthographicOffCenter(-500f / top_zoom + (float)top_translate.X, 500f / top_zoom + (float)top_translate.X,
+                float rat = (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height;
+                ortho = Matrix4.CreateOrthographicOffCenter((-500f / top_zoom + (float)top_translate.X) * rat, (500f / top_zoom + (float)top_translate.X) * rat,
                     500f / top_zoom + (float)top_translate.Y, -500f / top_zoom + (float)top_translate.Y, -1000000, 1000000);
                 top_proj = ortho;
                 GL.UniformMatrix4(1, false, ref ortho);
@@ -374,7 +375,8 @@ namespace OpenTKMapMaker
             glControlSide.MakeCurrent();
             GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
             Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, -1));
-            ortho = Matrix4.CreateOrthographicOffCenter(-500f / side_zoom + (float)side_translate.X, 500f / side_zoom + (float)side_translate.X,
+            float rat = (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height;
+            ortho = Matrix4.CreateOrthographicOffCenter((-500f / side_zoom + (float)side_translate.X) * rat, (500f / side_zoom + (float)side_translate.X) * rat,
                 500f / side_zoom + (float)side_translate.Y, -500f / side_zoom + (float)side_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1);
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
