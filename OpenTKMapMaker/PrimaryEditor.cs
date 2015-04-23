@@ -127,6 +127,7 @@ namespace OpenTKMapMaker
             glControlView.MouseWheel += new MouseEventHandler(glControlView_MouseWheel);
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
             glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
+            glControlOSide.MouseWheel += new MouseEventHandler(glControlOSide_MouseWheel);
             tW.Tick += new EventHandler(tW_Tick);
             tA.Tick += new EventHandler(tA_Tick);
             tS.Tick += new EventHandler(tS_Tick);
@@ -144,6 +145,7 @@ namespace OpenTKMapMaker
             this.glControlView.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlTop.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+            this.glControlOSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
         }
 
         void PrimaryEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -165,6 +167,10 @@ namespace OpenTKMapMaker
                     else if (glControlSide.Focused)
                     {
                         glControlSide_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    }
+                    else if (glControlOSide.Focused)
+                    {
+                        glControlOSide_KeyDown(null, new KeyEventArgs(e.KeyCode));
                     }
                     return;
                 default:
@@ -226,6 +232,22 @@ namespace OpenTKMapMaker
                 side_zoom = 300f;
             }
             glControlSide.Invalidate();
+        }
+
+        public static float oside_zoom = 1;
+
+        void glControlOSide_MouseWheel(object sender, MouseEventArgs e)
+        {
+            oside_zoom *= (e.Delta >= 0 ? 1.1f : 0.9f);
+            if (oside_zoom < 0.1f)
+            {
+                oside_zoom = 0.1f;
+            }
+            else if (oside_zoom > 300f)
+            {
+                oside_zoom = 300f;
+            }
+            glControlOSide.Invalidate();
         }
 
         public static float top_zoom = 1;
@@ -451,6 +473,50 @@ namespace OpenTKMapMaker
             glControlSide.SwapBuffers();
         }
 
+        Texture oside_backgrid;
+
+        GLContext ContextOSide;
+        void glControlOSide_Load(object sender, System.EventArgs e)
+        {
+            glControlOSide.MakeCurrent();
+            ResizeOSide();
+            ContextOSide = new GLContext();
+            ContextOSide.Control = glControlOSide;
+            InitGL(ContextOSide);
+            GL.Disable(EnableCap.Texture2D);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.CullFace);
+            oside_backgrid = ContextSide.Textures.GetTexture("mapmaker/backgrid");
+        }
+
+        Matrix4 oside_proj;
+
+        void glControlOSide_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+            CurrentContext = ContextOSide;
+            glControlOSide.MakeCurrent();
+            GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.1f, 0.1f, 0.1f, 1f });
+            Matrix4 view = Matrix4.LookAt(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 0, -1));
+            float rat = (float)CurrentContext.Control.Width / (float)CurrentContext.Control.Height;
+            ortho = Matrix4.CreateOrthographicOffCenter((-500f / oside_zoom + (float)oside_translate.X) * rat, (500f / oside_zoom + (float)oside_translate.X) * rat,
+                500f / oside_zoom + (float)oside_translate.Y, -500f / oside_zoom + (float)oside_translate.Y, -1000000, 1000000) * Matrix4.CreateScale(-1, 1, 1); // TODO: Rotate
+            oside_proj = ortho;
+            GL.UniformMatrix4(1, false, ref ortho);
+            oside_backgrid.Bind();
+            CurrentContext.Rendering.RenderBackgrid(Matrix4.Identity);
+            CurrentContext.Textures.White.Bind();
+            ortho = view * ortho;
+            oside_proj = ortho;
+            GL.UniformMatrix4(1, false, ref ortho);
+            Render3D(CurrentContext, true, true, false, false);
+            renderSelections(CurrentContext, false);
+            ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
+            GL.Enable(EnableCap.Texture2D);
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlOSide.Focused ? "@" : "!") + "^e^7" + oside_zoom.ToString(), new Location(0, 0, 0));
+            GL.Disable(EnableCap.Texture2D);
+            glControlOSide.SwapBuffers();
+        }
+
         GLContext ContextTex;
         private void glControlTex_Load(object sender, EventArgs e)
         {
@@ -607,6 +673,11 @@ namespace OpenTKMapMaker
             glControlSide.Size = splitContainer2.Panel2.ClientSize;
         }
 
+        void ResizeOSide()
+        {
+            glControlOSide.Size = splitContainer4.Panel1.ClientSize;
+        }
+
         // Vertical - Left
         private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
         {
@@ -619,6 +690,7 @@ namespace OpenTKMapMaker
         {
             ResizeView();
             ResizeTex();
+            ResizeOSide();
         }
 
         // Horizontal
@@ -628,6 +700,7 @@ namespace OpenTKMapMaker
             ResizeTex();
             ResizeTop();
             ResizeSide();
+            ResizeOSide();
         }
 
         GLContext CurrentContext;
@@ -642,6 +715,12 @@ namespace OpenTKMapMaker
         {
             glControlSide.MakeCurrent();
             GL.Viewport(0, 0, glControlSide.Width, glControlSide.Height);
+        }
+
+        private void glControlOSide_Resize(object sender, EventArgs e)
+        {
+            glControlOSide.MakeCurrent();
+            GL.Viewport(0, 0, glControlOSide.Width, glControlOSide.Height);
         }
 
         private void glControlTex_Resize(object sender, EventArgs e)
@@ -660,6 +739,15 @@ namespace OpenTKMapMaker
             if (ecf == null || !ecf.Visible)
             {
                 glControlSide.Focus();
+                invalidateAll();
+            }
+        }
+
+        private void glControlOSide_MouseEnter(object sender, EventArgs e)
+        {
+            if (ecf == null || !ecf.Visible)
+            {
+                glControlOSide.Focus();
                 invalidateAll();
             }
         }
@@ -688,6 +776,7 @@ namespace OpenTKMapMaker
             glControlTex.Invalidate();
             glControlTop.Invalidate();
             glControlSide.Invalidate();
+            glControlOSide.Invalidate();
         }
 
         bool top_selected = false;
@@ -834,6 +923,7 @@ namespace OpenTKMapMaker
             {
                 top_selected = false;
                 side_selected = false;
+                oside_selected = false;
             }
             else if (e.Button == MouseButtons.Left)
             {
@@ -841,6 +931,8 @@ namespace OpenTKMapMaker
                 top_stretching = false;
                 side_moving = false;
                 side_stretching = false;
+                oside_moving = false;
+                oside_stretching = false;
             }
         }
 
@@ -955,6 +1047,115 @@ namespace OpenTKMapMaker
                     side_moving = true;
                 }
                 side_ppos = side_mousepos;
+            }
+        }
+
+        bool oside_selected = false;
+
+        Location oside_translate = new Location(0, 0, 0);
+
+        Location oside_mousepos = new Location(0, 0, 0);
+
+        bool oside_stretching = false;
+
+        bool oside_moving = false;
+        Location oside_ppos = new Location(0);
+
+        private void glControlOSide_MouseMove(object sender, MouseEventArgs e)
+        {
+            Location mpos = new Location((float)e.X / ((float)glControlOSide.Width / 2f) - 1f, -((float)e.Y / ((float)glControlOSide.Height / 2f) - 1f), 0f);
+            oside_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), oside_proj.Inverted()));
+            if (oside_selected)
+            {
+                float mx = (float)(e.X - glControlOSide.Width / 2) / 25f * mouse_sens;
+                float my = (float)(e.Y - glControlOSide.Height / 2) / 25f * mouse_sens;
+                oside_translate.X += mx;
+                oside_translate.Y -= my;
+                if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
+                {
+                    OpenTK.Input.Mouse.SetPosition(this.Location.X + splitContainer1.SplitterDistance + splitContainer1.SplitterRectangle.Width + 8 + glControlOSide.Width / 2,
+                        this.Location.Y + 31 + menuStrip1.Height + splitContainer3.SplitterDistance + splitContainer3.SplitterRectangle.Height + glControlOSide.Height / 2);
+                }
+            }
+            if (oside_moving)
+            {
+                Location mmpos = oside_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    mmpos = new Location(0, (int)oside_mousepos.Y, (int)oside_mousepos.Z);
+                }
+                Location vec = oside_ppos - mmpos;
+                oside_ppos = mmpos;
+                for (int i = 0; i < Selected.Count; i++)
+                {
+                    Selected[i].Reposition(Selected[i].Position - vec);
+                }
+                invalidateAll();
+            }
+            else if (oside_stretching)
+            {
+                if (Selected.Count != 1)
+                {
+                    oside_stretching = false;
+                }
+                else
+                {
+                    ((CubeEntity)Selected[0]).Include(new Location(Selected[0].Position.X, ModifierKeys.HasFlag(Keys.Control) ?
+                        oside_mousepos.Y : (int)oside_mousepos.Y, ModifierKeys.HasFlag(Keys.Control) ? oside_mousepos.Z : (int)oside_mousepos.Z));
+                }
+                invalidateAll();
+            }
+            else
+            {
+                glControlOSide.Invalidate();
+            }
+        }
+
+        private void glControlOSide_MouseUp(object sender, MouseEventArgs e)
+        {
+            PrimaryEditor_MouseUp(sender, e);
+        }
+
+        private void glControlOSide_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                oside_selected = true;
+                OpenTK.Input.Mouse.SetPosition(this.Location.X + splitContainer1.SplitterDistance + splitContainer1.SplitterRectangle.Width + 8 + glControlOSide.Width / 2,
+                    this.Location.Y + 31 + menuStrip1.Height + splitContainer3.SplitterDistance + splitContainer3.SplitterRectangle.Height + glControlOSide.Height / 2);
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                Location normal;
+                Entity hit = RayTraceEntity(new Location(1000000, oside_mousepos.Y, oside_mousepos.Z), new Location(-1000000, oside_mousepos.Y, oside_mousepos.Z), out normal);
+                if (hit != null)
+                {
+                    if (hit.Selected)
+                    {
+                        Deselect(hit);
+                    }
+                    else
+                    {
+                        Select(hit);
+                    }
+                }
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                if (Selected.Count == 1 && Selected[0] is CubeEntity
+                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(Selected[0].Position.X, oside_mousepos.Y, oside_mousepos.Z)))
+                {
+                    oside_stretching = true;
+                    CubeEntity ce = (CubeEntity)Selected[0];
+                    stretch_x = 0;
+                    stretch_y = oside_mousepos.Y > ce.Maxes.Y ? 1 : (oside_mousepos.Y < ce.Mins.Y ? -1 : 0);
+                    stretch_z = oside_mousepos.Z > ce.Maxes.Z ? 1 : (oside_mousepos.Z < ce.Mins.Z ? -1 : 0);
+                }
+                else if (Selected.Count > 0)
+                {
+                    oside_moving = true;
+                }
+                oside_ppos = oside_mousepos;
             }
         }
 
@@ -1362,6 +1563,55 @@ namespace OpenTKMapMaker
             PrimaryEditor_KeyDown(sender, e);
         }
 
+        private void glControlOSide_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                MakeCuboidAt(new Location(0, oside_mousepos.Y, oside_mousepos.Z));
+            }
+            else if (e.KeyCode == Keys.W)
+            {
+                oside_translate.Y -= 10f / oside_zoom;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.S)
+            {
+                oside_translate.Y += 10f / oside_zoom;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.A)
+            {
+                oside_translate.X -= 10f / oside_zoom;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.D)
+            {
+                oside_translate.X += 10f / oside_zoom;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                oside_translate.Y -= 10f;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                oside_translate.Y += 10f;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                oside_translate.X -= 10f;
+                glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                oside_translate.X += 10f;
+                glControlOSide.Invalidate();
+            }
+            PrimaryEditor_KeyDown(sender, e);
+        }
+
         private void PrimaryEditor_KeyUp(object sender, KeyEventArgs e)
         {
         }
@@ -1465,6 +1715,12 @@ namespace OpenTKMapMaker
         private void splitContainer4_Panel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void splitContainer4_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            ResizeTex();
+            ResizeOSide();
         }
     }
 

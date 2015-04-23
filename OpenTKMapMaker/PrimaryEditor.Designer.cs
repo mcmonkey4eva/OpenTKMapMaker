@@ -56,6 +56,8 @@
             this.glControlSide = new OpenTK.GLControl();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.glControlView = new OpenTK.GLControl();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.glControlOSide = new OpenTK.GLControl();
             this.glControlTex = new OpenTK.GLControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -70,6 +72,10 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+            this.splitContainer4.Panel1.SuspendLayout();
+            this.splitContainer4.Panel2.SuspendLayout();
+            this.splitContainer4.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -84,7 +90,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(936, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1279, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -254,7 +260,7 @@
             this.tODOToolStripMenuItem.BackColor = System.Drawing.Color.Black;
             this.tODOToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.tODOToolStripMenuItem.Name = "tODOToolStripMenuItem";
-            this.tODOToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tODOToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.tODOToolStripMenuItem.Text = "Add Textures";
             this.tODOToolStripMenuItem.Click += new System.EventHandler(this.tODOToolStripMenuItem_Click);
             // 
@@ -307,8 +313,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer1.Size = new System.Drawing.Size(936, 496);
-            this.splitContainer1.SplitterDistance = 312;
+            this.splitContainer1.Size = new System.Drawing.Size(1279, 496);
+            this.splitContainer1.SplitterDistance = 426;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
@@ -326,7 +332,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.glControlSide);
-            this.splitContainer2.Size = new System.Drawing.Size(312, 496);
+            this.splitContainer2.Size = new System.Drawing.Size(426, 496);
             this.splitContainer2.SplitterDistance = 222;
             this.splitContainer2.TabIndex = 0;
             this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
@@ -339,7 +345,7 @@
             this.glControlTop.BackColor = System.Drawing.Color.Black;
             this.glControlTop.Location = new System.Drawing.Point(0, 0);
             this.glControlTop.Name = "glControlTop";
-            this.glControlTop.Size = new System.Drawing.Size(309, 231);
+            this.glControlTop.Size = new System.Drawing.Size(423, 231);
             this.glControlTop.TabIndex = 0;
             this.glControlTop.VSync = false;
             this.glControlTop.Load += new System.EventHandler(this.glControlTop_Load);
@@ -360,7 +366,7 @@
             this.glControlSide.BackColor = System.Drawing.Color.Black;
             this.glControlSide.Location = new System.Drawing.Point(0, 0);
             this.glControlSide.Name = "glControlSide";
-            this.glControlSide.Size = new System.Drawing.Size(309, 266);
+            this.glControlSide.Size = new System.Drawing.Size(423, 266);
             this.glControlSide.TabIndex = 0;
             this.glControlSide.VSync = false;
             this.glControlSide.Load += new System.EventHandler(this.glControlSide_Load);
@@ -386,8 +392,8 @@
             // 
             // splitContainer3.Panel2
             // 
-            this.splitContainer3.Panel2.Controls.Add(this.glControlTex);
-            this.splitContainer3.Size = new System.Drawing.Size(620, 496);
+            this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
+            this.splitContainer3.Size = new System.Drawing.Size(849, 496);
             this.splitContainer3.SplitterDistance = 222;
             this.splitContainer3.TabIndex = 0;
             this.splitContainer3.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer3_SplitterMoved);
@@ -398,9 +404,9 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlView.BackColor = System.Drawing.Color.Black;
-            this.glControlView.Location = new System.Drawing.Point(0, 0);
+            this.glControlView.Location = new System.Drawing.Point(-2, 0);
             this.glControlView.Name = "glControlView";
-            this.glControlView.Size = new System.Drawing.Size(617, 231);
+            this.glControlView.Size = new System.Drawing.Size(848, 231);
             this.glControlView.TabIndex = 0;
             this.glControlView.VSync = false;
             this.glControlView.Load += new System.EventHandler(this.glControlView_Load);
@@ -413,15 +419,50 @@
             this.glControlView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlView_MouseUp);
             this.glControlView.Resize += new System.EventHandler(this.glControlView_Resize);
             // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.glControlOSide);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.glControlTex);
+            this.splitContainer4.Size = new System.Drawing.Size(849, 270);
+            this.splitContainer4.SplitterDistance = 412;
+            this.splitContainer4.TabIndex = 3;
+            this.splitContainer4.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer4_SplitterMoved);
+            // 
+            // glControlOSide
+            // 
+            this.glControlOSide.BackColor = System.Drawing.Color.Black;
+            this.glControlOSide.Location = new System.Drawing.Point(0, 0);
+            this.glControlOSide.Name = "glControlOSide";
+            this.glControlOSide.Size = new System.Drawing.Size(409, 266);
+            this.glControlOSide.TabIndex = 0;
+            this.glControlOSide.VSync = false;
+            this.glControlOSide.Load += new System.EventHandler(this.glControlOSide_Load);
+            this.glControlOSide.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlOSide_Paint);
+            this.glControlOSide.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlOSide_KeyDown);
+            this.glControlOSide.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseDown);
+            this.glControlOSide.MouseEnter += new System.EventHandler(this.glControlOSide_MouseEnter);
+            this.glControlOSide.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseMove);
+            this.glControlOSide.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseUp);
+            this.glControlOSide.Resize += new System.EventHandler(this.glControlOSide_Resize);
+            // 
             // glControlTex
             // 
             this.glControlTex.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlTex.BackColor = System.Drawing.Color.Black;
-            this.glControlTex.Location = new System.Drawing.Point(0, 0);
+            this.glControlTex.Location = new System.Drawing.Point(3, -1);
             this.glControlTex.Name = "glControlTex";
-            this.glControlTex.Size = new System.Drawing.Size(617, 267);
+            this.glControlTex.Size = new System.Drawing.Size(430, 267);
             this.glControlTex.TabIndex = 0;
             this.glControlTex.VSync = false;
             this.glControlTex.Load += new System.EventHandler(this.glControlTex_Load);
@@ -438,7 +479,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 520);
+            this.ClientSize = new System.Drawing.Size(1279, 520);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -462,6 +503,10 @@
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
+            this.splitContainer4.Panel1.ResumeLayout(false);
+            this.splitContainer4.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            this.splitContainer4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -496,7 +541,9 @@
         private OpenTK.GLControl glControlView;
         private OpenTK.GLControl glControlTop;
         private OpenTK.GLControl glControlSide;
+        private OpenTK.GLControl glControlOSide;
         private OpenTK.GLControl glControlTex;
         private System.Windows.Forms.ToolStripMenuItem consoleToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer4;
     }
 }
