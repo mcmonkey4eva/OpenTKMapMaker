@@ -1199,6 +1199,11 @@ namespace OpenTKMapMaker
         {
             spot = new Location((int)spot.X, (int)spot.Y, (int)spot.Z);
             CubeEntity ce = new CubeEntity(spot - new Location(1), spot + new Location(1));
+            string tex = ContextView.Textures.LoadedTextures[tex_sel].Name;
+            for (int i = 0; i < 6; i++)
+            {
+                ce.Textures[i] = tex;
+            }
             ce.Recalculate();
             List<Entity> es = new List<Entity>(Selected);
             for (int i = 0; i < es.Count; i++)
