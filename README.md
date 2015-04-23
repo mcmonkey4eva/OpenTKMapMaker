@@ -33,6 +33,8 @@ Space to spawn a new block under the mouse
 
 Anywhere:
 
+T key to change entity type
+
 N to open the entity settings view (While a single entity is selected)
 
 ### Licensing pre-note:
