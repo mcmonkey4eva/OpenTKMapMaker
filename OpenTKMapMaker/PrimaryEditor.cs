@@ -1276,6 +1276,48 @@ namespace OpenTKMapMaker
             }
             LoadEntities();
         }
+
+        private void tODOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.CheckFileExists = true;
+                ofd.CheckPathExists = true;
+                ofd.Filter = "(*.png)|*.png";
+                ofd.InitialDirectory = Environment.CurrentDirectory;
+                ofd.Multiselect = true;
+                ofd.ShowReadOnly = false;
+                ofd.Title = "Select texture files...";
+                ofd.ValidateNames = true;
+                DialogResult dr = ofd.ShowDialog();
+                if (dr.HasFlag(DialogResult.OK) || dr.HasFlag(DialogResult.Yes))
+                {
+                    string[] fs = ofd.FileNames;
+                    ContextView.Control.MakeCurrent();
+                    foreach (string f in fs)
+                    {
+                        string nf = f.Replace("\\", "/");
+                        nf = nf.Replace(FileHandler.BaseDirectory, "");
+                        if (nf.StartsWith("/"))
+                        {
+                            nf = nf.Substring(1);
+                        }
+                        if (nf.StartsWith("textures/"))
+                        {
+                            nf = nf.Substring("textures/".Length);
+                            nf = nf.Substring(0, nf.Length - (".png").Length);
+                            ContextView.Textures.GetTexture(nf);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, ex.ToString());
+            }
+            invalidateAll();
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer
