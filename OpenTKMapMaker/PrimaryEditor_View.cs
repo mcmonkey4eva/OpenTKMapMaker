@@ -363,6 +363,10 @@ namespace OpenTKMapMaker
                 tD_Tick(null, null);
                 tD.Start();
             }
+            else if (e.KeyCode == Keys.Z)
+            {
+                view_selected = !view_selected;
+            }
             else if (e.KeyCode == Keys.Up)
             {
                 CameraPitch += 10f;
