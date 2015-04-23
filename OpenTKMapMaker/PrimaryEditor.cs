@@ -142,6 +142,8 @@ namespace OpenTKMapMaker
             entityTypeChooser.CreateControl();
             this.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlView.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+            this.glControlTop.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+            this.glControlSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
         }
 
         void PrimaryEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -152,7 +154,18 @@ namespace OpenTKMapMaker
                 case Keys.Right:
                 case Keys.Up:
                 case Keys.Down:
-                    glControlView_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    if (glControlView.Focused)
+                    {
+                        glControlView_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    }
+                    else if (glControlTop.Focused)
+                    {
+                        glControlTop_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    }
+                    else if (glControlSide.Focused)
+                    {
+                        glControlSide_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    }
                     return;
                 default:
                     return;
@@ -1237,6 +1250,26 @@ namespace OpenTKMapMaker
             {
                 MakeCuboidAt(new Location(top_mousepos.X, top_mousepos.Y, 0));
             }
+            else if (e.KeyCode == Keys.Up)
+            {
+                top_translate.Y -= 10f;
+                glControlTop.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                top_translate.Y += 10f;
+                glControlTop.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                top_translate.X -= 10f;
+                glControlTop.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                top_translate.X += 10f;
+                glControlTop.Invalidate();
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
@@ -1265,6 +1298,26 @@ namespace OpenTKMapMaker
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(side_mousepos.X, 0, side_mousepos.Z));
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                side_translate.Y -= 10f;
+                glControlSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                side_translate.Y += 10f;
+                glControlSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                side_translate.X -= 10f;
+                glControlSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                side_translate.X += 10f;
+                glControlSide.Invalidate();
             }
             PrimaryEditor_KeyDown(sender, e);
         }
