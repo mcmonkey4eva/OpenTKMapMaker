@@ -127,10 +127,6 @@ namespace OpenTKMapMaker
             glControlView.MouseWheel += new MouseEventHandler(glControlView_MouseWheel);
             glControlTop.MouseWheel += new MouseEventHandler(glControlTop_MouseWheel);
             glControlSide.MouseWheel += new MouseEventHandler(glControlSide_MouseWheel);
-            tW.Interval = 50;
-            tA.Interval = 50;
-            tS.Interval = 50;
-            tD.Interval = 50;
             tW.Tick += new EventHandler(tW_Tick);
             tA.Tick += new EventHandler(tA_Tick);
             tS.Tick += new EventHandler(tS_Tick);
@@ -144,6 +140,53 @@ namespace OpenTKMapMaker
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
             entityTypeChooser.CreateControl();
+            this.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+            this.glControlView.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+        }
+
+        void PrimaryEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                    glControlView_KeyDown(null, new KeyEventArgs(e.KeyCode));
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                    return true;
+                default:
+                    return base.IsInputKey(keyData);
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                    glControlView_KeyDown(null, e);
+                    return;
+                default:
+                    base.OnKeyDown(e);
+                    return;
+            }
         }
 
         EntityControlForm ecf = null;

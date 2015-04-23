@@ -336,10 +336,10 @@ namespace OpenTKMapMaker
             }
         }
 
-        Timer tW = new Timer();
-        Timer tA = new Timer();
-        Timer tS = new Timer();
-        Timer tD = new Timer();
+        Timer tW = new Timer() { Interval = 50 };
+        Timer tA = new Timer() { Interval = 50 };
+        Timer tS = new Timer() { Interval = 50 };
+        Timer tD = new Timer() { Interval = 50 };
 
         private void glControlView_KeyDown(object sender, KeyEventArgs e)
         {
@@ -362,6 +362,42 @@ namespace OpenTKMapMaker
             {
                 tD_Tick(null, null);
                 tD.Start();
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                CameraPitch += 10f;
+                if (CameraPitch > 89.9f)
+                {
+                    CameraPitch = 89.9f;
+                }
+                invalidateAll();
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                CameraPitch -= 10f;
+                if (CameraPitch < -89.9f)
+                {
+                    CameraPitch = -89.9f;
+                }
+                invalidateAll();
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                CameraYaw -= 10f;
+                if (CameraYaw < 0)
+                {
+                    CameraYaw += 360;
+                }
+                invalidateAll();
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                CameraYaw += 10f;
+                if (CameraYaw > 360)
+                {
+                    CameraYaw -= 360;
+                }
+                invalidateAll();
             }
             else if (e.KeyCode == Keys.P)
             {
