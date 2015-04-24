@@ -62,6 +62,12 @@
     <Compile Include="EntitySystem\Entity.cs" />
     <Compile Include="EntitySystem\PointLightEntity.cs" />
     <Compile Include="EntitySystem\SpawnPointEntity.cs" />
+    <Compile Include="FaceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FaceEditor.Designer.cs">
+      <DependentUpon>FaceEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="GLContext.cs" />
     <Compile Include="GraphicsSystem\FontSet.cs" />
     <Compile Include="GraphicsSystem\Frustum.cs" />
@@ -98,6 +104,9 @@
     <Compile Include="Utility\Utilities.cs" />
     <EmbeddedResource Include="EntityControlForm.resx">
       <DependentUpon>EntityControlForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FaceEditor.resx">
+      <DependentUpon>FaceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PrimaryEditor.resx">
       <DependentUpon>PrimaryEditor.cs</DependentUpon>

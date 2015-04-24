@@ -106,6 +106,11 @@ namespace OpenTKMapMaker.GraphicsSystem
 
         public event EventHandler<TextureLoadedEventArgs> OnTextureLoaded;
 
+        public static Bitmap BitmapForFile(string filename)
+        {
+            return new Bitmap(FileHandler.ReadToStream("textures/" + filename + ".png"));
+        }
+
         /// <summary>
         /// Loads a texture from file.
         /// </summary>

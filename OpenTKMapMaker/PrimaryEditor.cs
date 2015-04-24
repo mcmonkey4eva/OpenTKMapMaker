@@ -215,11 +215,17 @@ namespace OpenTKMapMaker
 
         EntityControlForm ecf = null;
 
+        FaceEditor fe = null;
+
         void PrimaryEditor_GotFocus(object sender, EventArgs e)
         {
             if (ecf != null && ecf.Visible)
             {
                 ecf.Focus();
+            }
+            if (fe != null && fe.Visible)
+            {
+                fe.Focus();
             }
         }
 
@@ -765,7 +771,7 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseEnter(object sender, EventArgs e)
         {
-            if (ecf == null || !ecf.Visible)
+            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
             {
                 glControlSide.Focus();
                 invalidateAll();
@@ -774,7 +780,7 @@ namespace OpenTKMapMaker
 
         private void glControlOSide_MouseEnter(object sender, EventArgs e)
         {
-            if (ecf == null || !ecf.Visible)
+            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
             {
                 glControlOSide.Focus();
                 invalidateAll();
@@ -783,7 +789,7 @@ namespace OpenTKMapMaker
 
         private void glControlTop_MouseEnter(object sender, EventArgs e)
         {
-            if (ecf == null || !ecf.Visible)
+            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
             {
                 glControlTop.Focus();
                 invalidateAll();
@@ -792,7 +798,7 @@ namespace OpenTKMapMaker
 
         private void glControlTex_MouseEnter(object sender, EventArgs e)
         {
-            if (ecf == null || !ecf.Visible)
+            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
             {
                 glControlTex.Focus();
                 invalidateAll();
@@ -1457,6 +1463,10 @@ namespace OpenTKMapMaker
             else if (e.KeyCode == Keys.N && Selected.Count == 1)
             {
                 ecf = new EntityControlForm(Selected[0]);
+                view_selected = false;
+                top_selected = false;
+                side_selected = false;
+                oside_selected = false;
                 ecf.Show();
             }
             else if (e.KeyCode == Keys.Escape && Selected.Count > 0)

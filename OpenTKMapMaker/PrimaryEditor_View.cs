@@ -338,7 +338,7 @@ namespace OpenTKMapMaker
 
         private void glControlView_MouseEnter(object sender, EventArgs e)
         {
-            if (ecf == null || !ecf.Visible)
+            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
             {
                 glControlView.Focus();
                 invalidateAll();
@@ -419,7 +419,6 @@ namespace OpenTKMapMaker
                 if (hit != null && hit is CubeEntity)
                 {
                     CubeEntity ce = (CubeEntity)hit;
-                    string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
                     string tex = ContextView.Textures.LoadedTextures[tex_sel].Name;
                     if (normal.Z == 1) { ce.Textures[0] = tex; }
                     else if (normal.Z == -1) { ce.Textures[1] = tex; }
@@ -429,6 +428,18 @@ namespace OpenTKMapMaker
                     else if (normal.Y == -1) { ce.Textures[5] = tex; }
                     ce.Recalculate();
                     glControlView.Invalidate();
+                }
+            }
+            else if (e.KeyCode == Keys.F)
+            {
+                Location normal;
+                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
+                if (hit != null && hit is CubeEntity)
+                {
+                    CubeEntity ce = (CubeEntity)hit;
+                    fe = new FaceEditor(ce, normal);
+                    fe.Show();
+                    view_selected = false;
                 }
             }
             PrimaryEditor_KeyDown(sender, e);
