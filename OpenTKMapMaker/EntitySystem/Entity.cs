@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OpenTKMapMaker.Utility;
+using OpenTK.Graphics;
 
 namespace OpenTKMapMaker.EntitySystem
 {
     public abstract class Entity
     {
+        public Entity()
+        {
+            ViewColor = new Color4((float)Utilities.UtilRandom.NextDouble(), (float)Utilities.UtilRandom.NextDouble(), 0f, 1f);
+        }
+
+        public Color4 ViewColor;
+
         public Location Position;
         public Location Angle;
         public Location Velocity;

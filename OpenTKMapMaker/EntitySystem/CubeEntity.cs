@@ -12,8 +12,6 @@ namespace OpenTKMapMaker.EntitySystem
 {
     public class CubeEntity : Entity
     {
-        public Color4 ViewColor;
-
         public CubeEntity(Location min, Location max)
         {
             Mins = min;
@@ -23,6 +21,7 @@ namespace OpenTKMapMaker.EntitySystem
             Velocity = Location.Zero;
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
+            ViewColor = new Color4(0f, (float)Utilities.UtilRandom.NextDouble(), (float)Utilities.UtilRandom.NextDouble(), 1f);
         }
 
         public Location Mins;

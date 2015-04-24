@@ -303,6 +303,10 @@ namespace OpenTKMapMaker
             RenderLights = render_lights;
             for (int i = 0; i < Entities.Count; i++)
             {
+                if (RenderLines)
+                {
+                    context.Rendering.SetColor(Entities[i].ViewColor);
+                }
                 Entities[i].Render(context);
             }
             if (RenderEntities && RenderLines)
@@ -355,6 +359,7 @@ namespace OpenTKMapMaker
             context.Rendering.SetColor(Color4.Green);
             for (int i = 0; i < Entities.Count; i++)
             {
+                context.Rendering.SetColor(Entities[i].ViewColor);
                 Entities[i].Render(context);
             }
             GL.Enable(EnableCap.DepthTest);
