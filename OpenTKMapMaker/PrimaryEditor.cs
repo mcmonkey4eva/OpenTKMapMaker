@@ -628,6 +628,16 @@ namespace OpenTKMapMaker
                             tex_sel = i;
                             texmouseDown = false;
                             glControlTex.Invalidate();
+                            for (int s = 0; s < Selected.Count; s++)
+                            {
+                                if (Selected[s] is CubeEntity)
+                                {
+                                    ((CubeEntity)Selected[s]).Textures = new string[] { t.Name, t.Name, t.Name, t.Name, t.Name, t.Name };
+                                    Selected[s].Recalculate();
+                                }
+                            }
+                            glControlView.MakeCurrent();
+                            glControlView.Invalidate();
                         }
                         if (tex_sel == i)
                         {
@@ -691,6 +701,7 @@ namespace OpenTKMapMaker
             }
             CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTex.Focused ? "@" : "!") + "^e^7Textures", new Location(0, 0, 0));
             glControlTex.SwapBuffers();
+            texmouseDown = false;
         }
 
         void ResizeTex()
