@@ -33,6 +33,8 @@ namespace OpenTKMapMaker
 
         public List<ClipboardEntity> Clipboard = new List<ClipboardEntity>();
 
+        public List<List<ClipboardEntity>> History = new List<List<ClipboardEntity>>();
+
         public void Select(Entity e)
         {
             if (!e.Selected)
@@ -72,6 +74,23 @@ namespace OpenTKMapMaker
                     Selected.Remove(e);
                 }
                 Entities.Remove(e);
+            }
+        }
+
+        public void SavePoint()
+        {
+            List<ClipboardEntity> clips = new List<ClipboardEntity>();
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                ClipboardEntity cbe = new ClipboardEntity();
+                cbe.entitytype = Entities[i].GetEntityType();
+                cbe.variables = Entities[i].GetVars();
+                clips.Add(cbe);
+            }
+            History.Add(clips);
+            if (History.Count > 10)
+            {
+                History.RemoveAt(0);
             }
         }
 
@@ -118,6 +137,7 @@ namespace OpenTKMapMaker
                     return;
             }
             ent.Recalculate();
+            SavePoint();
             Spawn(ent);
             Despawn(sel);
             Select(ent);
@@ -153,6 +173,7 @@ namespace OpenTKMapMaker
             this.glControlTop.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlOSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
+            SavePoint();
         }
 
         void PrimaryEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -630,6 +651,7 @@ namespace OpenTKMapMaker
                             tex_sel = i;
                             texmouseDown = false;
                             glControlTex.Invalidate();
+                            SavePoint();
                             for (int s = 0; s < Selected.Count; s++)
                             {
                                 if (Selected[s] is CubeEntity)
@@ -925,6 +947,7 @@ namespace OpenTKMapMaker
                 {
                     top_ppos = new Location((int)top_mousepos.X, (int)top_mousepos.Y, 0);
                 }
+                SavePoint();
             }
         }
 
@@ -1103,6 +1126,7 @@ namespace OpenTKMapMaker
                 {
                     side_ppos = new Location((int)side_mousepos.X, 0, (int)side_mousepos.Z);
                 }
+                SavePoint();
             }
         }
 
@@ -1216,6 +1240,7 @@ namespace OpenTKMapMaker
                 {
                     oside_ppos = new Location(0, (int)oside_mousepos.Y, (int)oside_mousepos.Z);
                 }
+                SavePoint();
             }
         }
 
@@ -1475,6 +1500,7 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.N && Selected.Count == 1)
             {
+                SavePoint();
                 ecf = new EntityControlForm(Selected[0]);
                 view_selected = false;
                 top_selected = false;
@@ -1509,6 +1535,7 @@ namespace OpenTKMapMaker
             }
             else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.X)
             {
+                SavePoint();
                 Clipboard = new List<ClipboardEntity>();
                 for (int i = 0; i < Selected.Count; i++)
                 {
@@ -1537,6 +1564,7 @@ namespace OpenTKMapMaker
             }
             else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.V)
             {
+                SavePoint();
                 List<Entity> ents = new List<Entity>(Selected);
                 for (int i = 0; i < ents.Count; i++)
                 {
@@ -1570,6 +1598,45 @@ namespace OpenTKMapMaker
                     continue;
                 }
                 invalidateAll();
+            }
+            else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.Z)
+            {
+                if (History.Count > 0)
+                {
+                    List<Entity> ents = new List<Entity>(Entities);
+                    for (int i = 0; i < ents.Count; i++)
+                    {
+                        Despawn(ents[i]);
+                    }
+                    foreach (ClipboardEntity ent in History[History.Count - 1])
+                    {
+                        Entity et;
+                        switch (ent.entitytype.ToLower())
+                        {
+                            case "cube":
+                                et = new CubeEntity(new Location(-1), new Location(1));
+                                break;
+                            case "spawn":
+                                et = new SpawnPointEntity(new Location(0));
+                                break;
+                            case "point_light":
+                                et = new PointLightEntity(new Location(0), 50, new Location(1), false);
+                                break;
+                            default:
+                                goto next;
+                        }
+                        foreach (KeyValuePair<string, string> val in ent.variables)
+                        {
+                            et.ApplyVar(val.Key, val.Value);
+                        }
+                        et.Recalculate();
+                        Spawn(et);
+                    next:
+                        continue;
+                    }
+                    invalidateAll();
+                    History.RemoveAt(History.Count - 1);
+                }
             }
         }
 

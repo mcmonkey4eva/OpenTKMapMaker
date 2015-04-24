@@ -41,6 +41,14 @@ T key to change entity type
 
 N to open the entity settings view (While a single entity is selected)
 
+CTRL-X To cut selected entities
+
+CTRL-C To copy selected entities
+
+CTRL-V To paste copied/cut entities
+
+CTRL-Z To undo last edit
+
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
