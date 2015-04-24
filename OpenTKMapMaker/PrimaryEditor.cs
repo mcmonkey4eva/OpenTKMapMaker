@@ -1544,12 +1544,12 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.A)
             {
-                side_translate.X -= 10f / side_zoom;
+                side_translate.X += 10f / side_zoom;
                 glControlSide.Invalidate();
             }
             else if (e.KeyCode == Keys.D)
             {
-                side_translate.X += 10f / side_zoom;
+                side_translate.X -= 10f / side_zoom;
                 glControlSide.Invalidate();
             }
             else if (e.KeyCode == Keys.Up)
@@ -1564,12 +1564,12 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.Left)
             {
-                side_translate.X -= 10f;
+                side_translate.X += 10f;
                 glControlSide.Invalidate();
             }
             else if (e.KeyCode == Keys.Right)
             {
-                side_translate.X += 10f;
+                side_translate.X -= 10f;
                 glControlSide.Invalidate();
             }
             PrimaryEditor_KeyDown(sender, e);
@@ -1593,12 +1593,12 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.A)
             {
-                oside_translate.X -= 10f / oside_zoom;
+                oside_translate.X += 10f / oside_zoom;
                 glControlOSide.Invalidate();
             }
             else if (e.KeyCode == Keys.D)
             {
-                oside_translate.X += 10f / oside_zoom;
+                oside_translate.X -= 10f / oside_zoom;
                 glControlOSide.Invalidate();
             }
             else if (e.KeyCode == Keys.Up)
@@ -1613,12 +1613,12 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.Left)
             {
-                oside_translate.X -= 10f;
+                oside_translate.X += 10f;
                 glControlOSide.Invalidate();
             }
             else if (e.KeyCode == Keys.Right)
             {
-                oside_translate.X += 10f;
+                oside_translate.X -= 10f;
                 glControlOSide.Invalidate();
             }
             PrimaryEditor_KeyDown(sender, e);
