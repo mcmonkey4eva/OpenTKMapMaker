@@ -477,7 +477,7 @@ namespace OpenTKMapMaker
                 renderSelections(CurrentContext, false);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
-                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTop.Focused ? "@": "!") + "^e^7" + top_zoom.ToString(), new Location(0, 0, 0));
+                CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlTop.Focused ? "@": "!") + "^e^7Top (x/y), zoom=" + top_zoom.ToString(), new Location(0, 0, 0));
                 GL.Disable(EnableCap.Texture2D);
                 glControlTop.SwapBuffers();
             }
@@ -526,7 +526,7 @@ namespace OpenTKMapMaker
             renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
-            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlSide.Focused ? "@" : "!") + "^e^7" + side_zoom.ToString(), new Location(0, 0, 0));
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlSide.Focused ? "@" : "!") + "^e^7Side (x/z), zoom=" + side_zoom.ToString(), new Location(0, 0, 0));
             GL.Disable(EnableCap.Texture2D);
             glControlSide.SwapBuffers();
         }
@@ -570,7 +570,7 @@ namespace OpenTKMapMaker
             renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
-            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlOSide.Focused ? "@" : "!") + "^e^7" + oside_zoom.ToString(), new Location(0, 0, 0));
+            CurrentContext.FontSets.SlightlyBigger.DrawColoredText("^S^" + (glControlOSide.Focused ? "@" : "!") + "^e^7Side (y/z), zoom=" + oside_zoom.ToString(), new Location(0, 0, 0));
             GL.Disable(EnableCap.Texture2D);
             glControlOSide.SwapBuffers();
         }
