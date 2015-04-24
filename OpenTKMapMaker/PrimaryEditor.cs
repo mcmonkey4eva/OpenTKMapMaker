@@ -18,6 +18,7 @@ namespace OpenTKMapMaker
 {
     public partial class PrimaryEditor : Form
     {
+
         public static PrimaryEditor PRFMain;
 
         public static Matrix4 ortho;
@@ -252,7 +253,7 @@ namespace OpenTKMapMaker
             }
         }
 
-        public static float side_zoom = 1;
+        public static float side_zoom = 10;
 
         void glControlSide_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -268,7 +269,7 @@ namespace OpenTKMapMaker
             glControlSide.Invalidate();
         }
 
-        public static float oside_zoom = 1;
+        public static float oside_zoom = 10;
 
         void glControlOSide_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -284,7 +285,7 @@ namespace OpenTKMapMaker
             glControlOSide.Invalidate();
         }
 
-        public static float top_zoom = 1;
+        public static float top_zoom = 10;
 
         void glControlTop_MouseWheel(object sender, MouseEventArgs e)
         {

@@ -37,7 +37,7 @@ WASD to move the view around more precisely
 
 Anywhere:
 
-T key to change entity type
+T key to quick-change entity type
 
 N to open the entity settings view (While a single entity is selected)
 
