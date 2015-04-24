@@ -968,8 +968,8 @@ namespace OpenTKMapMaker
                 side_translate.Y -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
-                    OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlSide.Width / 2,
-                        this.Location.Y + 31 + menuStrip1.Height + splitContainer2.SplitterDistance + splitContainer2.SplitterRectangle.Height + glControlSide.Height / 2);
+                    Point p = glControlSide.PointToScreen(new Point(glControlSide.Width / 2, glControlSide.Height / 2));
+                    OpenTK.Input.Mouse.SetPosition(p.X, p.Y);
                 }
             }
             if (side_moving)
@@ -1081,8 +1081,8 @@ namespace OpenTKMapMaker
                 oside_translate.Y -= my;
                 if (Math.Abs(mx) > 0.1 || Math.Abs(my) > 0.1)
                 {
-                    OpenTK.Input.Mouse.SetPosition(this.Location.X + splitContainer1.SplitterDistance + splitContainer1.SplitterRectangle.Width + 8 + glControlOSide.Width / 2,
-                        this.Location.Y + 31 + menuStrip1.Height + splitContainer3.SplitterDistance + splitContainer3.SplitterRectangle.Height + glControlOSide.Height / 2);
+                    Point p = glControlOSide.PointToScreen(new Point(glControlOSide.Width / 2, glControlOSide.Height / 2));
+                    OpenTK.Input.Mouse.SetPosition(p.X, p.Y);
                 }
             }
             if (oside_moving)
