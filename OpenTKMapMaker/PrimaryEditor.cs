@@ -87,7 +87,12 @@ namespace OpenTKMapMaker
             Spawn(ple);
         }
 
-        void entityTypeChooser_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        public void entityTypeChooser_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            SetType(e.ClickedItem.Text);
+        }
+
+        public void SetType(string text)
         {
             if (Selected.Count != 1)
             {
@@ -95,16 +100,16 @@ namespace OpenTKMapMaker
             }
             Entity sel = Selected[0];
             Entity ent;
-            // TODO:n Abstractify this switch into a registry. Also abstractify everything entity related.
-            switch (e.ClickedItem.Text)
+            // TODO: Abstractify this switch into a registry. Also abstractify everything entity related.
+            switch (text.ToLower())
             {
-                case "Cuboid":
+                case "cube":
                     ent = new CubeEntity(sel.Position - new Location(1), sel.Position + new Location(1));
                     break;
-                case "Light":
+                case "point_light":
                     ent = new PointLightEntity(sel.Position, 50, new Location(1, 1, 1), false);
                     break;
-                case "Spawnpoint":
+                case "spawn":
                     ent = new SpawnPointEntity(sel.Position);
                     break;
                 default:
@@ -135,9 +140,9 @@ namespace OpenTKMapMaker
             this.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
             glControlView.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
             entityTypeChooser = new ContextMenuStrip();
-            entityTypeChooser.Items.Add("Cuboid");
-            entityTypeChooser.Items.Add("Light");
-            entityTypeChooser.Items.Add("Spawnpoint");
+            entityTypeChooser.Items.Add("Cube");
+            entityTypeChooser.Items.Add("Point_Light");
+            entityTypeChooser.Items.Add("Spawn");
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
             entityTypeChooser.CreateControl();

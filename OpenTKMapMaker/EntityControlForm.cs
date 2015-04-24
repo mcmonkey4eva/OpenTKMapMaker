@@ -19,11 +19,17 @@ namespace OpenTKMapMaker
         {
             ent = e;
             InitializeComponent();
-            label1.Text = "Entity: " + ent.GetEntityType();
-            resetListBoxContents();
+            recalc();
             listBox1.MouseDoubleClick += new MouseEventHandler(listBox1_MouseDoubleClick);
-            textBox1.ReadOnly = true;
             textBox1.TextChanged += new EventHandler(textBox1_TextChanged);
+        }
+
+        public void recalc()
+        {
+            label1.Text = "Entity: " + ent.GetEntityType();
+            textBox2.Text = ent.GetEntityType();
+            resetListBoxContents();
+            textBox1.ReadOnly = true;
         }
 
         void resetListBoxContents()
@@ -66,6 +72,29 @@ namespace OpenTKMapMaker
                 textBox1.ReadOnly = true;
                 textBox1.Text = data[1].Trim();
                 textBox1.ReadOnly = false;
+            }
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox2.Text.ToLower() != ent.GetEntityType().ToLower())
+            {
+                PrimaryEditor.PRFMain.SetType(textBox2.Text);
+                if (PrimaryEditor.Selected.Count != 1)
+                {
+                    Close();
+                    return;
+                }
+                if (ent != PrimaryEditor.Selected[0])
+                {
+                    ent = PrimaryEditor.Selected[0];
+                    recalc();
+                }
             }
         }
     }
