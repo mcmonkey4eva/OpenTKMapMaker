@@ -389,7 +389,6 @@ namespace OpenTKMapMaker
             RenderTextures = false;
             GL.Disable(EnableCap.DepthTest);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            GL.LineWidth(2);
             context.Textures.White.Bind();
             context.Rendering.SetColor(Color4.Green);
             for (int i = 0; i < Entities.Count; i++)
