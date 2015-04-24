@@ -222,6 +222,10 @@ namespace OpenTKMapMaker
                     CurrentContext.Shaders.ColorMultShader.Bind();
                     GL.UniformMatrix4(1, false, ref combined);
                     GL.Enable(EnableCap.CullFace);
+                    if (wireframe)
+                    {
+                        renderWires(CurrentContext);
+                    }
                     renderSelections(CurrentContext, true);
                 }
                 else
@@ -233,6 +237,10 @@ namespace OpenTKMapMaker
                     combined = view * proj;
                     GL.UniformMatrix4(1, false, ref combined);
                     Render3D(CurrentContext, true, false, true, false);
+                    if (wireframe)
+                    {
+                        renderWires(CurrentContext);
+                    }
                     renderSelections(CurrentContext, true);
                 }
                 GL.Disable(EnableCap.DepthTest);

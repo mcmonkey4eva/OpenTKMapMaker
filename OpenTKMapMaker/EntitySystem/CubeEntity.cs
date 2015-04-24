@@ -12,6 +12,8 @@ namespace OpenTKMapMaker.EntitySystem
 {
     public class CubeEntity : Entity
     {
+        public Color4 ViewColor;
+
         public CubeEntity(Location min, Location max)
         {
             Mins = min;

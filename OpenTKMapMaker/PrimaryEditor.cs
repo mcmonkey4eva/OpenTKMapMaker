@@ -328,17 +328,36 @@ namespace OpenTKMapMaker
             GL.LineWidth(2);
             context.Textures.White.Bind();
             context.Rendering.SetColor(Color4.Red);
-            for (int i = 0; i < Entities.Count; i++)
+            for (int i = 0; i < Selected.Count; i++)
             {
-                if (Entities[i].Selected)
-                {
-                    Entities[i].Render(context);
-                }
+                Selected[i].Render(context);
             }
             if (dtest)
             {
                 GL.Enable(EnableCap.DepthTest);
             }
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            GL.LineWidth(1);
+            context.Rendering.SetColor(Color4.White);
+            RenderTextures = rt;
+        }
+
+        public void renderWires(GLContext context)
+        {
+            RenderLights = false;
+            bool rt = RenderTextures;
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            RenderTextures = false;
+            GL.Disable(EnableCap.DepthTest);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            GL.LineWidth(2);
+            context.Textures.White.Bind();
+            context.Rendering.SetColor(Color4.Green);
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                Entities[i].Render(context);
+            }
+            GL.Enable(EnableCap.DepthTest);
             GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             GL.LineWidth(1);
             context.Rendering.SetColor(Color4.White);
@@ -1733,6 +1752,14 @@ namespace OpenTKMapMaker
         {
             ResizeTex();
             ResizeOSide();
+        }
+
+        public bool wireframe = false;
+
+        private void wireframeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            wireframe = !wireframe;
+            wireframeToolStripMenuItem.Checked = wireframe;
         }
     }
 
