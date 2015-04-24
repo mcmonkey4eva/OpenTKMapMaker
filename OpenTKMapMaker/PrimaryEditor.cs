@@ -873,6 +873,10 @@ namespace OpenTKMapMaker
                     top_moving = true;
                 }
                 top_ppos = top_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    top_ppos = new Location((int)top_mousepos.X, (int)top_mousepos.Y, 0);
+                }
             }
         }
 
@@ -1047,6 +1051,10 @@ namespace OpenTKMapMaker
                     side_moving = true;
                 }
                 side_ppos = side_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    side_ppos = new Location((int)side_mousepos.X, 0, (int)side_mousepos.Z);
+                }
             }
         }
 
@@ -1156,6 +1164,10 @@ namespace OpenTKMapMaker
                     oside_moving = true;
                 }
                 oside_ppos = oside_mousepos;
+                if (!ModifierKeys.HasFlag(Keys.Control))
+                {
+                    oside_ppos = new Location(0, (int)oside_mousepos.Y, (int)oside_mousepos.Z);
+                }
             }
         }
 
