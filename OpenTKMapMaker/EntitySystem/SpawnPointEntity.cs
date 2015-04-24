@@ -12,6 +12,9 @@ namespace OpenTKMapMaker.EntitySystem
 {
     class SpawnPointEntity: Entity
     {
+        public static Location mins = new Location(-0.3f, -0.3f, 0f);
+        public static Location maxes = new Location(0.3f, 0.3f, 2f);
+
         public SpawnPointEntity(Location pos)
         {
             Position = pos;
@@ -32,12 +35,12 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 if (PrimaryEditor.RenderLines)
                 {
-                    context.Rendering.RenderLineBox(Position - new Location(0.5f), Position + new Location(0.5f));
+                    context.Rendering.RenderLineBox(Position + mins, Position + maxes);
                 }
                 else
                 {
                     context.Textures.White.Bind();
-                    Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5f)).ToOVector());
+                    Matrix4 mat = Matrix4.CreateScale(0.6f, 0.6f, 2f) + Matrix4.CreateTranslation((Position - new Location(0.3f, 0.3f, 0f)).ToOVector());
                     GL.UniformMatrix4(2, false, ref mat);
                     context.Rendering.SetMinimumLight(1.0f);
                     context.Models.Cube.Draw();
