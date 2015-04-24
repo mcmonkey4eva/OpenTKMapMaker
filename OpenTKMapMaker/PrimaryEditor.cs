@@ -31,6 +31,8 @@ namespace OpenTKMapMaker
 
         public ContextMenuStrip entityTypeChooser;
 
+        public List<ClipboardEntity> Clipboard = new List<ClipboardEntity>();
+
         public void Select(Entity e)
         {
             if (!e.Selected)
@@ -1502,6 +1504,70 @@ namespace OpenTKMapMaker
                     {
                         Select(Entities[i]);
                     }
+                }
+                invalidateAll();
+            }
+            else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.X)
+            {
+                Clipboard = new List<ClipboardEntity>();
+                for (int i = 0; i < Selected.Count; i++)
+                {
+                    ClipboardEntity cbe = new ClipboardEntity();
+                    cbe.entitytype = Selected[i].GetEntityType();
+                    cbe.variables = Selected[i].GetVars();
+                    Clipboard.Add(cbe);
+                }
+                List<Entity> ents = new List<Entity>(Selected);
+                for (int i = 0; i < ents.Count; i++)
+                {
+                    Despawn(ents[i]);
+                }
+                invalidateAll();
+            }
+            else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
+            {
+                Clipboard = new List<ClipboardEntity>();
+                for (int i = 0; i < Selected.Count; i++)
+                {
+                    ClipboardEntity cbe = new ClipboardEntity();
+                    cbe.entitytype = Selected[i].GetEntityType();
+                    cbe.variables = Selected[i].GetVars();
+                    Clipboard.Add(cbe);
+                }
+            }
+            else if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.V)
+            {
+                List<Entity> ents = new List<Entity>(Selected);
+                for (int i = 0; i < ents.Count; i++)
+                {
+                    Deselect(ents[i]);
+                }
+                foreach (ClipboardEntity ent in Clipboard)
+                {
+                    Entity et;
+                    switch (ent.entitytype.ToLower())
+                    {
+                        case "cube":
+                            et = new CubeEntity(new Location(-1), new Location(1));
+                            break;
+                        case "spawn":
+                            et = new SpawnPointEntity(new Location(0));
+                            break;
+                        case "point_light":
+                            et = new PointLightEntity(new Location(0), 50, new Location(1), false);
+                            break;
+                        default:
+                            goto next;
+                    }
+                    foreach (KeyValuePair<string, string> val in ent.variables)
+                    {
+                        et.ApplyVar(val.Key, val.Value);
+                    }
+                    et.Recalculate();
+                    Spawn(et);
+                    Select(et);
+                next:
+                    continue;
                 }
                 invalidateAll();
             }
