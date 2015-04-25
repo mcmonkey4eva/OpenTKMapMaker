@@ -1271,6 +1271,7 @@ namespace OpenTKMapMaker
                     }
                     else
                     {
+                        SetFile(f);
                         string data = File.ReadAllText(f);
                         ClearMap();
                         LoadMap(data);
@@ -1403,6 +1404,13 @@ namespace OpenTKMapMaker
 
         public string file = null;
 
+        public void SetFile(string filename)
+        {
+            file = filename;
+            this.Text = Program.GameName + " | " + file;
+        }
+
+
         public bool PickFile()
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -1417,7 +1425,7 @@ namespace OpenTKMapMaker
             DialogResult dr = sfd.ShowDialog();
             if (dr.HasFlag(DialogResult.OK) || dr.HasFlag(DialogResult.Yes))
             {
-                file = sfd.FileName;
+                SetFile(sfd.FileName);
                 return true;
             }
             return false;
