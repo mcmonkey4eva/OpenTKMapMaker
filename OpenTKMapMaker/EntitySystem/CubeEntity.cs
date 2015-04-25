@@ -21,7 +21,8 @@ namespace OpenTKMapMaker.EntitySystem
             Velocity = Location.Zero;
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
-            ViewColor = new Color4(0f, (float)Utilities.UtilRandom.NextDouble(), (float)Utilities.UtilRandom.NextDouble(), 1f);
+            float f1 = (float)Utilities.UtilRandom.NextDouble();
+            ViewColor = new Color4(0f, 1 - f1, f1, 1f);
         }
 
         public Location Mins;

@@ -11,7 +11,8 @@ namespace OpenTKMapMaker.EntitySystem
     {
         public Entity()
         {
-            ViewColor = new Color4((float)Utilities.UtilRandom.NextDouble(), (float)Utilities.UtilRandom.NextDouble(), 0f, 1f);
+            float f1 = (float)Utilities.UtilRandom.NextDouble();
+            ViewColor = new Color4(1 - f1, f1, 0, 1f);
         }
 
         public Color4 ViewColor;
