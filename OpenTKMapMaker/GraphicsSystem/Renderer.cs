@@ -202,10 +202,14 @@ namespace OpenTKMapMaker.GraphicsSystem
         /// <summary>
         /// Renders a black line box.
         /// </summary>
-        public void RenderLineBox(Location min, Location max)
+        public void RenderLineBox(Location min, Location max, Matrix4? rot = null)
         {
             Engine.White.Bind();
             Matrix4 mat = Matrix4.CreateScale((max - min).ToOVector()) * Matrix4.CreateTranslation(min.ToOVector());
+            if (rot != null && rot.HasValue)
+            {
+                mat *= rot.Value;
+            }
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Box._VAO);
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedShort, IntPtr.Zero);

@@ -2,14 +2,81 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BEPUphysics;
+using BEPUutilities;
+using BEPUphysics.CollisionShapes.ConvexShapes;
+using BEPUphysics.Entities;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.BroadPhaseEntries;
 
 namespace OpenTKMapMaker.Utility
 {
+    public class CollisionResult
+    {
+        public bool Hit;
+
+        /// <summary>
+        /// The impact normal. Warning: not normalized!
+        /// </summary>
+        public Location Normal;
+
+        public Location Position;
+
+        public Entity HitEnt;
+    }
+
     /// <summary>
     /// Helper code for tracing collision.
     /// </summary>
     public class CollisionUtil
     {
+        public Space World;
+
+        public CollisionUtil(Space world)
+        {
+            World = world;
+        }
+
+        /// <summary>
+        /// Returns information on what a cuboid-shaped line trace would collide with, if anything.
+        /// </summary>
+        /// <param name="halfsize">Half the size of the cuboid</param>
+        /// <param name="start">The start of the line</param>
+        /// <param name="end">The end of the line</param>
+        /// <param name="filter">The collision filter, input a BEPU BroadPhaseEntry and output whether collision should be allowed</param>
+        /// <returns>The collision details</returns>
+        public CollisionResult CuboidLineTrace(Location halfsize, Location start, Location end, Func<BroadPhaseEntry, bool> filter = null)
+        {
+            Vector3 e = new Vector3((float)(end.X - start.X), (float)(end.Y - start.Y), (float)(end.Z - start.Z));
+            BoxShape shape = new BoxShape((float)halfsize.X * 2f, (float)halfsize.Y * 2f, (float)halfsize.Z * 2f);
+            RigidTransform rt = new RigidTransform(new Vector3((float)start.X, (float)start.Y, (float)start.Z));
+            RayCastResult rcr;
+            bool hit;
+            if (filter == null)
+            {
+                hit = World.ConvexCast(shape, ref rt, ref e, out rcr);
+            }
+            else
+            {
+                hit = World.ConvexCast(shape, ref rt, ref e, filter, out rcr);
+            }
+            CollisionResult cr = new CollisionResult();
+            cr.Hit = hit;
+            if (hit)
+            {
+                cr.Normal = Location.FromBVector(rcr.HitData.Normal);
+                cr.Position = Location.FromBVector(rcr.HitData.Location);
+                cr.HitEnt = ((EntityCollidable)rcr.HitObject).Entity;
+            }
+            else
+            {
+                cr.Normal = Location.Zero;
+                cr.Position = end;
+                cr.HitEnt = null;
+            }
+            return cr;
+        }
+
         /// <summary>
         /// Returns whether a box contains (intersects with) another box.
         /// </summary>

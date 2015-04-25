@@ -13,6 +13,8 @@ using OpenTKMapMaker.GraphicsSystem;
 using OpenTKMapMaker.Utility;
 using OpenTKMapMaker.EntitySystem;
 using System.IO;
+using BEPUphysics;
+using BEPUphysics.Settings;
 
 namespace OpenTKMapMaker
 {
@@ -144,6 +146,8 @@ namespace OpenTKMapMaker
             Select(ent);
         }
 
+        public CollisionUtil Collision;
+
         public PrimaryEditor()
         {
             PRFMain = this;
@@ -175,6 +179,19 @@ namespace OpenTKMapMaker
             this.glControlSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlOSide.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             SavePoint();
+            PhysicsWorld = new Space();
+            // Set the world's general default gravity
+            PhysicsWorld.ForceUpdater.Gravity = new Location(0, 0, -9.8f).ToBVector();
+            // Minimize penetration
+            CollisionDetectionSettings.AllowedPenetration = 0.001f;
+            // Load a CollisionUtil instance
+            Collision = new CollisionUtil(PhysicsWorld);
+        }
+
+        public Space PhysicsWorld;
+
+        void InitSpace()
+        {
         }
 
         void PrimaryEditor_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -972,14 +989,42 @@ namespace OpenTKMapMaker
                 Location _normal;
                 if (Entities[i] is CubeEntity)
                 {
-                    mins = ((CubeEntity)Entities[i]).Mins;
-                    maxes = ((CubeEntity)Entities[i]).Maxes;
-                    hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out _normal);
+                    if (Entities[i].Angle.IsCloseTo(new Location(0, 0, 0), 0.01f))
+                    {
+                        mins = ((CubeEntity)Entities[i]).Mins;
+                        maxes = ((CubeEntity)Entities[i]).Maxes;
+                        hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out _normal);
+                    }
+                    else
+                    {
+                        // TODO: FIX ME!
+                        BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
+                        ms.Position = Entities[i].Position.ToBVector();
+                        ms.Orientation = BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(1, 0, 0).ToBVector(), (float)(-Entities[i].Angle.X * Utilities.PI180))
+                            * BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(0, 1, 0).ToBVector(), (float)(-Entities[i].Angle.Y * Utilities.PI180))
+                            * BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(0, 0, 1).ToBVector(), (float)(-Entities[i].Angle.Z * Utilities.PI180));
+                        Location size = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins);
+                        BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z, 0f);
+                        BEPUphysics.CollisionShapes.ConvexShapes.BoxShape boxshape = new BEPUphysics.CollisionShapes.ConvexShapes.BoxShape(0.01f, 0.01f, 0.01f);
+                        BEPUutilities.RigidTransform rt = new BEPUutilities.RigidTransform(start.ToBVector());
+                        BEPUutilities.Vector3 sweep = (end - start).ToBVector();
+                        BEPUutilities.RayHit rh;
+                        box.CollisionInformation.ConvexCast(boxshape, ref rt, ref sweep, out rh);
+                        if (rh.T > 0 && rh.T < 1)
+                        {
+                            hit = new Location(rh.Location.X, rh.Location.Y, rh.Location.Z);
+                        }
+                        else
+                        {
+                            hit = end;
+                        }
+                        _normal = new Location(rh.Normal.X, rh.Normal.Y, rh.Normal.Z);
+                    }
                 }
                 else
                 {
-                    mins = new Location(-0.5f);
-                    maxes = new Location(0.5f);
+                    mins = Entities[i].GetMins();
+                    maxes = Entities[i].GetMaxes();
                     hit = CollisionUtil.RayTraceBox(Entities[i].Position, mins, maxes, start, hitloc, out _normal);
                 }
                 if ((hit - start).LengthSquared() < (hitloc - start).LengthSquared())

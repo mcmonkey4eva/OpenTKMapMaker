@@ -109,16 +109,28 @@ namespace OpenTKMapMaker.EntitySystem
             return Coords[0] + "|" + Coords[1] + "|" + Coords[2] + "|" + Coords[3] + "|" + Coords[4] + "|" + Coords[5];
         }
 
+        public Matrix4 RotMatrix()
+        {
+            Matrix4 mat = Matrix4.Identity;
+            if (!Angle.IsCloseTo(Location.Zero, 0.01f))
+            {
+                mat *= Matrix4.CreateRotationX((float)(Angle.X * Utilities.PI180))
+                    * Matrix4.CreateRotationY((float)(Angle.Y * Utilities.PI180))
+                    * Matrix4.CreateRotationZ((float)(Angle.Z * Utilities.PI180));
+            }
+            return mat;
+        }
+
         public override void Render(GLContext context)
         {
             if (PrimaryEditor.RenderLines)
             {
                 context.Textures.White.Bind();
-                context.Rendering.RenderLineBox(Mins, Maxes);
+                context.Rendering.RenderLineBox(Mins, Maxes, RotMatrix());
             }
             else
             {
-                Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * Matrix4.CreateTranslation(Mins.ToOVector());
+                Matrix4 mat = Matrix4.CreateScale((Maxes - Mins).ToOVector()) * RotMatrix() * Matrix4.CreateTranslation(Mins.ToOVector());
                 GL.UniformMatrix4(2, false, ref mat);
                 context.Rendering.SetMinimumLight(0.0f);
                 for (int i = 0; i < VBOs.Count; i++)

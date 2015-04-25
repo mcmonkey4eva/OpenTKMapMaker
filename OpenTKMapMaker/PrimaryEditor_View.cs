@@ -420,12 +420,12 @@ namespace OpenTKMapMaker
                 {
                     CubeEntity ce = (CubeEntity)hit;
                     string tex = ContextView.Textures.LoadedTextures[tex_sel].Name;
-                    if (normal.Z == 1) { ce.Textures[0] = tex; }
-                    else if (normal.Z == -1) { ce.Textures[1] = tex; }
-                    else if (normal.X == 1) { ce.Textures[2] = tex; }
-                    else if (normal.X == -1) { ce.Textures[3] = tex; }
-                    else if (normal.Y == 1) { ce.Textures[4] = tex; }
-                    else if (normal.Y == -1) { ce.Textures[5] = tex; }
+                    if (IsCloseTo(normal.Z, 1, 0.1f)) { ce.Textures[0] = tex; }
+                    else if (IsCloseTo(normal.Z, -1, 0.1f)) { ce.Textures[1] = tex; }
+                    else if (IsCloseTo(normal.X, 1, 0.1f)) { ce.Textures[2] = tex; }
+                    else if (IsCloseTo(normal.X, -1, 0.1f)) { ce.Textures[3] = tex; }
+                    else if (IsCloseTo(normal.Y, 1, 0.1f)) { ce.Textures[4] = tex; }
+                    else if (IsCloseTo(normal.Y, -1, 0.1f)) { ce.Textures[5] = tex; }
                     ce.Recalculate();
                     glControlView.Invalidate();
                 }
@@ -443,6 +443,11 @@ namespace OpenTKMapMaker
                 }
             }
             PrimaryEditor_KeyDown(sender, e);
+        }
+
+        public bool IsCloseTo(double one, double two, double delta)
+        {
+            return one + delta > two && one - delta < two;
         }
 
         private void glControlView_KeyUp(object sender, KeyEventArgs e)

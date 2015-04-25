@@ -354,6 +354,16 @@ namespace OpenTKMapMaker.Utility
             return new OpenTK.Vector3((float)X, (float)Y, (float)Z);
         }
 
+        public BEPUutilities.Vector3 ToBVector()
+        {
+            return new BEPUutilities.Vector3((float)X, (float)Y, (float)Z);
+        }
+
+        public static Location FromBVector(BEPUutilities.Vector3 vec)
+        {
+            return new Location(vec.X, vec.Y, vec.Z);
+        }
+
         /// <summary>
         /// Gets the location of the block this location is within.
         /// </summary>
@@ -361,6 +371,13 @@ namespace OpenTKMapMaker.Utility
         public Location GetBlockLocation()
         {
             return new Location(Math.Floor(X), Math.Floor(Y), Math.Floor(Z));
+        }
+
+        public bool IsCloseTo(Location two, double delta)
+        {
+            return X + delta > two.X && X - delta < two.X
+                && Y + delta > two.Y && Y - delta < two.Y
+                && Z + delta > two.Z && Z - delta < two.Z;
         }
     }
 }
