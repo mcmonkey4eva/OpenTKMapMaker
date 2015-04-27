@@ -997,14 +997,16 @@ namespace OpenTKMapMaker
                     }
                     else
                     {
-                        // TODO: FIX ME!
                         BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
-                        ms.Position = Entities[i].Position.ToBVector();
-                        ms.Orientation = BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(1, 0, 0).ToBVector(), (float)(-Entities[i].Angle.X * Utilities.PI180))
-                            * BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(0, 1, 0).ToBVector(), (float)(-Entities[i].Angle.Y * Utilities.PI180))
-                            * BEPUutilities.Quaternion.CreateFromAxisAngle(new Location(0, 0, 1).ToBVector(), (float)(-Entities[i].Angle.Z * Utilities.PI180));
+                        ms.Position = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins).ToBVector() / 2 + ((CubeEntity)Entities[i]).Mins.ToBVector();
+                        ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
+                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
+                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
                         Location size = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins);
                         BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z, 0f);
+                        box.CollisionInformation.UpdateBoundingBox();
+                        box.Position = ms.Position;
+                        box.Orientation = ms.Orientation;
                         BEPUphysics.CollisionShapes.ConvexShapes.BoxShape boxshape = new BEPUphysics.CollisionShapes.ConvexShapes.BoxShape(0.01f, 0.01f, 0.01f);
                         BEPUutilities.RigidTransform rt = new BEPUutilities.RigidTransform(start.ToBVector());
                         BEPUutilities.Vector3 sweep = (end - start).ToBVector();

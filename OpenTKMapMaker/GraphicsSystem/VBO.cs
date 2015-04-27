@@ -43,39 +43,40 @@ namespace OpenTKMapMaker.GraphicsSystem
             float cY = (tc.yflip ? 0 : 1) * tc.yscale + tc.yshift;
             float dX = (tc.xflip ? 1 : 0) + tc.xshift;
             float dY = (tc.yflip ? 0 : 1) * tc.yscale + tc.yshift;
+            float zero = -1; // Sssh
             if (normal.Z == 1)
             {
                 // T1
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(0, 0, 1));
+                Vertices.Add(new Vector3(zero, zero, 1));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(0, 1, 1));
+                Vertices.Add(new Vector3(zero, 1, 1));
                 TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 // T2
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(0, 0, 1));
+                Vertices.Add(new Vector3(zero, zero, 1));
                 TexCoords.Add(new Vector3(dX, dY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(1, 0, 1));
+                Vertices.Add(new Vector3(1, zero, 1));
             }
             else if (normal.Z == -1)
             {
                 // T1
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, zero));
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(zero, 1, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
                 // T2
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, zero, zero));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
             }
             else if (normal.X == 1)
             {
@@ -83,33 +84,33 @@ namespace OpenTKMapMaker.GraphicsSystem
                 TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, zero));
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, zero, zero));
                 // T2
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(1, 0, 1));
+                Vertices.Add(new Vector3(1, zero, 1));
                 TexCoords.Add(new Vector3(bX, bY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, zero, zero));
             }
             else if (normal.X == -1)
             {
                 // T1
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(zero, 1, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(0, 1, 1));
+                Vertices.Add(new Vector3(zero, 1, 1));
                 // T2
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(0, 1, 1));
+                Vertices.Add(new Vector3(zero, 1, 1));
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(0, 0, 1));
+                Vertices.Add(new Vector3(zero, zero, 1));
             }
             else if (normal.Y == 1)
             {
@@ -117,33 +118,33 @@ namespace OpenTKMapMaker.GraphicsSystem
                 TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(0, 1, 1));
+                Vertices.Add(new Vector3(zero, 1, 1));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(zero, 1, zero));
                 // T2
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(1, 1, 0));
+                Vertices.Add(new Vector3(1, 1, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
                 Vertices.Add(new Vector3(1, 1, 1));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(0, 1, 0));
+                Vertices.Add(new Vector3(zero, 1, zero));
             }
             else if (normal.Y == -1)
             {
                 // T1
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
                 TexCoords.Add(new Vector3(aX, aY, 0));
-                Vertices.Add(new Vector3(0, 0, 1));
+                Vertices.Add(new Vector3(zero, zero, 1));
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(1, 0, 1));
+                Vertices.Add(new Vector3(1, zero, 1));
                 // T2
                 TexCoords.Add(new Vector3(dX, dY, 0));
-                Vertices.Add(new Vector3(0, 0, 0));
+                Vertices.Add(new Vector3(zero, zero, zero));
                 TexCoords.Add(new Vector3(bX, bY, 0));
-                Vertices.Add(new Vector3(1, 0, 1));
+                Vertices.Add(new Vector3(1, zero, 1));
                 TexCoords.Add(new Vector3(cX, cY, 0));
-                Vertices.Add(new Vector3(1, 0, 0));
+                Vertices.Add(new Vector3(1, zero, zero));
             }
             else
             {

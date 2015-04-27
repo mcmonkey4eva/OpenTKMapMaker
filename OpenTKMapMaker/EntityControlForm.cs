@@ -66,7 +66,6 @@ namespace OpenTKMapMaker
             }
             if (res != null)
             {
-                SysConsole.Output(OutputType.INFO, res);
                 string[] data = res.Split(new char[] { ':' }, 2);
                 label2.Text = data[0];
                 textBox1.ReadOnly = true;

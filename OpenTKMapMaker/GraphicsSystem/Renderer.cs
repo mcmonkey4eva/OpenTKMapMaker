@@ -159,30 +159,31 @@ namespace OpenTKMapMaker.GraphicsSystem
                 cols[c] = new Vector4(1, 1, 1, 1);
             }
             int i = 0;
-            vecs[i] = new Vector3(0, 0, 0); i++;
-            vecs[i] = new Vector3(1, 0, 0); i++;
-            vecs[i] = new Vector3(1, 0, 0); i++;
-            vecs[i] = new Vector3(1, 1, 0); i++;
-            vecs[i] = new Vector3(1, 1, 0); i++;
-            vecs[i] = new Vector3(0, 1, 0); i++;
-            vecs[i] = new Vector3(0, 1, 0); i++;
-            vecs[i] = new Vector3(0, 0, 0); i++;
-            vecs[i] = new Vector3(0, 0, 1); i++;
-            vecs[i] = new Vector3(1, 0, 1); i++;
-            vecs[i] = new Vector3(1, 0, 1); i++;
+            int zero = -1; // Ssh.
+            vecs[i] = new Vector3(zero, zero, zero); i++;
+            vecs[i] = new Vector3(1, zero, zero); i++;
+            vecs[i] = new Vector3(1, zero, zero); i++;
+            vecs[i] = new Vector3(1, 1, zero); i++;
+            vecs[i] = new Vector3(1, 1, zero); i++;
+            vecs[i] = new Vector3(zero, 1, zero); i++;
+            vecs[i] = new Vector3(zero, 1, zero); i++;
+            vecs[i] = new Vector3(zero, zero, zero); i++;
+            vecs[i] = new Vector3(zero, zero, 1); i++;
+            vecs[i] = new Vector3(1, zero, 1); i++;
+            vecs[i] = new Vector3(1, zero, 1); i++;
             vecs[i] = new Vector3(1, 1, 1); i++;
             vecs[i] = new Vector3(1, 1, 1); i++;
-            vecs[i] = new Vector3(0, 1, 1); i++;
-            vecs[i] = new Vector3(0, 1, 1); i++;
-            vecs[i] = new Vector3(0, 0, 1); i++;
-            vecs[i] = new Vector3(0, 0, 0); i++;
-            vecs[i] = new Vector3(0, 0, 1); i++;
-            vecs[i] = new Vector3(1, 0, 0); i++;
-            vecs[i] = new Vector3(1, 0, 1); i++;
-            vecs[i] = new Vector3(1, 1, 0); i++;
+            vecs[i] = new Vector3(zero, 1, 1); i++;
+            vecs[i] = new Vector3(zero, 1, 1); i++;
+            vecs[i] = new Vector3(zero, zero, 1); i++;
+            vecs[i] = new Vector3(zero, zero, zero); i++;
+            vecs[i] = new Vector3(zero, zero, 1); i++;
+            vecs[i] = new Vector3(1, zero, zero); i++;
+            vecs[i] = new Vector3(1, zero, 1); i++;
+            vecs[i] = new Vector3(1, 1, zero); i++;
             vecs[i] = new Vector3(1, 1, 1); i++;
-            vecs[i] = new Vector3(0, 1, 0); i++;
-            vecs[i] = new Vector3(0, 1, 1); i++;
+            vecs[i] = new Vector3(zero, 1, zero); i++;
+            vecs[i] = new Vector3(zero, 1, 1); i++;
             Box = new VBO();
             Box.Vertices = vecs.ToList();
             Box.Indices = inds.ToList();
@@ -205,11 +206,8 @@ namespace OpenTKMapMaker.GraphicsSystem
         public void RenderLineBox(Location min, Location max, Matrix4? rot = null)
         {
             Engine.White.Bind();
-            Matrix4 mat = Matrix4.CreateScale((max - min).ToOVector()) * Matrix4.CreateTranslation(min.ToOVector());
-            if (rot != null && rot.HasValue)
-            {
-                mat *= rot.Value;
-            }
+            Location halfsize = (max - min) / 2;
+            Matrix4 mat = Matrix4.CreateScale(halfsize.ToOVector()) * (rot != null && rot.HasValue ? rot.Value: Matrix4.Identity) * Matrix4.CreateTranslation((min + halfsize).ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Box._VAO);
             GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedShort, IntPtr.Zero);
