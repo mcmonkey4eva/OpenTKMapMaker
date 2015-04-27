@@ -33,11 +33,11 @@ namespace OpenTKMapMaker.GraphicsSystem
         void GenerateSquareVBO()
         {
             Vector3[] vecs = new Vector3[4];
-            ushort[] inds = new ushort[4];
+            uint[] inds = new uint[4];
             Vector3[] norms = new Vector3[4];
             Vector3[] texs = new Vector3[4];
             Vector4[] cols = new Vector4[4];
-            for (ushort u = 0; u < 4; u++)
+            for (uint u = 0; u < 4; u++)
             {
                 inds[u] = u;
             }
@@ -69,11 +69,11 @@ namespace OpenTKMapMaker.GraphicsSystem
         void GenerateBackgridVBO()
         {
             Vector3[] vecs = new Vector3[4];
-            ushort[] inds = new ushort[4];
+            uint[] inds = new uint[4];
             Vector3[] norms = new Vector3[4];
             Vector3[] texs = new Vector3[4];
             Vector4[] cols = new Vector4[4];
-            for (ushort u = 0; u < 4; u++)
+            for (uint u = 0; u < 4; u++)
             {
                 inds[u] = u;
             }
@@ -105,11 +105,11 @@ namespace OpenTKMapMaker.GraphicsSystem
         void GenerateLineVBO()
         {
             Vector3[] vecs = new Vector3[2];
-            ushort[] inds = new ushort[2];
+            uint[] inds = new uint[2];
             Vector3[] norms = new Vector3[2];
             Vector3[] texs = new Vector3[2];
             Vector4[] cols = new Vector4[2];
-            for (ushort u = 0; u < 2; u++)
+            for (uint u = 0; u < 2; u++)
             {
                 inds[u] = u;
             }
@@ -138,11 +138,11 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             // TODO: Optimize?
             Vector3[] vecs = new Vector3[24];
-            ushort[] inds = new ushort[24];
+            uint[] inds = new uint[24];
             Vector3[] norms = new Vector3[24];
             Vector3[] texs = new Vector3[24];
             Vector4[] cols = new Vector4[24];
-            for (ushort u = 0; u < 24; u++)
+            for (uint u = 0; u < 24; u++)
             {
                 inds[u] = u;
             }
@@ -207,10 +207,10 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             Engine.White.Bind();
             Location halfsize = (max - min) / 2;
-            Matrix4 mat = Matrix4.CreateScale(halfsize.ToOVector()) * (rot != null && rot.HasValue ? rot.Value: Matrix4.Identity) * Matrix4.CreateTranslation((min + halfsize).ToOVector());
+            Matrix4 mat = Matrix4.CreateScale(halfsize.ToOVector()) * (rot != null && rot.HasValue ? rot.Value : Matrix4.Identity) * Matrix4.CreateTranslation((min + halfsize).ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Box._VAO);
-            GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Lines, 24, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace OpenTKMapMaker.GraphicsSystem
                 * Matrix4.CreateRotationY((float)(-vecang.Y * Utilities.PI180)) * Matrix4.CreateTranslation(start.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Line._VAO);
-            GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
 
         public void SetColor(Color4 c)
@@ -256,7 +256,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.UniformMatrix4(2, false, ref mat);
 
             GL.BindVertexArray(Square._VAO);
-            GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Backgrid._VAO);
-            GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Quads, 4, DrawElementsType.UnsignedInt, IntPtr.Zero);
         }
     }
 }

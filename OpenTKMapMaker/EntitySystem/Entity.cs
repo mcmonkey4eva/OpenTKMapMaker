@@ -11,7 +11,7 @@ namespace OpenTKMapMaker.EntitySystem
     {
         public Entity()
         {
-            float f1 = (float)Utilities.UtilRandom.NextDouble();
+            float f1 = (float)Utilities.UtilRandom.NextDouble() * 0.8f;
             ViewColor = new Color4(1 - f1, f1, 0, 1f);
         }
 
@@ -34,6 +34,7 @@ namespace OpenTKMapMaker.EntitySystem
         public float Mass = 0f;
         public bool Selected = false;
         public float Friction = 0.5f;
+        public bool Solid = true;
 
         public abstract string GetEntityType();
 
@@ -46,6 +47,7 @@ namespace OpenTKMapMaker.EntitySystem
             vars.Add(new KeyValuePair<string, string>("angular_velocity", Angular_Velocity.ToString()));
             vars.Add(new KeyValuePair<string, string>("mass", Mass.ToString()));
             vars.Add(new KeyValuePair<string, string>("friction", Friction.ToString()));
+            vars.Add(new KeyValuePair<string, string>("solid", (Solid ? "true": "false")));
             return vars;
         }
 
@@ -70,6 +72,9 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "friction":
                     Friction = Utilities.StringToFloat(value);
+                    return true;
+                case "solid":
+                    Solid = value.ToLower() == "true";
                     return true;
                 default:
                     return false;

@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet, Version=3.3.1.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\AssimpNet.dll</HintPath>
+    </Reference>
     <Reference Include="BEPUphysics">
       <HintPath>.\BEPUphysics.dll</HintPath>
     </Reference>
@@ -67,6 +71,7 @@
     </Compile>
     <Compile Include="EntitySystem\CubeEntity.cs" />
     <Compile Include="EntitySystem\Entity.cs" />
+    <Compile Include="EntitySystem\ModelEntity.cs" />
     <Compile Include="EntitySystem\PointLightEntity.cs" />
     <Compile Include="EntitySystem\SpawnPointEntity.cs" />
     <Compile Include="FaceEditor.cs">
@@ -105,6 +110,7 @@
     <Compile Include="Utility\DataStream.cs" />
     <Compile Include="Utility\FileHandler.cs" />
     <Compile Include="Utility\Location.cs" />
+    <Compile Include="Utility\ModelHandler.cs" />
     <Compile Include="Utility\SysConsole.cs" />
     <Compile Include="Utility\TextStyle.cs" />
     <Compile Include="Utility\UnknownFileException.cs" />
@@ -136,6 +142,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

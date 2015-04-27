@@ -136,6 +136,9 @@ namespace OpenTKMapMaker
                 case "spawn":
                     ent = new SpawnPointEntity(sel.Position);
                     break;
+                case "model":
+                    ent = new ModelEntity("");
+                    break;
                 default:
                     return;
             }
@@ -170,6 +173,7 @@ namespace OpenTKMapMaker
             entityTypeChooser.Items.Add("Cube");
             entityTypeChooser.Items.Add("Point_Light");
             entityTypeChooser.Items.Add("Spawn");
+            entityTypeChooser.Items.Add("Model");
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
             entityTypeChooser.CreateControl();
@@ -1501,6 +1505,9 @@ namespace OpenTKMapMaker
                     break;
                 case "spawn":
                     e = new SpawnPointEntity(new Location(0));
+                    break;
+                case "model":
+                    e = new ModelEntity("");
                     break;
                 default:
                     throw new Exception("Invalid entity type '" + name + "'!");

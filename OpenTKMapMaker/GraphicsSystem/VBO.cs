@@ -21,7 +21,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public Texture Tex;
 
         public List<Vector3> Vertices;
-        public List<ushort> Indices;
+        public List<uint> Indices;
         public List<Vector3> Normals;
         public List<Vector3> TexCoords;
         public List<Vector4> Colors;
@@ -33,7 +33,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             {
                 Normals.Add(normal.ToOVector());
                 Colors.Add(new Vector4(1f, 1f, 1f, 1f));
-                Indices.Add((ushort)Indices.Count);
+                Indices.Add((uint)Indices.Count);
             }
             float aX = (tc.xflip ? 1 : 0) + tc.xshift;
             float aY = (tc.yflip ? 1 : 0) + tc.yshift;
@@ -155,7 +155,7 @@ namespace OpenTKMapMaker.GraphicsSystem
         public void Prepare()
         {
             Vertices = new List<Vector3>();
-            Indices = new List<ushort>();
+            Indices = new List<uint>();
             Normals = new List<Vector3>();
             TexCoords = new List<Vector3>();
             Colors = new List<Vector4>();
@@ -186,8 +186,9 @@ namespace OpenTKMapMaker.GraphicsSystem
             {
                 return;
             }
+            GL.BindVertexArray(0);
             Vector3[] vecs = Vertices.ToArray();
-            ushort[] inds = Indices.ToArray();
+            uint[] inds = Indices.ToArray();
             Vector3[] norms = Normals.ToArray();
             Vector3[] texs = TexCoords.ToArray();
             Vector4[] cols = Colors.ToArray();
@@ -218,7 +219,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             // Index buffer
             GL.GenBuffers(1, out _IndexVBO);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, _IndexVBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(inds.Length * sizeof(ushort)),
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(inds.Length * sizeof(uint)),
                     inds, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             // VAO
@@ -259,7 +260,7 @@ namespace OpenTKMapMaker.GraphicsSystem
                 Tex.Bind();
             }
             GL.BindVertexArray(_VAO);
-            GL.DrawElements(PrimitiveType.Triangles, Vertices.Count, DrawElementsType.UnsignedShort, IntPtr.Zero);
+            GL.DrawElements(PrimitiveType.Triangles, Vertices.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             GL.BindVertexArray(0);
         }
     }
