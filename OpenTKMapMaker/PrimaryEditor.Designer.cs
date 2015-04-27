@@ -464,6 +464,7 @@
             this.glControlOSide.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseMove);
             this.glControlOSide.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseUp);
             this.glControlOSide.Resize += new System.EventHandler(this.glControlOSide_Resize);
+            this.glControlOSide.KeyUp += new System.Windows.Forms.KeyEventHandler(glControlOSide_KeyUp);
             // 
             // glControlTex
             // 

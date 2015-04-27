@@ -19,7 +19,7 @@ P to paint a texture onto the surface hovered over (Texture selected from the bo
 
 Right mouse to select/deselect the object under the mouse
 
-Top and Side View (Left):
+Top and Side View (Left), and Other Side View (Bottom right, leftmore):
 
 Middle click and drag to move around
 
@@ -34,6 +34,8 @@ Space to spawn a new block under the mouse
 Arrow Keys (Up/Down/Left/Right) to move the view around
 
 WASD to move the view around more precisely
+
+R key to rotate
 
 Anywhere:
 

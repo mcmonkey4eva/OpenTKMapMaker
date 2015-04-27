@@ -891,6 +891,22 @@ namespace OpenTKMapMaker
                     OpenTK.Input.Mouse.SetPosition(this.Location.X + 8 + glControlTop.Width / 2, this.Location.Y + 31 + menuStrip1.Height + glControlTop.Height / 2);
                 }
             }
+            if (top_rotate)
+            {
+                foreach (Entity ent in Selected)
+                {
+                    Location ang = Utilities.VectorToAngles(top_mousepos - ent.Position);
+                    if (ent is CubeEntity)
+                    {
+                        ent.Angle.Z = ang.X;
+                    }
+                    else
+                    {
+                        ent.Angle.X = ang.X;
+                    }
+                }
+                invalidateAll();
+            }
             if (top_moving)
             {
                 Location mmpos = top_mousepos;
@@ -1107,6 +1123,22 @@ namespace OpenTKMapMaker
                     OpenTK.Input.Mouse.SetPosition(p.X, p.Y);
                 }
             }
+            if (side_rotate)
+            {
+                foreach (Entity ent in Selected)
+                {
+                    Location ang = Utilities.VectorToAngles(new Location(side_mousepos.X, side_mousepos.Z, side_mousepos.Y) - new Location(ent.Position.X, ent.Position.Z, ent.Position.Y));
+                    if (ent is CubeEntity)
+                    {
+                        ent.Angle.Y = -ang.X;
+                    }
+                    else
+                    {
+                        ent.Angle.Y = -ang.X;
+                    }
+                }
+                invalidateAll();
+            }
             if (side_moving)
             {
                 Location mmpos = side_mousepos;
@@ -1228,6 +1260,22 @@ namespace OpenTKMapMaker
                     Point p = glControlOSide.PointToScreen(new Point(glControlOSide.Width / 2, glControlOSide.Height / 2));
                     OpenTK.Input.Mouse.SetPosition(p.X, p.Y);
                 }
+            }
+            if (oside_rotate)
+            {
+                foreach (Entity ent in Selected)
+                {
+                    Location ang = Utilities.VectorToAngles(new Location(oside_mousepos.Z, oside_mousepos.Y, oside_mousepos.X) - new Location(ent.Position.Z, ent.Position.Y, ent.Position.X));
+                    if (ent is CubeEntity)
+                    {
+                        ent.Angle.X = -ang.X;
+                    }
+                    else
+                    {
+                        ent.Angle.Y = -ang.X;
+                    }
+                }
+                invalidateAll();
             }
             if (oside_moving)
             {
@@ -1740,6 +1788,8 @@ namespace OpenTKMapMaker
             }
         }
 
+        bool top_rotate = false;
+
         private void glControlTop_KeyDown(object sender, KeyEventArgs e)
         {
             if (NoClickyClicky())
@@ -1749,6 +1799,10 @@ namespace OpenTKMapMaker
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(top_mousepos.X, top_mousepos.Y, 0));
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                top_rotate = true;
             }
             else if (e.KeyCode == Keys.W)
             {
@@ -1813,6 +1867,8 @@ namespace OpenTKMapMaker
             invalidateAll();
         }
 
+        bool side_rotate = false;
+
         private void glControlSide_KeyDown(object sender, KeyEventArgs e)
         {
             if (NoClickyClicky())
@@ -1822,6 +1878,10 @@ namespace OpenTKMapMaker
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(side_mousepos.X, 0, side_mousepos.Z));
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                side_rotate = true;
             }
             else if (e.KeyCode == Keys.W)
             {
@@ -1866,6 +1926,8 @@ namespace OpenTKMapMaker
             PrimaryEditor_KeyDown(sender, e);
         }
 
+        bool oside_rotate = false;
+
         private void glControlOSide_KeyDown(object sender, KeyEventArgs e)
         {
             if (NoClickyClicky())
@@ -1875,6 +1937,10 @@ namespace OpenTKMapMaker
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(0, oside_mousepos.Y, oside_mousepos.Z));
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                oside_rotate = true;
             }
             else if (e.KeyCode == Keys.W)
             {
@@ -1921,6 +1987,9 @@ namespace OpenTKMapMaker
 
         private void PrimaryEditor_KeyUp(object sender, KeyEventArgs e)
         {
+            top_rotate = false;
+            side_rotate = false;
+            oside_rotate = false;
         }
 
         private void glControlTop_KeyUp(object sender, KeyEventArgs e)
@@ -1929,6 +1998,11 @@ namespace OpenTKMapMaker
         }
 
         private void glControlSide_KeyUp(object sender, KeyEventArgs e)
+        {
+            PrimaryEditor_KeyUp(sender, e);
+        }
+
+        private void glControlOSide_KeyUp(object sender, KeyEventArgs e)
         {
             PrimaryEditor_KeyUp(sender, e);
         }
