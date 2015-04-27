@@ -823,7 +823,7 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseEnter(object sender, EventArgs e)
         {
-            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
+            if (!NoClickyClicky())
             {
                 glControlSide.Focus();
                 invalidateAll();
@@ -832,7 +832,7 @@ namespace OpenTKMapMaker
 
         private void glControlOSide_MouseEnter(object sender, EventArgs e)
         {
-            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
+            if (!NoClickyClicky())
             {
                 glControlOSide.Focus();
                 invalidateAll();
@@ -841,7 +841,7 @@ namespace OpenTKMapMaker
 
         private void glControlTop_MouseEnter(object sender, EventArgs e)
         {
-            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
+            if (!NoClickyClicky())
             {
                 glControlTop.Focus();
                 invalidateAll();
@@ -850,7 +850,7 @@ namespace OpenTKMapMaker
 
         private void glControlTex_MouseEnter(object sender, EventArgs e)
         {
-            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
+            if (!NoClickyClicky())
             {
                 glControlTex.Focus();
                 invalidateAll();
@@ -874,6 +874,10 @@ namespace OpenTKMapMaker
 
         private void glControlTop_MouseMove(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             Location mpos = new Location((float)e.X / ((float)glControlTop.Width / 2f) - 1f, -((float)e.Y / ((float)glControlTop.Height / 2f) - 1f), 0f);
             top_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), top_proj.Inverted()));
             if (top_selected)
@@ -921,8 +925,17 @@ namespace OpenTKMapMaker
             }
         }
 
+        bool NoClickyClicky()
+        {
+            return (ecf != null && ecf.Visible) || (fe != null && fe.Visible);
+        }
+
         private void glControlTop_MouseDown(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.Button == MouseButtons.Middle)
             {
                 top_selected = true;
@@ -1076,6 +1089,10 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseMove(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             Location mpos = new Location((float)e.X / ((float)glControlSide.Width / 2f) - 1f, -((float)e.Y / ((float)glControlSide.Height / 2f) - 1f), 0f);
             side_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), side_proj.Inverted()));
             if (side_selected)
@@ -1131,6 +1148,10 @@ namespace OpenTKMapMaker
 
         private void glControlSide_MouseDown(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.Button == MouseButtons.Middle)
             {
                 side_selected = true;
@@ -1190,6 +1211,10 @@ namespace OpenTKMapMaker
 
         private void glControlOSide_MouseMove(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             Location mpos = new Location((float)e.X / ((float)glControlOSide.Width / 2f) - 1f, -((float)e.Y / ((float)glControlOSide.Height / 2f) - 1f), 0f);
             oside_mousepos = new Location(Vector3.Transform(mpos.ToOVector(), oside_proj.Inverted()));
             if (oside_selected)
@@ -1245,6 +1270,10 @@ namespace OpenTKMapMaker
 
         private void glControlOSide_MouseDown(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.Button == MouseButtons.Middle)
             {
                 oside_selected = true;
@@ -1297,6 +1326,10 @@ namespace OpenTKMapMaker
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -1514,6 +1547,10 @@ namespace OpenTKMapMaker
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (file == null)
             {
                 if (!PickFile())
@@ -1526,6 +1563,10 @@ namespace OpenTKMapMaker
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (!PickFile())
             {
                 return;
@@ -1540,6 +1581,10 @@ namespace OpenTKMapMaker
 
         private void PrimaryEditor_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.KeyCode == Keys.Delete)
             {
                 List<Entity> ents = new List<Entity>(Selected);
@@ -1697,6 +1742,10 @@ namespace OpenTKMapMaker
 
         private void glControlTop_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(top_mousepos.X, top_mousepos.Y, 0));
@@ -1766,6 +1815,10 @@ namespace OpenTKMapMaker
 
         private void glControlSide_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(side_mousepos.X, 0, side_mousepos.Z));
@@ -1815,6 +1868,10 @@ namespace OpenTKMapMaker
 
         private void glControlOSide_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.KeyCode == Keys.Space)
             {
                 MakeCuboidAt(new Location(0, oside_mousepos.Y, oside_mousepos.Z));
@@ -1883,6 +1940,10 @@ namespace OpenTKMapMaker
 
         private void glControlTex_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
@@ -1900,6 +1961,10 @@ namespace OpenTKMapMaker
 
         private void glControlTex_MouseDown(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             texmouseDown = true;
             glControlTex.Invalidate();
             texMPos = new Location(e.X, e.Y, 0);
@@ -1912,6 +1977,10 @@ namespace OpenTKMapMaker
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             List<Entity> ents = new List<Entity>(Entities);
             for (int i = 0; i < ents.Count; i++)
             {
@@ -1922,6 +1991,10 @@ namespace OpenTKMapMaker
 
         private void tODOToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();

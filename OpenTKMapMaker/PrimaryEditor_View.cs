@@ -278,6 +278,10 @@ namespace OpenTKMapMaker
 
         private void glControlView_MouseMove(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             Location mpos = new Location((float)e.X / ((float)glControlView.Width / 2f) - 1f, -((float)e.Y / ((float)glControlView.Height / 2f) - 1f), 0f);
             Vector4 vec = Vector4.Transform(new Vector4(mpos.ToOVector(), 1.0f), combined.Inverted());
             view_mousepos = new Location(vec.X / vec.W, vec.Y / vec.W, vec.Z / vec.W);
@@ -314,6 +318,10 @@ namespace OpenTKMapMaker
 
         private void glControlView_MouseDown(object sender, MouseEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.Button == MouseButtons.Middle)
             {
                 view_selected = !view_selected;
@@ -338,7 +346,7 @@ namespace OpenTKMapMaker
 
         private void glControlView_MouseEnter(object sender, EventArgs e)
         {
-            if ((ecf == null || !ecf.Visible) && (fe == null || !fe.Visible))
+            if (!NoClickyClicky())
             {
                 glControlView.Focus();
                 invalidateAll();
@@ -352,6 +360,10 @@ namespace OpenTKMapMaker
 
         private void glControlView_KeyDown(object sender, KeyEventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             if (e.KeyCode == Keys.W)
             {
                 tW_Tick(null, null);
@@ -473,24 +485,40 @@ namespace OpenTKMapMaker
 
         void tD_Tick(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw - 90, 0);
             invalidateAll();
         }
 
         void tS_Tick(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             CameraPos -= Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
             invalidateAll();
         }
 
         void tA_Tick(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw + 90, 0);
             invalidateAll();
         }
 
         void tW_Tick(object sender, EventArgs e)
         {
+            if (NoClickyClicky())
+            {
+                return;
+            }
             CameraPos += Utilities.ForwardVector_Deg(CameraYaw, CameraPitch);
             invalidateAll();
         }
