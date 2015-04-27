@@ -142,6 +142,13 @@ namespace OpenTKMapMaker
                 default:
                     return;
             }
+            ent.Position = sel.Position;
+            ent.Angle = sel.Angle;
+            ent.Velocity = sel.Velocity;
+            ent.Angular_Velocity = sel.Angular_Velocity;
+            ent.Friction = sel.Friction;
+            ent.Mass = sel.Mass;
+            ent.Solid = sel.Solid;
             ent.Recalculate();
             SavePoint();
             Spawn(ent);
@@ -900,7 +907,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(top_mousepos - ent.Position);
-                    if (ent is CubeEntity)
+                    if (ent is CubeEntity || ent is ModelEntity)
                     {
                         ent.Angle.Z = ang.X;
                     }
@@ -964,7 +971,7 @@ namespace OpenTKMapMaker
             else if (e.Button == MouseButtons.Right)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(new Location(top_mousepos.X, top_mousepos.Y, 1000000), new Location(top_mousepos.X, top_mousepos.Y, -1000000), out normal);
+                Entity hit = RayTraceEntity(ContextTop, new Location(top_mousepos.X, top_mousepos.Y, 1000000), new Location(top_mousepos.X, top_mousepos.Y, -1000000), out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)
@@ -1009,7 +1016,7 @@ namespace OpenTKMapMaker
         bool top_moving = false;
         Location top_ppos = new Location(0);
 
-        public Entity RayTraceEntity(Location start, Location end, out Location normal)
+        public Entity RayTraceEntity(GLContext context, Location start, Location end, out Location normal)
         {
             Location hitloc = end;
             Entity hitent = null;
@@ -1030,6 +1037,8 @@ namespace OpenTKMapMaker
                     }
                     else
                     {
+                        // TODO: First-pass test using collision cuboids
+                        // TODO: handle scaling
                         BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
                         ms.Position = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins).ToBVector() / 2 + ((CubeEntity)Entities[i]).Mins.ToBVector();
                         ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
@@ -1055,6 +1064,32 @@ namespace OpenTKMapMaker
                         }
                         _normal = new Location(rh.Normal.X, rh.Normal.Y, rh.Normal.Z);
                     }
+                }
+                else if (Entities[i] is ModelEntity)
+                {
+                    BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
+                    ms.Position = Entities[i].Position.ToBVector();
+                    ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
+                        * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
+                        * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
+                    BEPUphysics.Entities.Prefabs.MobileMesh mesh = context.Models.Handler.MeshToBepu(context.Models.GetModel(((ModelEntity)Entities[i]).model).OriginalModel);
+                    mesh.Position = ms.Position + mesh.Position;
+                    mesh.Orientation = ms.Orientation;
+                    mesh.CollisionInformation.UpdateBoundingBox();
+                    BEPUphysics.CollisionShapes.ConvexShapes.BoxShape boxshape = new BEPUphysics.CollisionShapes.ConvexShapes.BoxShape(0.01f, 0.01f, 0.01f);
+                    BEPUutilities.RigidTransform rt = new BEPUutilities.RigidTransform(start.ToBVector());
+                    BEPUutilities.Vector3 sweep = (end - start).ToBVector();
+                    BEPUutilities.RayHit rh;
+                    mesh.CollisionInformation.ConvexCast(boxshape, ref rt, ref sweep, out rh);
+                    if (rh.T > 0 && rh.T < 1)
+                    {
+                        hit = new Location(rh.Location.X, rh.Location.Y, rh.Location.Z);
+                    }
+                    else
+                    {
+                        hit = end;
+                    }
+                    _normal = new Location(rh.Normal.X, rh.Normal.Y, rh.Normal.Z);
                 }
                 else
                 {
@@ -1132,7 +1167,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(side_mousepos.X, side_mousepos.Z, side_mousepos.Y) - new Location(ent.Position.X, ent.Position.Z, ent.Position.Y));
-                    if (ent is CubeEntity)
+                    if (ent is CubeEntity || ent is ModelEntity)
                     {
                         ent.Angle.Y = -ang.X;
                     }
@@ -1197,7 +1232,7 @@ namespace OpenTKMapMaker
             else if (e.Button == MouseButtons.Right)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(new Location(side_mousepos.X, 1000000, side_mousepos.Z), new Location(side_mousepos.X, -1000000, side_mousepos.Z), out normal);
+                Entity hit = RayTraceEntity(ContextSide, new Location(side_mousepos.X, 1000000, side_mousepos.Z), new Location(side_mousepos.X, -1000000, side_mousepos.Z), out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)
@@ -1270,7 +1305,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(oside_mousepos.Z, oside_mousepos.Y, oside_mousepos.X) - new Location(ent.Position.Z, ent.Position.Y, ent.Position.X));
-                    if (ent is CubeEntity)
+                    if (ent is CubeEntity || ent is ModelEntity)
                     {
                         ent.Angle.X = -ang.X;
                     }
@@ -1335,7 +1370,7 @@ namespace OpenTKMapMaker
             else if (e.Button == MouseButtons.Right)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(new Location(1000000, oside_mousepos.Y, oside_mousepos.Z), new Location(-1000000, oside_mousepos.Y, oside_mousepos.Z), out normal);
+                Entity hit = RayTraceEntity(ContextOSide, new Location(1000000, oside_mousepos.Y, oside_mousepos.Z), new Location(-1000000, oside_mousepos.Y, oside_mousepos.Z), out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)

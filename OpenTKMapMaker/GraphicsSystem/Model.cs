@@ -98,6 +98,7 @@ namespace OpenTKMapMaker.GraphicsSystem
                 throw new Exception("Scene has no meshes!");
             }
             Model model = new Model(name);
+            model.OriginalModel = scene;
             foreach (Mesh mesh in scene.Meshes)
             {
                 ModelMesh modmesh = new ModelMesh(mesh.Name);
@@ -140,6 +141,10 @@ namespace OpenTKMapMaker.GraphicsSystem
                             modmesh.vbo.Indices.Add((uint)face.Indices[i]);
                         }
                     }
+                    else
+                    {
+                        SysConsole.Output(OutputType.WARNING, "Mesh has face with " + face.Indices.Count + " faces!!");
+                    }
                 }
                 model.Meshes.Add(modmesh);
                 modmesh.GenerateVBO();
@@ -153,6 +158,8 @@ namespace OpenTKMapMaker.GraphicsSystem
     /// </summary>
     public class Model
     {
+        public Scene OriginalModel;
+
         public Model(string _name)
         {
             Name = _name;

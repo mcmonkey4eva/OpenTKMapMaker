@@ -329,7 +329,7 @@ namespace OpenTKMapMaker
             else if (e.Button == MouseButtons.Right)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
+                Entity hit = RayTraceEntity(ContextView, CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
                 if (hit != null)
                 {
                     if (hit.Selected)
@@ -427,7 +427,7 @@ namespace OpenTKMapMaker
             else if (e.KeyCode == Keys.P)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
+                Entity hit = RayTraceEntity(ContextView, CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
                 if (hit != null && hit is CubeEntity)
                 {
                     CubeEntity ce = (CubeEntity)hit;
@@ -445,7 +445,7 @@ namespace OpenTKMapMaker
             else if (e.KeyCode == Keys.F)
             {
                 Location normal;
-                Entity hit = RayTraceEntity(CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
+                Entity hit = RayTraceEntity(ContextView, CameraPos, CameraPos + (view_mousepos - CameraPos) * 1000000, out normal);
                 if (hit != null && hit is CubeEntity)
                 {
                     CubeEntity ce = (CubeEntity)hit;
