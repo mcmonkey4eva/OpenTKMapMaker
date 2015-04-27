@@ -12,8 +12,8 @@ namespace OpenTKMapMaker.EntitySystem
 {
     class SpawnPointEntity: Entity
     {
-        public static Location mins = new Location(-0.3f, -0.3f, 0f);
-        public static Location maxes = new Location(0.3f, 0.3f, 2f);
+        public static Location mins = new Location(-0.5f, -0.5f, 0f);
+        public static Location maxes = new Location(0.5f, 0.5f, 2f);
 
         public SpawnPointEntity(Location pos)
         {
