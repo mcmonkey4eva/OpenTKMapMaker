@@ -1633,7 +1633,7 @@ namespace OpenTKMapMaker
             {
                 return;
             }
-            if (e.KeyCode == Keys.Delete)
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
             {
                 List<Entity> ents = new List<Entity>(Selected);
                 for (int i = 0; i < ents.Count; i++)

@@ -51,6 +51,8 @@ CTRL-V To paste copied/cut entities
 
 CTRL-Z To undo last edit
 
+Backspace/Delete to delete selected entities
+
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
