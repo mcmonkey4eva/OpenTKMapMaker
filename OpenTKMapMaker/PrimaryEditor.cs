@@ -2179,11 +2179,19 @@ namespace OpenTKMapMaker
             wireframe = !wireframe;
             wireframeToolStripMenuItem.Checked = wireframe;
         }
+
+        public static bool autoStretch = false;
+
+        private void textureAutoStretchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            autoStretch = !autoStretch;
+            textureAutoStretchToolStripMenuItem.Checked = autoStretch;
+        }
     }
 
     class MyRenderer : ToolStripProfessionalRenderer
     {
-        public MyRenderer() : base(new MyColors()) { }
+        public MyRenderer() : base(new MyColors()) {}
     }
 
     class MyColors : ProfessionalColorTable

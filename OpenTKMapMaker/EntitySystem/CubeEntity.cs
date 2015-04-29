@@ -38,6 +38,9 @@ namespace OpenTKMapMaker.EntitySystem
 
         public void Include(Location point)
         {
+            Location pmax = Maxes;
+            Location pmin = Mins;
+            Location oldsize = pmax - pmin;
             if (PrimaryEditor.stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
             if (PrimaryEditor.stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
             if (PrimaryEditor.stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
@@ -45,6 +48,24 @@ namespace OpenTKMapMaker.EntitySystem
             if (PrimaryEditor.stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
             if (PrimaryEditor.stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
             Position = ((Maxes - Mins) / 2) + Mins;
+            Location newsize = Maxes - Mins;
+            Location adjust = newsize / oldsize;
+            if (PrimaryEditor.autoStretch)
+            {
+                Coords[0].xscale *= (float)adjust.X;
+                Coords[0].yscale *= (float)adjust.Y;
+                Coords[1].xscale *= (float)adjust.X;
+                Coords[1].yscale *= (float)adjust.Y;
+                Coords[2].xscale *= (float)adjust.Y;
+                Coords[2].yscale *= (float)adjust.Z;
+                Coords[3].xscale *= (float)adjust.Y;
+                Coords[3].yscale *= (float)adjust.Z;
+                Coords[4].xscale *= (float)adjust.X;
+                Coords[4].yscale *= (float)adjust.Z;
+                Coords[5].xscale *= (float)adjust.X;
+                Coords[5].yscale *= (float)adjust.Z;
+                Recalculate();
+            }
         }
 
         public List<VBO> VBOs = new List<VBO>();

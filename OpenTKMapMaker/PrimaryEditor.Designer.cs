@@ -47,6 +47,7 @@
             this.wireframeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tODOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textureAutoStretchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.websiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.docsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -260,7 +261,8 @@
             // 
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.Black;
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tODOToolStripMenuItem});
+            this.tODOToolStripMenuItem,
+            this.textureAutoStretchToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
@@ -271,9 +273,18 @@
             this.tODOToolStripMenuItem.BackColor = System.Drawing.Color.Black;
             this.tODOToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.tODOToolStripMenuItem.Name = "tODOToolStripMenuItem";
-            this.tODOToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.tODOToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.tODOToolStripMenuItem.Text = "Add Textures";
             this.tODOToolStripMenuItem.Click += new System.EventHandler(this.tODOToolStripMenuItem_Click);
+            // 
+            // textureAutoStretchToolStripMenuItem
+            // 
+            this.textureAutoStretchToolStripMenuItem.BackColor = System.Drawing.Color.Black;
+            this.textureAutoStretchToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.textureAutoStretchToolStripMenuItem.Name = "textureAutoStretchToolStripMenuItem";
+            this.textureAutoStretchToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.textureAutoStretchToolStripMenuItem.Text = "Texture Auto-Stretch";
+            this.textureAutoStretchToolStripMenuItem.Click += new System.EventHandler(this.textureAutoStretchToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -459,12 +470,12 @@
             this.glControlOSide.Load += new System.EventHandler(this.glControlOSide_Load);
             this.glControlOSide.Paint += new System.Windows.Forms.PaintEventHandler(this.glControlOSide_Paint);
             this.glControlOSide.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glControlOSide_KeyDown);
+            this.glControlOSide.KeyUp += new System.Windows.Forms.KeyEventHandler(this.glControlOSide_KeyUp);
             this.glControlOSide.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseDown);
             this.glControlOSide.MouseEnter += new System.EventHandler(this.glControlOSide_MouseEnter);
             this.glControlOSide.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseMove);
             this.glControlOSide.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControlOSide_MouseUp);
             this.glControlOSide.Resize += new System.EventHandler(this.glControlOSide_Resize);
-            this.glControlOSide.KeyUp += new System.Windows.Forms.KeyEventHandler(glControlOSide_KeyUp);
             // 
             // glControlTex
             // 
@@ -558,5 +569,6 @@
         private System.Windows.Forms.ToolStripMenuItem consoleToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.ToolStripMenuItem wireframeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem textureAutoStretchToolStripMenuItem;
     }
 }
