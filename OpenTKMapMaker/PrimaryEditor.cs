@@ -88,6 +88,7 @@ namespace OpenTKMapMaker
                 ClipboardEntity cbe = new ClipboardEntity();
                 cbe.entitytype = Entities[i].GetEntityType();
                 cbe.variables = Entities[i].GetVars();
+                cbe.color = Entities[i].ViewColor;
                 clips.Add(cbe);
             }
             History.Add(clips);
@@ -1749,6 +1750,7 @@ namespace OpenTKMapMaker
                     ClipboardEntity cbe = new ClipboardEntity();
                     cbe.entitytype = Selected[i].GetEntityType();
                     cbe.variables = Selected[i].GetVars();
+                    cbe.color = null;
                     Clipboard.Add(cbe);
                 }
             }
@@ -1780,6 +1782,10 @@ namespace OpenTKMapMaker
                     foreach (KeyValuePair<string, string> val in ent.variables)
                     {
                         et.ApplyVar(val.Key, val.Value);
+                    }
+                    if (ent.color != null && ent.color.HasValue)
+                    {
+                        et.ViewColor = ent.color.Value;
                     }
                     et.Recalculate();
                     Spawn(et);
@@ -1818,6 +1824,10 @@ namespace OpenTKMapMaker
                         foreach (KeyValuePair<string, string> val in ent.variables)
                         {
                             et.ApplyVar(val.Key, val.Value);
+                        }
+                        if (ent.color != null && ent.color.HasValue)
+                        {
+                            et.ViewColor = ent.color.Value;
                         }
                         et.Recalculate();
                         Spawn(et);
