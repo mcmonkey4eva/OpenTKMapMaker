@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker
 {
@@ -18,6 +19,8 @@ namespace OpenTKMapMaker
         CallingConvention = CallingConvention.StdCall)]
         private static extern int AllocConsole();
 
+        public static FileHandler Files;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -25,6 +28,9 @@ namespace OpenTKMapMaker
         static void Main()
         {
             AllocConsole();
+            SysConsole.Init();
+            Files = new FileHandler();
+            Files.Init();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new PrimaryEditor());

@@ -95,9 +95,9 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             textfile = "";
             string[] datas;
-            if (FileHandler.Exists("info/characters.dat"))
+            if (Program.Files.Exists("info/characters.dat"))
             {
-                datas = FileHandler.ReadText("info/characters.dat").Replace("\r", "").Split('\n');
+                datas = Program.Files.ReadText("info/characters.dat").Replace("\r", "").Split('\n');
             }
             else
             {

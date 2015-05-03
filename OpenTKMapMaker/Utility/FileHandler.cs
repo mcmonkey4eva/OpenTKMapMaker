@@ -12,6 +12,10 @@ namespace OpenTKMapMaker.Utility
     /// </summary>
     public class FileHandler
     {
+        public List<PakFile> Paks = new List<PakFile>();
+
+        public List<PakkedFile> Files = new List<PakkedFile>();
+
         /// <summary>
         /// The default text encoding.
         /// </summary>
@@ -21,6 +25,45 @@ namespace OpenTKMapMaker.Utility
         /// The base directory in which all data is stored.
         /// </summary>
         public static string BaseDirectory = Environment.CurrentDirectory.Replace("\\", "/") + "/data/";
+
+        public void Init()
+        {
+            string[] allfiles = Directory.GetFiles(BaseDirectory, "*.*", SearchOption.AllDirectories);
+            foreach (string tfile in allfiles)
+            {
+                string file = tfile.Replace('\\', '/');
+                if (file.Length == 0 || file[file.Length - 1] == '/')
+                {
+                    continue;
+                }
+                if (file.EndsWith(".pak"))
+                {
+                    Paks.Add(new PakFile(file.Replace(BaseDirectory, "")));
+                }
+                else
+                {
+                    Files.Add(new PakkedFile(file.Replace(BaseDirectory, "")));
+                }
+            }
+            int id = 0;
+            foreach (PakFile pak in Paks)
+            {
+                List<ZipStorer.ZipFileEntry> zents = pak.Storer.ReadCentralDir();
+                SysConsole.Output(OutputType.INIT, id + ") Pak " + pak.Name + " has " + zents.Count + " files.");
+                pak.FileListIndex = Files.Count;
+                foreach (ZipStorer.ZipFileEntry zent in zents)
+                {
+                    string name = zent.FilenameInZip.Replace('\\', '/').Replace("..", ".").Replace(":", "").ToLower();
+                    if (name.Length == 0 || name[name.Length - 1] == '/')
+                    {
+                        continue;
+                    }
+                    SysConsole.Output(OutputType.INIT, "--> " + name);
+                    Files.Add(new PakkedFile(name, id, zent));
+                }
+                id++;
+            }
+        }
 
         /// <summary>
         /// Cleans a file name for direct system calls.
@@ -81,14 +124,27 @@ namespace OpenTKMapMaker.Utility
             return output.ToString().Trim();
         }
 
+        public int FileIndex(string filename)
+        {
+            string cleaned = CleanFileName(filename);
+            for (int i = 0; i < Files.Count; i++)
+            {
+                if (Files[i].Name == cleaned)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         /// <summary>
         /// Returns whether a file exists.
         /// </summary>
         /// <param name="filename">The name of the file to look for</param>
         /// <returns>Whether the file exists</returns>
-        public static bool Exists(string filename)
+        public bool Exists(string filename)
         {
-            return File.Exists(BaseDirectory + CleanFileName(filename));
+            return FileIndex(filename) != -1;
         }
 
         /// <summary>
@@ -96,14 +152,26 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         /// <param name="filename">The name of the file to read</param>
         /// <returns>The file's data, as a byte array</returns>
-        public static byte[] ReadBytes(string filename)
+        public byte[] ReadBytes(string filename)
         {
-            string cleanedname = CleanFileName(filename);
-            if (!File.Exists(BaseDirectory + cleanedname))
+            int ind = FileIndex(filename);
+            if (ind == -1)
             {
-                throw new UnknownFileException(cleanedname);
+                throw new UnknownFileException(CleanFileName(filename));
             }
-            return File.ReadAllBytes(BaseDirectory + cleanedname);
+            PakkedFile file = Files[ind];
+            if (file.IsPakked)
+            {
+                MemoryStream ms = new MemoryStream();
+                Paks[file.PakIndex].Storer.ExtractFile(file.Entry, ms);
+                byte[] toret = ms.ToArray();
+                ms.Close();
+                return toret;
+            }
+            else
+            {
+                return File.ReadAllBytes(BaseDirectory + file.Name);
+            }
         }
 
         /// <summary>
@@ -111,7 +179,7 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         /// <param name="filename">The name of the file to read</param>
         /// <returns>The file's data, as a stream</returns>
-        public static DataStream ReadToStream(string filename)
+        public DataStream ReadToStream(string filename)
         {
             return new DataStream(ReadBytes(filename));
         }
@@ -121,30 +189,15 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         /// <param name="filename">The name of the file to read</param>
         /// <returns>The file's data, as a string</returns>
-        public static string ReadText(string filename)
+        public string ReadText(string filename)
         {
             return encoding.GetString(ReadBytes(filename)).Replace('\r', ' ');
         }
 
         /// <summary>
-        /// Returns a list of all files in a direction.
-        /// </summary>
-        /// <param name="filepath">The directory</param>
-        public static string[] ListFiles(string filepath)
-        {
-            string cleanedname = CleanFileName(filepath) + "/";
-            string[] toret = Directory.GetFiles(BaseDirectory + "/" + cleanedname, "*.*", SearchOption.TopDirectoryOnly);
-            for (int i = 0; i < toret.Length; i++)
-            {
-                toret[i] = CleanFileName(cleanedname + toret[i].Substring(toret[i].LastIndexOf('/')));
-            }
-            return toret;
-        }
-
-        /// <summary>
         /// Makes all directories along the filepath.
         /// </summary>
-        public static void MakeDirs(string filepath)
+        public void MakeDirs(string filepath)
         {
             string fname = BaseDirectory + CleanFileName(filepath) + "/";
             if (!Directory.Exists(fname))
@@ -158,7 +211,7 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         /// <param name="filename">The name of the file to write to</param>
         /// <param name="bytes">The byte data to write</param>
-        public static void WriteBytes(string filename, byte[] bytes)
+        public void WriteBytes(string filename, byte[] bytes)
         {
             string fname = CleanFileName(filename);
             string dir = Path.GetDirectoryName(BaseDirectory + fname);
@@ -174,25 +227,20 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         /// <param name="filename">The name of the file to write to</param>
         /// <param name="text">The text data to write</param>
-        public static void WriteText(string filename, string text)
+        public void WriteText(string filename, string text)
         {
             WriteBytes(filename, encoding.GetBytes(text.Replace('\r', ' ')));
         }
 
         /// <summary>
-        /// Adds text to a file/
+        /// Adds text to a file.
         /// </summary>
         /// <param name="filename">The name of the file to add to</param>
         /// <param name="text">The text data to add</param>
-        public static void AppendText(string filename, string text)
+        public void AppendText(string filename, string text)
         {
-            string fname = CleanFileName(filename);
-            string dir = Path.GetDirectoryName(BaseDirectory + fname);
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-            File.AppendAllText(BaseDirectory + fname, text.Replace('\r', ' '), encoding);
+            string textoutput = ReadText(filename);
+            WriteText(filename, textoutput + text);
         }
 
         /// <summary>
@@ -228,21 +276,41 @@ namespace OpenTKMapMaker.Utility
                 return output.ToArray();
             }
         }
+    }
 
-        /// <summary>
-        /// Returns a list of all filenames in a directory.
-        /// </summary>
-        /// <param name="dir">The directory to search</param>
-        /// <returns>All found files</returns>
-        public static List<string> AllFiles(string dir)
+    public class PakkedFile
+    {
+        public string Name = null;
+
+        public bool IsPakked = false;
+
+        public int PakIndex = -1;
+
+        public ZipStorer.ZipFileEntry Entry;
+
+        public PakkedFile(string name)
         {
-            string[] strs = Directory.GetFiles(BaseDirectory + "/" + CleanFileName(dir));
-            List<string> files = new List<string>();
-            for (int i = 0; i < strs.Length; i++)
-            {
-                files.Add(strs[i].Substring(strs[i].IndexOf('/') + 1));
-            }
-            return files;
+            Name = name;
+        }
+
+        public PakkedFile(string name, int index, ZipStorer.ZipFileEntry entry)
+        {
+            Name = name;
+            IsPakked = true;
+            PakIndex = index;
+            Entry = entry;
+        }
+    }
+
+    public class PakFile
+    {
+        public string Name = null;
+        public ZipStorer Storer = null;
+        public int FileListIndex = 0;
+        public PakFile(string name)
+        {
+            Name = name;
+            Storer = ZipStorer.Open(FileHandler.BaseDirectory + name, FileAccess.Read);
         }
     }
 }

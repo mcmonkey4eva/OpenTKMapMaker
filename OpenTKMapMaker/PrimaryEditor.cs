@@ -163,7 +163,6 @@ namespace OpenTKMapMaker
         {
             PRFMain = this;
             InitializeComponent();
-            SysConsole.Init();
             this.FormClosed += new FormClosedEventHandler(PrimaryEditor_FormClosed);
             menuStrip1.Renderer = new MyRenderer();
             PickCameraSpawn();

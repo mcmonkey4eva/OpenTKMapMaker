@@ -115,6 +115,7 @@
     <Compile Include="Utility\TextStyle.cs" />
     <Compile Include="Utility\UnknownFileException.cs" />
     <Compile Include="Utility\Utilities.cs" />
+    <Compile Include="Utility\ZipStorer.cs" />
     <EmbeddedResource Include="EntityControlForm.resx">
       <DependentUpon>EntityControlForm.cs</DependentUpon>
     </EmbeddedResource>

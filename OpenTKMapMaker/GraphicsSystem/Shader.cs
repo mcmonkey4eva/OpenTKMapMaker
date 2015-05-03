@@ -86,22 +86,22 @@ namespace OpenTKMapMaker.GraphicsSystem
             try
             {
                 filename = FileHandler.CleanFileName(filename);
-                if (!FileHandler.Exists("shaders/" + filename + ".vs"))
+                if (!Program.Files.Exists("shaders/" + filename + ".vs"))
                 {
                     SysConsole.Output(OutputType.ERROR, "Cannot load shader, file '" +
                         TextStyle.Color_Standout + "shaders/" + filename + ".vs" + TextStyle.Color_Error +
                         "' does not exist.");
                     return null;
                 }
-                if (!FileHandler.Exists("shaders/" + filename + ".fs"))
+                if (!Program.Files.Exists("shaders/" + filename + ".fs"))
                 {
                     SysConsole.Output(OutputType.ERROR, "Cannot load shader, file '" +
                         TextStyle.Color_Standout + "shaders/" + filename + ".fs" + TextStyle.Color_Error +
                         "' does not exist.");
                     return null;
                 }
-                string VS = FileHandler.ReadText("shaders/" + filename + ".vs");
-                string FS = FileHandler.ReadText("shaders/" + filename + ".fs");
+                string VS = Program.Files.ReadText("shaders/" + filename + ".vs");
+                string FS = Program.Files.ReadText("shaders/" + filename + ".fs");
                 return CreateShader(VS, FS, filename);
             }
             catch (Exception ex)
