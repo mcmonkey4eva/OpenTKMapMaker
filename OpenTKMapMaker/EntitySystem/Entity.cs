@@ -111,5 +111,7 @@ namespace OpenTKMapMaker.EntitySystem
         public virtual void OnDespawn()
         {
         }
+
+        public abstract Entity CreateInstance();
     }
 }

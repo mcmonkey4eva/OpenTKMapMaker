@@ -124,25 +124,7 @@ namespace OpenTKMapMaker
                 return;
             }
             Entity sel = Selected[0];
-            Entity ent;
-            // TODO: Abstractify this switch into a registry. Also abstractify everything entity related.
-            switch (text.ToLower())
-            {
-                case "cube":
-                    ent = new CubeEntity(sel.Position - new Location(1), sel.Position + new Location(1));
-                    break;
-                case "point_light":
-                    ent = new PointLightEntity(sel.Position, 50, new Location(1, 1, 1), false);
-                    break;
-                case "spawn":
-                    ent = new SpawnPointEntity(sel.Position);
-                    break;
-                case "model":
-                    ent = new ModelEntity("");
-                    break;
-                default:
-                    return;
-            }
+            Entity ent = GetForType(text.ToLower());
             ent.Position = sel.Position;
             ent.Angle = sel.Angle;
             ent.Velocity = sel.Velocity;
@@ -197,6 +179,17 @@ namespace OpenTKMapMaker
             CollisionDetectionSettings.AllowedPenetration = 0.001f;
             // Load a CollisionUtil instance
             Collision = new CollisionUtil(PhysicsWorld);
+            ents.Add("point_light", new PointLightEntity(new Location(0), 50, new Location(1), false));
+            ents.Add("cube", new CubeEntity(new Location(-1), new Location(1)));
+            ents.Add("spawn", new SpawnPointEntity(new Location(0)));
+            ents.Add("model", new ModelEntity(""));
+        }
+
+        Dictionary<string, Entity> ents = new Dictionary<string, Entity>();
+
+        public Entity GetForType(string type)
+        {
+            return ents[type].CreateInstance();
         }
 
         public Space PhysicsWorld;
@@ -1529,24 +1522,7 @@ namespace OpenTKMapMaker
                 }
                 return;
             }
-            Entity e;
-            switch (name) // TODO: Registry
-            {
-                case "cube":
-                    e = new CubeEntity(new Location(0), new Location(0));
-                    break;
-                case "point_light":
-                    e = new PointLightEntity(new Location(0), 1, new Location(1), false);
-                    break;
-                case "spawn":
-                    e = new SpawnPointEntity(new Location(0));
-                    break;
-                case "model":
-                    e = new ModelEntity("");
-                    break;
-                default:
-                    throw new Exception("Invalid entity type '" + name + "'!");
-            }
+            Entity e = GetForType(name.ToLower());
             for (int i = 0; i < dats.Length; i++)
             {
                 if (dats[i].Length <= 0)
@@ -1763,21 +1739,7 @@ namespace OpenTKMapMaker
                 }
                 foreach (ClipboardEntity ent in Clipboard)
                 {
-                    Entity et;
-                    switch (ent.entitytype.ToLower())
-                    {
-                        case "cube":
-                            et = new CubeEntity(new Location(-1), new Location(1));
-                            break;
-                        case "spawn":
-                            et = new SpawnPointEntity(new Location(0));
-                            break;
-                        case "point_light":
-                            et = new PointLightEntity(new Location(0), 50, new Location(1), false);
-                            break;
-                        default:
-                            goto next;
-                    }
+                    Entity et = GetForType(ent.entitytype.ToLower());
                     foreach (KeyValuePair<string, string> val in ent.variables)
                     {
                         et.ApplyVar(val.Key, val.Value);
@@ -1789,8 +1751,6 @@ namespace OpenTKMapMaker
                     et.Recalculate();
                     Spawn(et);
                     Select(et);
-                next:
-                    continue;
                 }
                 invalidateAll();
             }
@@ -1805,21 +1765,7 @@ namespace OpenTKMapMaker
                     }
                     foreach (ClipboardEntity ent in History[History.Count - 1])
                     {
-                        Entity et;
-                        switch (ent.entitytype.ToLower())
-                        {
-                            case "cube":
-                                et = new CubeEntity(new Location(-1), new Location(1));
-                                break;
-                            case "spawn":
-                                et = new SpawnPointEntity(new Location(0));
-                                break;
-                            case "point_light":
-                                et = new PointLightEntity(new Location(0), 50, new Location(1), false);
-                                break;
-                            default:
-                                goto next;
-                        }
+                        Entity et = GetForType(ent.entitytype.ToLower());
                         foreach (KeyValuePair<string, string> val in ent.variables)
                         {
                             et.ApplyVar(val.Key, val.Value);
@@ -1830,8 +1776,6 @@ namespace OpenTKMapMaker
                         }
                         et.Recalculate();
                         Spawn(et);
-                    next:
-                        continue;
                     }
                     invalidateAll();
                     History.RemoveAt(History.Count - 1);

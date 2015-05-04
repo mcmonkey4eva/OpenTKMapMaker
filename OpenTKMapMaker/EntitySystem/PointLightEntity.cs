@@ -130,5 +130,10 @@ namespace OpenTKMapMaker.EntitySystem
                 SysConsole.Output(OutputType.ERROR, "Failed to destroy light properly?!");
             }
         }
+
+        public override Entity CreateInstance()
+        {
+            return new PointLightEntity(Position, Radius, Color, false);
+        }
     }
 }

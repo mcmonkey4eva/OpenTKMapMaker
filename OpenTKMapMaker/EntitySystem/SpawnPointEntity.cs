@@ -64,5 +64,10 @@ namespace OpenTKMapMaker.EntitySystem
         {
             return "SPAWNENTITY{location=" + Position + "}";
         }
+
+        public override Entity CreateInstance()
+        {
+            return new SpawnPointEntity(Position);
+        }
     }
 }

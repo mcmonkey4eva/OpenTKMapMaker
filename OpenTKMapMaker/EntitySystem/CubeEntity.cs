@@ -212,6 +212,11 @@ namespace OpenTKMapMaker.EntitySystem
             return "CUBENTITY{mins=" + Mins + ";maxes=" + Maxes + ";textures=" + GetTextureString() + ";coords=" + GetCoordString() + ";mass=" + Mass
                 + ";velocity=" + Velocity + ";angle=" + Angle + ";angular_velocity=" + Angular_Velocity + "}";
         }
+
+        public override Entity CreateInstance()
+        {
+            return new CubeEntity(Mins, Maxes);
+        }
     }
 
     public enum CubeTexturePos
