@@ -22,7 +22,7 @@ namespace OpenTKMapMaker.EntitySystem
             Angle = Location.Zero;
             Angular_Velocity = Location.Zero;
             float f1 = (float)Utilities.UtilRandom.NextDouble();
-            ViewColor = new Color4(0f, 1 - f1, f1, 1f);
+            ViewColor = new Color4(f1, 0f, 1 - f1, 1f);
         }
 
         public Location Mins;

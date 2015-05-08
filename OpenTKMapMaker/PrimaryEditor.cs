@@ -117,6 +117,35 @@ namespace OpenTKMapMaker
             SetType(e.ClickedItem.Text);
         }
 
+        public void triggerTouchClicked(object sender, EventArgs e)
+        {
+            SetType("triggertouch");
+        }
+
+        public void TransferScale(Entity e1, Entity e2)
+        {
+            if (e1 is CubeEntity && e2 is CubeEntity)
+            {
+                ((CubeEntity)e1).Mins = ((CubeEntity)e2).Mins;
+                ((CubeEntity)e1).Maxes = ((CubeEntity)e2).Maxes;
+            }
+            if (e1 is CuboidalEntity && e2 is CubeEntity)
+            {
+                ((CuboidalEntity)e1).Mins = ((CubeEntity)e2).Mins;
+                ((CuboidalEntity)e1).Maxes = ((CubeEntity)e2).Maxes;
+            }
+            if (e1 is CubeEntity && e2 is CuboidalEntity)
+            {
+                ((CubeEntity)e1).Mins = ((CuboidalEntity)e2).Mins;
+                ((CubeEntity)e1).Maxes = ((CuboidalEntity)e2).Maxes;
+            }
+            if (e1 is CuboidalEntity && e2 is CuboidalEntity)
+            {
+                ((CuboidalEntity)e1).Mins = ((CuboidalEntity)e2).Mins;
+                ((CuboidalEntity)e1).Maxes = ((CuboidalEntity)e2).Maxes;
+            }
+        }
+
         public void SetType(string text)
         {
             if (Selected.Count != 1)
@@ -125,18 +154,22 @@ namespace OpenTKMapMaker
             }
             Entity sel = Selected[0];
             Entity ent = GetForType(text.ToLower());
-            ent.Position = sel.Position;
-            ent.Angle = sel.Angle;
-            ent.Velocity = sel.Velocity;
-            ent.Angular_Velocity = sel.Angular_Velocity;
-            ent.Friction = sel.Friction;
-            ent.Mass = sel.Mass;
-            ent.Solid = sel.Solid;
-            ent.Recalculate();
-            SavePoint();
-            Spawn(ent);
-            Despawn(sel);
-            Select(ent);
+            if (ent != null)
+            {
+                ent.Position = sel.Position;
+                ent.Angle = sel.Angle;
+                ent.Velocity = sel.Velocity;
+                ent.Angular_Velocity = sel.Angular_Velocity;
+                ent.Friction = sel.Friction;
+                ent.Mass = sel.Mass;
+                ent.Solid = sel.Solid;
+                TransferScale(ent, sel);
+                ent.Recalculate();
+                SavePoint();
+                Spawn(ent);
+                Despawn(sel);
+                Select(ent);
+            }
         }
 
         public CollisionUtil Collision;
@@ -163,8 +196,12 @@ namespace OpenTKMapMaker
             entityTypeChooser.Items.Add("Point_Light");
             entityTypeChooser.Items.Add("Spawn");
             entityTypeChooser.Items.Add("Model");
+            ToolStripDropDownButton tsddb = new ToolStripDropDownButton("Trigger*");
+            tsddb.DropDownItems.Add("TriggerTouch", null, new EventHandler(triggerTouchClicked));
+            entityTypeChooser.Items.Add(tsddb);
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
+            tsddb.DropDownItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
             entityTypeChooser.CreateControl();
             this.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
             this.glControlView.PreviewKeyDown += new PreviewKeyDownEventHandler(PrimaryEditor_PreviewKeyDown);
@@ -183,13 +220,19 @@ namespace OpenTKMapMaker
             ents.Add("cube", new CubeEntity(new Location(-1), new Location(1)));
             ents.Add("spawn", new SpawnPointEntity(new Location(0)));
             ents.Add("model", new ModelEntity(""));
+            ents.Add("triggertouch", new TriggerTouchEntity());
         }
 
         Dictionary<string, Entity> ents = new Dictionary<string, Entity>();
 
         public Entity GetForType(string type)
         {
-            return ents[type].CreateInstance();
+            Entity e;
+            if (ents.TryGetValue(type.ToLower(), out e))
+            {
+                return e.CreateInstance();
+            }
+            return null;
         }
 
         public Space PhysicsWorld;
@@ -363,7 +406,24 @@ namespace OpenTKMapMaker
                 {
                     context.Rendering.SetColor(Entities[i].ViewColor);
                 }
+                else if (Entities[i].Transp)
+                {
+                    continue;
+                }
                 Entities[i].Render(context);
+            }
+            if (!RenderLines)
+            {
+                GL.DepthMask(false);
+                for (int i = 0; i < Entities.Count; i++)
+                {
+                    if (!Entities[i].Transp)
+                    {
+                        continue;
+                    }
+                    Entities[i].Render(context);
+                }
+                GL.DepthMask(true);
             }
             if (RenderEntities && RenderLines)
             {
@@ -450,6 +510,7 @@ namespace OpenTKMapMaker
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.DstAlpha);
                 GL.Viewport(0, 0, context.Control.Width, context.Control.Height);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
                 GL.Enable(EnableCap.CullFace);
@@ -1038,6 +1099,44 @@ namespace OpenTKMapMaker
                             * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
                             * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
                         Location size = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins);
+                        BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z, 0f);
+                        box.CollisionInformation.UpdateBoundingBox();
+                        box.Position = ms.Position;
+                        box.Orientation = ms.Orientation;
+                        BEPUphysics.CollisionShapes.ConvexShapes.BoxShape boxshape = new BEPUphysics.CollisionShapes.ConvexShapes.BoxShape(0.01f, 0.01f, 0.01f);
+                        BEPUutilities.RigidTransform rt = new BEPUutilities.RigidTransform(start.ToBVector());
+                        BEPUutilities.Vector3 sweep = (end - start).ToBVector();
+                        BEPUutilities.RayHit rh;
+                        box.CollisionInformation.ConvexCast(boxshape, ref rt, ref sweep, out rh);
+                        if (rh.T > 0 && rh.T < 1)
+                        {
+                            hit = new Location(rh.Location.X, rh.Location.Y, rh.Location.Z);
+                        }
+                        else
+                        {
+                            hit = end;
+                        }
+                        _normal = new Location(rh.Normal.X, rh.Normal.Y, rh.Normal.Z);
+                    }
+                }
+                else if (Entities[i] is CuboidalEntity)
+                {
+                    if (Entities[i].Angle.IsCloseTo(new Location(0, 0, 0), 0.01f))
+                    {
+                        mins = ((CuboidalEntity)Entities[i]).Mins;
+                        maxes = ((CuboidalEntity)Entities[i]).Maxes;
+                        hit = CollisionUtil.RayTraceBox(new Location(0), mins, maxes, start, hitloc, out _normal);
+                    }
+                    else
+                    {
+                        // TODO: First-pass test using collision cuboids
+                        // TODO: handle scaling
+                        BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
+                        ms.Position = (((CuboidalEntity)Entities[i]).Maxes - ((CuboidalEntity)Entities[i]).Mins).ToBVector() / 2 + ((CuboidalEntity)Entities[i]).Mins.ToBVector();
+                        ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
+                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
+                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
+                        Location size = (((CuboidalEntity)Entities[i]).Maxes - ((CuboidalEntity)Entities[i]).Mins);
                         BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z, 0f);
                         box.CollisionInformation.UpdateBoundingBox();
                         box.Position = ms.Position;
@@ -1662,6 +1761,7 @@ namespace OpenTKMapMaker
             }
             else if (e.KeyCode == Keys.T && Selected.Count == 1)
             {
+                e.Handled = true;
                 entityTypeChooser.Show(glControlTop, 0, 0);
             }
             else if (e.KeyCode == Keys.N && Selected.Count == 1)

@@ -70,10 +70,12 @@
       <DependentUpon>EntityControlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EntitySystem\CubeEntity.cs" />
+    <Compile Include="EntitySystem\CuboidalEntity.cs" />
     <Compile Include="EntitySystem\Entity.cs" />
     <Compile Include="EntitySystem\ModelEntity.cs" />
     <Compile Include="EntitySystem\PointLightEntity.cs" />
     <Compile Include="EntitySystem\SpawnPointEntity.cs" />
+    <Compile Include="EntitySystem\TriggerTouchEntity.cs" />
     <Compile Include="FaceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
