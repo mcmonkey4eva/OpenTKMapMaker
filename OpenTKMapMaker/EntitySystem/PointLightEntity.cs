@@ -65,7 +65,7 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override string GetEntityType()
         {
-            return "point_light";
+            return "pointlight";
         }
 
         public override bool ApplyVar(string var, string value)

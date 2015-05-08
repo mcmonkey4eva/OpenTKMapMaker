@@ -173,7 +173,7 @@ namespace OpenTKMapMaker
             glControlView.GotFocus += new EventHandler(PrimaryEditor_GotFocus);
             entityTypeChooser = new ContextMenuStrip();
             entityTypeChooser.Items.Add("Cube");
-            entityTypeChooser.Items.Add("Point_Light");
+            entityTypeChooser.Items.Add("PointLight");
             entityTypeChooser.Items.Add("Spawn");
             entityTypeChooser.Items.Add("Model");
             ToolStripDropDownButton tsddb = new ToolStripDropDownButton("Trigger*");
@@ -196,7 +196,7 @@ namespace OpenTKMapMaker
             CollisionDetectionSettings.AllowedPenetration = 0.001f;
             // Load a CollisionUtil instance
             Collision = new CollisionUtil(PhysicsWorld);
-            ents.Add("point_light", new PointLightEntity(new Location(0), 50, new Location(1), false));
+            ents.Add("pointlight", new PointLightEntity(new Location(0), 50, new Location(1), false));
             ents.Add("cube", new CubeEntity(new Location(-1), new Location(1)));
             ents.Add("spawn", new SpawnPointEntity(new Location(0)));
             ents.Add("model", new ModelEntity(""));

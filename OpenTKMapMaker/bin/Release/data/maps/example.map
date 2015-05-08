@@ -23,7 +23,7 @@ cube
 	textures: common/example_top|common/example_bottom|common/example_xp|common/example_xm|common/example_yp|common/example_ym;
 	mass: 0;
 }
-point_light
+pointlight
 {
 	position: 0, 0, 30;
 	radius: 100;
