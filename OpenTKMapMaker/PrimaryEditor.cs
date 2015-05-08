@@ -415,6 +415,7 @@ namespace OpenTKMapMaker
             if (!RenderLines)
             {
                 GL.DepthMask(false);
+                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
                 for (int i = 0; i < Entities.Count; i++)
                 {
                     if (!Entities[i].Transp)
@@ -424,6 +425,7 @@ namespace OpenTKMapMaker
                     Entities[i].Render(context);
                 }
                 GL.DepthMask(true);
+                defaultBlending();
             }
             if (RenderEntities && RenderLines)
             {
@@ -489,6 +491,11 @@ namespace OpenTKMapMaker
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
+        static void defaultBlending()
+        {
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+        }
+
         static void InitGL(GLContext context)
         {
             try
@@ -509,8 +516,7 @@ namespace OpenTKMapMaker
                 context.Rendering.Init();
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-                //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.DstAlpha);
+                defaultBlending();
                 GL.Viewport(0, 0, context.Control.Width, context.Control.Height);
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
                 GL.Enable(EnableCap.CullFace);
