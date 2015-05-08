@@ -10,9 +10,10 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public class CubeEntity : Entity
+    public class CubeEntity : CuboidalEntity
     {
         public CubeEntity(Location min, Location max)
+            : base(min, max, "")
         {
             Mins = min;
             Maxes = max;
@@ -25,29 +26,14 @@ namespace OpenTKMapMaker.EntitySystem
             ViewColor = new Color4(f1, 0f, 1 - f1, 1f);
         }
 
-        public Location Mins;
-        public Location Maxes;
         public string[] Textures = new string[] { "top", "bottom", "xp", "xm", "yp", "ym" };
-        public TextureCoordinates[] Coords = new TextureCoordinates[] { new TextureCoordinates(), new TextureCoordinates(),
-            new TextureCoordinates(), new TextureCoordinates(), new TextureCoordinates(), new TextureCoordinates() };
 
-        public bool ContainsPoint(Location point)
-        {
-            return CollisionUtil.BoxContainsPoint(Mins, Maxes, point);
-        }
-
-        public void Include(Location point)
+        public override void Include(Location point)
         {
             Location pmax = Maxes;
             Location pmin = Mins;
             Location oldsize = pmax - pmin;
-            if (PrimaryEditor.stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
-            if (PrimaryEditor.stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
-            if (PrimaryEditor.stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
-            if (PrimaryEditor.stretch_y == -1 && point.Y < Maxes.Y) { Mins.Y = point.Y; }
-            if (PrimaryEditor.stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
-            if (PrimaryEditor.stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
-            Position = ((Maxes - Mins) / 2) + Mins;
+            base.Include(point);
             Location newsize = Maxes - Mins;
             Location adjust = newsize / oldsize;
             if (PrimaryEditor.autoStretch)
@@ -73,8 +59,6 @@ namespace OpenTKMapMaker.EntitySystem
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
-            vars.Add(new KeyValuePair<string, string>("mins", Mins.ToString()));
-            vars.Add(new KeyValuePair<string, string>("maxes", Maxes.ToString()));
             vars.Add(new KeyValuePair<string, string>("textures", GetTextureString()));
             vars.Add(new KeyValuePair<string,string>("coords", GetCoordString()));
             return vars;
@@ -89,14 +73,6 @@ namespace OpenTKMapMaker.EntitySystem
         {
             switch (var)
             {
-                case "mins":
-                    Mins = Location.FromString(value);
-                    Position = ((Maxes - Mins) / 2) + Mins;
-                    return true;
-                case "maxes":
-                    Maxes = Location.FromString(value);
-                    Position = ((Maxes - Mins) / 2) + Mins;
-                    return true;
                 case "textures":
                     string[] texes = value.Split('|');
                     if (texes.Length != 6)
@@ -128,18 +104,6 @@ namespace OpenTKMapMaker.EntitySystem
         public string GetCoordString()
         {
             return Coords[0] + "|" + Coords[1] + "|" + Coords[2] + "|" + Coords[3] + "|" + Coords[4] + "|" + Coords[5];
-        }
-
-        public Matrix4 RotMatrix()
-        {
-            Matrix4 mat = Matrix4.Identity;
-            if (!Angle.IsCloseTo(Location.Zero, 0.01f))
-            {
-                mat *= Matrix4.CreateRotationX((float)(Angle.X * Utilities.PI180))
-                    * Matrix4.CreateRotationY((float)(Angle.Y * Utilities.PI180))
-                    * Matrix4.CreateRotationZ((float)(Angle.Z * Utilities.PI180));
-            }
-            return mat;
         }
 
         public override void Render(GLContext context)

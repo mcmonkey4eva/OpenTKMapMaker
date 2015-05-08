@@ -122,30 +122,6 @@ namespace OpenTKMapMaker
             SetType("triggertouch");
         }
 
-        public void TransferScale(Entity e1, Entity e2)
-        {
-            if (e1 is CubeEntity && e2 is CubeEntity)
-            {
-                ((CubeEntity)e1).Mins = ((CubeEntity)e2).Mins;
-                ((CubeEntity)e1).Maxes = ((CubeEntity)e2).Maxes;
-            }
-            if (e1 is CuboidalEntity && e2 is CubeEntity)
-            {
-                ((CuboidalEntity)e1).Mins = ((CubeEntity)e2).Mins;
-                ((CuboidalEntity)e1).Maxes = ((CubeEntity)e2).Maxes;
-            }
-            if (e1 is CubeEntity && e2 is CuboidalEntity)
-            {
-                ((CubeEntity)e1).Mins = ((CuboidalEntity)e2).Mins;
-                ((CubeEntity)e1).Maxes = ((CuboidalEntity)e2).Maxes;
-            }
-            if (e1 is CuboidalEntity && e2 is CuboidalEntity)
-            {
-                ((CuboidalEntity)e1).Mins = ((CuboidalEntity)e2).Mins;
-                ((CuboidalEntity)e1).Maxes = ((CuboidalEntity)e2).Maxes;
-            }
-        }
-
         public void SetType(string text)
         {
             if (Selected.Count != 1)
@@ -163,7 +139,11 @@ namespace OpenTKMapMaker
                 ent.Friction = sel.Friction;
                 ent.Mass = sel.Mass;
                 ent.Solid = sel.Solid;
-                TransferScale(ent, sel);
+                if (ent is CuboidalEntity && sel is CuboidalEntity)
+                {
+                    ((CuboidalEntity)ent).Mins = ((CuboidalEntity)sel).Mins;
+                    ((CuboidalEntity)ent).Maxes = ((CuboidalEntity)sel).Maxes;
+                }
                 ent.Recalculate();
                 SavePoint();
                 Spawn(ent);
@@ -1001,7 +981,7 @@ namespace OpenTKMapMaker
                 }
                 else
                 {
-                    ((CubeEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.X : (int)top_mousepos.X,
+                    ((CuboidalEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.X : (int)top_mousepos.X,
                         ModifierKeys.HasFlag(Keys.Control) ? top_mousepos.Y : (int)top_mousepos.Y, Selected[0].Position.Z));
                 }
                 invalidateAll();
@@ -1046,11 +1026,11 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (Selected.Count == 1 && Selected[0] is CubeEntity
-                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z)))
+                if (Selected.Count == 1 && Selected[0] is CuboidalEntity
+                    && !((CuboidalEntity)Selected[0]).ContainsPoint(new Location(top_mousepos.X, top_mousepos.Y, Selected[0].Position.Z)))
                 {
                     top_stretching = true;
-                    CubeEntity ce = (CubeEntity)Selected[0];
+                    CuboidalEntity ce = (CuboidalEntity)Selected[0];
                     stretch_x = top_mousepos.X > ce.Maxes.X ? 1 : (top_mousepos.X < ce.Mins.X ? -1 : 0);
                     stretch_y = top_mousepos.Y > ce.Maxes.Y ? 1 : (top_mousepos.Y < ce.Mins.Y ? -1 : 0);
                     stretch_z = 0;
@@ -1299,7 +1279,7 @@ namespace OpenTKMapMaker
                 }
                 else
                 {
-                    ((CubeEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? side_mousepos.X : (int)side_mousepos.X,
+                    ((CuboidalEntity)Selected[0]).Include(new Location(ModifierKeys.HasFlag(Keys.Control) ? side_mousepos.X : (int)side_mousepos.X,
                         Selected[0].Position.Y, ModifierKeys.HasFlag(Keys.Control) ? side_mousepos.Z : (int)side_mousepos.Z));
                 }
                 invalidateAll();
@@ -1345,11 +1325,11 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (Selected.Count == 1 && Selected[0] is CubeEntity
-                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(side_mousepos.X, Selected[0].Position.Y, side_mousepos.Z)))
+                if (Selected.Count == 1 && Selected[0] is CuboidalEntity
+                    && !((CuboidalEntity)Selected[0]).ContainsPoint(new Location(side_mousepos.X, Selected[0].Position.Y, side_mousepos.Z)))
                 {
                     side_stretching = true;
-                    CubeEntity ce = (CubeEntity)Selected[0];
+                    CuboidalEntity ce = (CuboidalEntity)Selected[0];
                     stretch_x = side_mousepos.X > ce.Maxes.X ? 1 : (side_mousepos.X < ce.Mins.X ? -1 : 0);
                     stretch_y = 0;
                     stretch_z = side_mousepos.Z > ce.Maxes.Z ? 1 : (side_mousepos.Z < ce.Mins.Z ? -1 : 0);
@@ -1437,7 +1417,7 @@ namespace OpenTKMapMaker
                 }
                 else
                 {
-                    ((CubeEntity)Selected[0]).Include(new Location(Selected[0].Position.X, ModifierKeys.HasFlag(Keys.Control) ?
+                    ((CuboidalEntity)Selected[0]).Include(new Location(Selected[0].Position.X, ModifierKeys.HasFlag(Keys.Control) ?
                         oside_mousepos.Y : (int)oside_mousepos.Y, ModifierKeys.HasFlag(Keys.Control) ? oside_mousepos.Z : (int)oside_mousepos.Z));
                 }
                 invalidateAll();
@@ -1483,11 +1463,11 @@ namespace OpenTKMapMaker
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (Selected.Count == 1 && Selected[0] is CubeEntity
-                    && !((CubeEntity)Selected[0]).ContainsPoint(new Location(Selected[0].Position.X, oside_mousepos.Y, oside_mousepos.Z)))
+                if (Selected.Count == 1 && Selected[0] is CuboidalEntity
+                    && !((CuboidalEntity)Selected[0]).ContainsPoint(new Location(Selected[0].Position.X, oside_mousepos.Y, oside_mousepos.Z)))
                 {
                     oside_stretching = true;
-                    CubeEntity ce = (CubeEntity)Selected[0];
+                    CuboidalEntity ce = (CuboidalEntity)Selected[0];
                     stretch_x = 0;
                     stretch_y = oside_mousepos.Y > ce.Maxes.Y ? 1 : (oside_mousepos.Y < ce.Mins.Y ? -1 : 0);
                     stretch_z = oside_mousepos.Z > ce.Maxes.Z ? 1 : (oside_mousepos.Z < ce.Mins.Z ? -1 : 0);

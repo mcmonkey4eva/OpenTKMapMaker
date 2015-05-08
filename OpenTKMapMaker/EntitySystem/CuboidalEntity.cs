@@ -37,11 +37,8 @@ namespace OpenTKMapMaker.EntitySystem
             return CollisionUtil.BoxContainsPoint(Mins, Maxes, point);
         }
 
-        public void Include(Location point)
+        public virtual void Include(Location point)
         {
-            Location pmax = Maxes;
-            Location pmin = Mins;
-            Location oldsize = pmax - pmin;
             if (PrimaryEditor.stretch_x == 1 && point.X > Mins.X) { Maxes.X = point.X; }
             if (PrimaryEditor.stretch_x == -1 && point.X < Maxes.X) { Mins.X = point.X; }
             if (PrimaryEditor.stretch_y == 1 && point.Y > Mins.Y) { Maxes.Y = point.Y; }
@@ -49,8 +46,6 @@ namespace OpenTKMapMaker.EntitySystem
             if (PrimaryEditor.stretch_z == 1 && point.Z > Mins.Z) { Maxes.Z = point.Z; }
             if (PrimaryEditor.stretch_z == -1 && point.Z < Maxes.Z) { Mins.Z = point.Z; }
             Position = ((Maxes - Mins) / 2) + Mins;
-            Location newsize = Maxes - Mins;
-            Location adjust = newsize / oldsize;
         }
 
         public VBO MyVBO = null;
