@@ -1540,8 +1540,11 @@ namespace OpenTKMapMaker
 
         public void ClearMap()
         {
-            Entities.Clear();
-            Selected.Clear();
+            List<Entity> ents = new List<Entity>(Entities);
+            foreach (Entity ent in ents)
+            {
+                Despawn(ent);
+            }
         }
 
         public void LoadMap(string data)
