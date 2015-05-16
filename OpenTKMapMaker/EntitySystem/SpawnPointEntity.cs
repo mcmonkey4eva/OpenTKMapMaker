@@ -55,7 +55,7 @@ namespace OpenTKMapMaker.EntitySystem
                     context.Rendering.RenderLine(Position + new Location(0, 0, 1), Position + Utilities.ForwardVector_Deg(Angle.X, Angle.Y) + new Location(0, 0, 1));
                     GL.UniformMatrix4(2, false, ref mat);
                     context.Rendering.SetMinimumLight(1.0f);
-                    context.Models.Cube.Draw();
+                    context.Models.Cube.Draw(0);
                 }
             }
         }

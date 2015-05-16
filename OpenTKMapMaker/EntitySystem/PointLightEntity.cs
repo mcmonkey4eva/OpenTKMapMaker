@@ -106,7 +106,7 @@ namespace OpenTKMapMaker.EntitySystem
                     Matrix4 mat = Matrix4.CreateTranslation((Position - new Location(0.5f)).ToOVector());
                     GL.UniformMatrix4(2, false, ref mat);
                     context.Rendering.SetMinimumLight(1.0f);
-                    context.Models.Cube.Draw();
+                    context.Models.Cube.Draw(0);
                 }
             }
         }

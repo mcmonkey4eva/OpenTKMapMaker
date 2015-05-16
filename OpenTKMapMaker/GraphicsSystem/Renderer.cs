@@ -49,6 +49,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             {
                 cols[c] = new Vector4(1, 1, 1, 1);
             }
+            Vector4[] BoneIDs = new Vector4[4];
+            Vector4[] BoneWeights = new Vector4[4];
+            for (int n = 0; n < 4; n++)
+            {
+                BoneIDs[n] = new Vector4(0, 0, 0, 0);
+                BoneWeights[n] = new Vector4(0, 0, 0, 0);
+            }
             vecs[0] = new Vector3(1, 0, 0);
             texs[0] = new Vector3(1, 0, 0);
             vecs[1] = new Vector3(1, 1, 0);
@@ -63,6 +70,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             Square.Normals = norms.ToList();
             Square.TexCoords = texs.ToList();
             Square.Colors = cols.ToList();
+            Square.BoneIDs = BoneIDs.ToList();
+            Square.BoneWeights = BoneWeights.ToList();
             Square.GenerateVBO();
         }
 
@@ -85,6 +94,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             {
                 cols[c] = new Vector4(1, 1, 1, 1);
             }
+            Vector4[] BoneIDs = new Vector4[4];
+            Vector4[] BoneWeights = new Vector4[4];
+            for (int n = 0; n < 4; n++)
+            {
+                BoneIDs[n] = new Vector4(0, 0, 0, 0);
+                BoneWeights[n] = new Vector4(0, 0, 0, 0);
+            }
             vecs[0] = new Vector3(10000, -10000, 0);
             texs[0] = new Vector3(1000, -1000, 0);
             vecs[1] = new Vector3(10000, 10000, 0);
@@ -99,6 +115,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             Backgrid.Normals = norms.ToList();
             Backgrid.TexCoords = texs.ToList();
             Backgrid.Colors = cols.ToList();
+            Backgrid.BoneIDs = BoneIDs.ToList();
+            Backgrid.BoneWeights = BoneWeights.ToList();
             Backgrid.GenerateVBO();
         }
 
@@ -121,6 +139,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             {
                 cols[c] = new Vector4(1, 1, 1, 1);
             }
+            Vector4[] BoneIDs = new Vector4[2];
+            Vector4[] BoneWeights = new Vector4[2];
+            for (int n = 0; n < 2; n++)
+            {
+                BoneIDs[n] = new Vector4(0, 0, 0, 0);
+                BoneWeights[n] = new Vector4(0, 0, 0, 0);
+            }
             vecs[0] = new Vector3(0, 0, 0);
             texs[0] = new Vector3(0, 0, 0);
             vecs[1] = new Vector3(1, 0, 0);
@@ -131,6 +156,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             Line.Normals = norms.ToList();
             Line.TexCoords = texs.ToList();
             Line.Colors = cols.ToList();
+            Line.BoneIDs = BoneIDs.ToList();
+            Line.BoneWeights = BoneWeights.ToList();
             Line.GenerateVBO();
         }
 
@@ -157,6 +184,13 @@ namespace OpenTKMapMaker.GraphicsSystem
             for (int c = 0; c < 24; c++)
             {
                 cols[c] = new Vector4(1, 1, 1, 1);
+            }
+            Vector4[] BoneIDs = new Vector4[24];
+            Vector4[] BoneWeights = new Vector4[24];
+            for (int n = 0; n < 24; n++)
+            {
+                BoneIDs[n] = new Vector4(0, 0, 0, 0);
+                BoneWeights[n] = new Vector4(0, 0, 0, 0);
             }
             int i = 0;
             int zero = -1; // Ssh.
@@ -190,6 +224,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             Box.Normals = norms.ToList();
             Box.TexCoords = texs.ToList();
             Box.Colors = cols.ToList();
+            Box.BoneIDs = BoneIDs.ToList();
+            Box.BoneWeights = BoneWeights.ToList();
             Box.GenerateVBO();
         }
 

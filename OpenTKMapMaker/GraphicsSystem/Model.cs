@@ -75,10 +75,19 @@ namespace OpenTKMapMaker.GraphicsSystem
                     return LoadedModels[i];
                 }
             }
-            Model Loaded = LoadModel(modelname);
+            Model Loaded = null;
+            try
+            {
+                Loaded = LoadModel(modelname);
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, ex.ToString());
+            }
             if (Loaded == null)
             {
-                Loaded = FromBytes(modelname, FileHandler.encoding.GetBytes(CubeData));
+                Loaded = FromBytes("model.obj", FileHandler.encoding.GetBytes(CubeData));
+                Loaded.Name = modelname;
             }
             LoadedModels.Add(Loaded);
             return Loaded;
@@ -93,6 +102,11 @@ namespace OpenTKMapMaker.GraphicsSystem
         public Model FromBytes(string name, byte[] data)
         {
             Scene scene = Handler.LoadModel(data, name.Substring(name.LastIndexOf('.') + 1));
+            return FromScene(scene, name);
+        }
+
+        public Model FromScene(Scene scene, string name)
+        {
             if (!scene.HasMeshes)
             {
                 throw new Exception("Scene has no meshes!");
@@ -101,7 +115,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             model.OriginalModel = scene;
             foreach (Mesh mesh in scene.Meshes)
             {
-                ModelMesh modmesh = new ModelMesh(mesh.Name);
+                ModelMesh modmesh = new ModelMesh(mesh.Name, mesh);
+                modmesh.Base = scene;
                 modmesh.vbo.Prepare();
                 bool hastc = mesh.HasTextureCoords(0);
                 bool hasn = mesh.HasNormals;
@@ -143,13 +158,53 @@ namespace OpenTKMapMaker.GraphicsSystem
                     }
                     else
                     {
-                        SysConsole.Output(OutputType.WARNING, "Mesh has face with " + face.Indices.Count + " faces!!");
+                        SysConsole.Output(OutputType.WARNING, "Mesh has face with " + face.Indices.Count + " faces!");
+                    }
+                }
+                int bc = mesh.Bones.Count;
+                if (bc > 50)
+                {
+                    SysConsole.Output(OutputType.WARNING, "Mesh has " + bc + " bones!");
+                    bc = 50;
+                }
+                modmesh.vbo.BoneIDs = new Vector4[modmesh.vbo.Vertices.Count].ToList();
+                modmesh.vbo.BoneWeights = new Vector4[modmesh.vbo.Vertices.Count].ToList();
+                int[] pos = new int[modmesh.vbo.Vertices.Count];
+                for (int i = 0; i < bc; i++)
+                {
+                    for (int x = 0; x < mesh.Bones[i].VertexWeights.Count; x++)
+                    {
+                        VertexWeight vw = mesh.Bones[i].VertexWeights[x];
+                        int spot = pos[vw.VertexID]++;
+                        if (spot > 3)
+                        {
+                            SysConsole.Output(OutputType.WARNING, "Too many bones influencing " + vw.VertexID + "!");
+                            continue;
+                        }
+                        ForceSet(modmesh.vbo.BoneIDs, vw.VertexID, spot, i);
+                        ForceSet(modmesh.vbo.BoneWeights, vw.VertexID, spot, vw.Weight);
+                    }
+                    modmesh.Bones.Add(new ModelBone() { Internal = mesh.Bones[i] });
+                    if (!modmesh.BoneLookup.ContainsKey(mesh.Bones[i].Name))
+                    {
+                        modmesh.BoneLookup.Add(mesh.Bones[i].Name, modmesh.Bones.Count - 1);
+                    }
+                    else
+                    {
+                        SysConsole.Output(OutputType.WARNING, "Bone " + mesh.Bones[i].Name + " defined repeatedly!");
                     }
                 }
                 model.Meshes.Add(modmesh);
                 modmesh.GenerateVBO();
             }
             return model;
+        }
+
+        void ForceSet(List<Vector4> vecs, int ind, int subind, float val)
+        {
+            Vector4 vec = vecs[ind];
+            vec[subind] = val;
+            vecs[ind] = vec;
         }
     }
 
@@ -189,16 +244,211 @@ namespace OpenTKMapMaker.GraphicsSystem
             return null;
         }
 
+        void SetBones(Matrix4[] mats)
+        {
+            int bones = 50;
+            float[] set = new float[bones * 16];
+            for (int i = 0; i < mats.Length; i++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        set[i * 16 + x * 4 + y] = mats[i][x, y];
+                    }
+                }
+            }
+            for (int i = mats.Length; i < bones; i++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        set[i * 16 + x * 4 + y] = Matrix4.Identity[x, y];
+                    }
+                }
+            }
+            GL.UniformMatrix4(6, bones, false, set);
+        }
+
+        public Matrix4 convert(Matrix4x4 mat)
+        {
+            return new Matrix4(mat.A1, mat.A2, mat.A3, mat.A4,
+                mat.B1, mat.B2, mat.B3, mat.B4,
+                mat.C1, mat.C2, mat.C3, mat.C4,
+                mat.D1, mat.D2, mat.D3, mat.D4);
+        }
+
+        int findPos(double time, NodeAnimationChannel nodeAnim)
+        {
+            for (int i = 0; i < nodeAnim.PositionKeyCount - 1; i++)
+            {
+                if (time >= nodeAnim.PositionKeys[i].Time && time < nodeAnim.PositionKeys[i + 1].Time)
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        Assimp.Vector3D lerpPos(double aTime, NodeAnimationChannel nodeAnim)
+        {
+            if (nodeAnim.PositionKeyCount == 0)
+            {
+                return new Assimp.Vector3D(0, 0, 0);
+            }
+            if (nodeAnim.PositionKeyCount == 1)
+            {
+                return nodeAnim.PositionKeys[0].Value;
+            }
+            int index = findRotate(aTime, nodeAnim);
+            int nextIndex = index + 1;
+            if (nextIndex >= nodeAnim.PositionKeyCount)
+            {
+                return nodeAnim.PositionKeys[0].Value;
+            }
+            double deltaT = nodeAnim.PositionKeys[nextIndex].Time - nodeAnim.PositionKeys[index].Time;
+            double factor = (aTime - nodeAnim.PositionKeys[index].Time) / deltaT;
+            if (factor < 0 || factor > 1)
+            {
+                return nodeAnim.PositionKeys[0].Value;
+            }
+            Assimp.Vector3D start = nodeAnim.PositionKeys[index].Value;
+            Assimp.Vector3D end = nodeAnim.PositionKeys[nextIndex].Value;
+            Vector3D deltaV = end - start;
+            return start + (float)factor * deltaV;
+        }
+
+        int findRotate(double time, NodeAnimationChannel nodeAnim)
+        {
+            for (int i = 0; i < nodeAnim.RotationKeyCount - 1; i++)
+            {
+                if (time >= nodeAnim.RotationKeys[i].Time && time < nodeAnim.RotationKeys[i + 1].Time)
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        Assimp.Quaternion lerpRotate(double aTime, NodeAnimationChannel nodeAnim)
+        {
+            if (nodeAnim.RotationKeyCount == 0)
+            {
+                return new Assimp.Quaternion(0, 0, 0);
+            }
+            if (nodeAnim.RotationKeyCount == 1)
+            {
+                return nodeAnim.RotationKeys[0].Value;
+            }
+            int index = findRotate(aTime, nodeAnim);
+            int nextIndex = index + 1;
+            if (nextIndex >= nodeAnim.ScalingKeyCount)
+            {
+                return nodeAnim.RotationKeys[0].Value;
+            }
+            double deltaT = nodeAnim.RotationKeys[nextIndex].Time - nodeAnim.RotationKeys[index].Time;
+            double factor = (aTime - nodeAnim.RotationKeys[index].Time) / deltaT;
+            if (factor < 0 || factor > 1)
+            {
+                return nodeAnim.RotationKeys[0].Value;
+            }
+            Assimp.Quaternion start = nodeAnim.RotationKeys[index].Value;
+            Assimp.Quaternion end = nodeAnim.RotationKeys[nextIndex].Value;
+            Assimp.Quaternion res = Assimp.Quaternion.Slerp(start, end, (float)factor);
+            res.Normalize();
+            return res;
+        }
+
+        Matrix4 globalInverse = Matrix4.Identity;
+
+        public void UpdateTransforms(double aTime, Node pNode, Matrix4 transf)
+        {
+            try
+            {
+                string nodename = pNode.Name;
+                if (OriginalModel.AnimationCount == 0)
+                {
+                    foreach (ModelMesh mesh in Meshes)
+                    {
+                        foreach (ModelBone bone in mesh.Bones)
+                        {
+                            bone.Transform = Matrix4.Identity;
+                        }
+                    }
+                    return;
+                }
+                Animation pAnim = OriginalModel.Animations[0];
+                Matrix4 nodeTransf = Matrix4.Identity;
+                NodeAnimationChannel pNodeAnim = FindNodeAnim(pAnim, nodename);
+                if (pNodeAnim != null)
+                {
+                    nodeTransf = convert(Matrix4x4.FromTranslation(lerpPos(aTime, pNodeAnim))) * convert(new Matrix4x4(lerpRotate(aTime, pNodeAnim).GetMatrix()));
+                }
+                Matrix4 global = transf * nodeTransf;
+                foreach (ModelMesh mesh in Meshes)
+                {
+                    int pos;
+                    if (mesh.BoneLookup.TryGetValue(nodename, out pos))
+                    {
+                        mesh.Bones[pos].Transform = global * convert(mesh.Bones[pos].Internal.OffsetMatrix);
+                    }
+                }
+                for (int i = 0; i < pNode.ChildCount; i++)
+                {
+                    UpdateTransforms(aTime, pNode.Children[i], global);
+                }
+            }
+            catch (Exception ex)
+            {
+                SysConsole.Output(OutputType.ERROR, ex.ToString());
+            }
+        }
+
+        NodeAnimationChannel FindNodeAnim(Animation pAnim, string nodeName)
+        {
+            for (int i = 0; i < pAnim.NodeAnimationChannelCount; i++)
+            {
+                NodeAnimationChannel nac = pAnim.NodeAnimationChannels[i];
+                if (nac.NodeName == nodeName)
+                {
+                    return nac;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Draws the model.
         /// </summary>
-        public void Draw()
+        public void Draw(double aTime)
         {
             for (int i = 0; i < Meshes.Count; i++)
             {
+                if (Meshes[i].Bones.Count > 0)
+                {
+                    globalInverse = convert(OriginalModel.RootNode.Transform).Inverted();
+                    UpdateTransforms(aTime, OriginalModel.RootNode, Matrix4.Identity);
+                    Matrix4[] mats = new Matrix4[Meshes[i].Bones.Count];
+                    for (int x = 0; x < Meshes[i].Bones.Count; x++)
+                    {
+                        mats[x] = Meshes[i].Bones[x].Transform;
+                    }
+                    SetBones(mats);
+                }
                 Meshes[i].Draw();
+                if (Meshes[i].Bones.Count > 0)
+                {
+                    VBO.BonesIdentity();
+                }
             }
         }
+    }
+
+    public class ModelBone
+    {
+        public Bone Internal = null;
+        public Matrix4 Transform = Matrix4.Identity;
     }
 
     public class ModelMesh
@@ -208,10 +458,21 @@ namespace OpenTKMapMaker.GraphicsSystem
         /// </summary>
         public string Name;
 
-        public ModelMesh(string _name)
+        public Scene Base;
+
+        public Mesh Original;
+
+        public List<ModelBone> Bones;
+
+        public Dictionary<string, int> BoneLookup;
+
+        public ModelMesh(string _name, Mesh orig)
         {
+            Original = orig;
             Name = _name.ToLower();
             Faces = new List<ModelFace>();
+            Bones = new List<ModelBone>();
+            BoneLookup = new Dictionary<string, int>();
             vbo = new VBO();
         }
 
