@@ -44,6 +44,7 @@ namespace OpenTKMapMaker
             s_main = ContextView.Shaders.GetShader("test");
             s_fbo = ContextView.Shaders.GetShader("fbo");
             s_shadowadder = ContextView.Shaders.GetShader("shadowadder");
+            s_transponly = ContextView.Shaders.GetShader("transponly");
             view_generateLightHelpers();
             view_loaded = true;
         }
@@ -101,6 +102,7 @@ namespace OpenTKMapMaker
         Shader s_main;
         Shader s_fbo;
         Shader s_shadowadder;
+        Shader s_transponly;
         RenderSurface4Part RS4P;
 
         Matrix4 proj;
@@ -137,7 +139,7 @@ namespace OpenTKMapMaker
                         for (int x = 0; x < Lights[i].InternalLights.Count; x++)
                         {
                             Lights[i].InternalLights[x].Attach();
-                            Render3D(CurrentContext, false, false, false, false, false);
+                            Render3D(CurrentContext, false, false, true, false);
                             Lights[i].InternalLights[x].Complete();
                         }
                     }
@@ -150,7 +152,7 @@ namespace OpenTKMapMaker
                     GL.UniformMatrix4(1, false, ref combined);
                     GL.ActiveTexture(TextureUnit.Texture0);
                     RS4P.Bind();
-                    Render3D(CurrentContext, true, false, true, true, false);
+                    Render3D(CurrentContext, true, false, true, true);
                     RS4P.Unbind();
                     GL.BindFramebuffer(FramebufferTarget.Framebuffer, fbo_main);
                     GL.ClearBuffer(ClearBuffer.Color, 0, new float[] { 0.0f, 0.0f, 0.0f, 1.0f });
@@ -225,13 +227,14 @@ namespace OpenTKMapMaker
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, 0);
-                    CurrentContext.Shaders.ColorMultShader.Bind();
+                    s_transponly.Bind();
                     GL.UniformMatrix4(1, false, ref combined);
                     GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, RS4P.fbo);
                     GL.BlitFramebuffer(0, 0, glControlView.Width, glControlView.Height, 0, 0, glControlView.Width, glControlView.Height, ClearBufferMask.DepthBufferBit, BlitFramebufferFilter.Nearest);
                     GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-                    RenderLights = false;
-                    rendertransp(CurrentContext);
+                    Render3D(CurrentContext, false, false, true, false);
+                    CurrentContext.Shaders.ColorMultShader.Bind();
+                    GL.UniformMatrix4(1, false, ref combined);
                     GL.Enable(EnableCap.CullFace);
                     if (wireframe)
                     {
@@ -247,7 +250,7 @@ namespace OpenTKMapMaker
                     view = Matrix4.LookAt(CameraPos.ToOVector(), CameraTarget.ToOVector(), CameraUp.ToOVector());
                     combined = view * proj;
                     GL.UniformMatrix4(1, false, ref combined);
-                    Render3D(CurrentContext, true, false, true, false, true);
+                    Render3D(CurrentContext, true, false, true, false);
                     if (wireframe)
                     {
                         renderWires(CurrentContext);

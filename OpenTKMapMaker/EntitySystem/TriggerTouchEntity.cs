@@ -11,7 +11,6 @@ namespace OpenTKMapMaker.EntitySystem
         public TriggerTouchEntity()
             : base(Location.Zero, Location.One, "common/trigger")
         {
-            Transp = true;
         }
 
         public string Target;

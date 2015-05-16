@@ -375,7 +375,7 @@ namespace OpenTKMapMaker
 
         public static bool RenderLights = false;
 
-        public void Render3D(GLContext context, bool render_entities, bool render_lines, bool render_textures, bool render_lights, bool render_transp)
+        public void Render3D(GLContext context, bool render_entities, bool render_lines, bool render_textures, bool render_lights)
         {
             RenderLines = render_lines;
             RenderEntities = render_entities;
@@ -387,16 +387,7 @@ namespace OpenTKMapMaker
                 {
                     context.Rendering.SetColor(Entities[i].ViewColor);
                 }
-                else if (Entities[i].Transp)
-                {
-                    continue;
-                }
                 Entities[i].Render(context);
-            }
-            
-            if (!RenderLines && render_transp)
-            {
-                rendertransp(context);
             }
             if (RenderEntities && RenderLines)
             {
@@ -405,22 +396,6 @@ namespace OpenTKMapMaker
                 context.Rendering.RenderLine(CameraPos, CameraPos + Utilities.ForwardVector_Deg(CameraYaw, CameraPitch) * 10);
                 context.Rendering.SetColor(Color4.White);
             }
-        }
-
-        public void rendertransp(GLContext context)
-        {
-            GL.DepthMask(false);
-            //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
-            for (int i = 0; i < Entities.Count; i++)
-            {
-                if (!Entities[i].Transp)
-                {
-                    continue;
-                }
-                Entities[i].Render(context);
-            }
-            GL.DepthMask(true);
-            //defaultBlending();
         }
 
         public void renderSelections(GLContext context, bool dtest)
@@ -548,7 +523,7 @@ namespace OpenTKMapMaker
                 top_backgrid.Bind();
                 CurrentContext.Rendering.RenderBackgrid(Matrix4.Identity);
                 CurrentContext.Textures.White.Bind();
-                Render3D(CurrentContext, true, true, false, false, true);
+                Render3D(CurrentContext, true, true, false, false);
                 renderSelections(CurrentContext, false);
                 ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
                 GL.Enable(EnableCap.Texture2D);
@@ -597,7 +572,7 @@ namespace OpenTKMapMaker
             ortho = view * ortho;
             side_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext, true, true, false, false, true);
+            Render3D(CurrentContext, true, true, false, false);
             renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);
@@ -641,7 +616,7 @@ namespace OpenTKMapMaker
             ortho = view * ortho;
             oside_proj = ortho;
             GL.UniformMatrix4(1, false, ref ortho);
-            Render3D(CurrentContext, true, true, false, false, true);
+            Render3D(CurrentContext, true, true, false, false);
             renderSelections(CurrentContext, false);
             ortho = Matrix4.CreateOrthographicOffCenter(0, CurrentContext.Control.Width, CurrentContext.Control.Height, 0, -1, 1);
             GL.Enable(EnableCap.Texture2D);

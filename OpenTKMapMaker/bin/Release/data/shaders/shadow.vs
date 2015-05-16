@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
-layout (location = 2) in vec2 texcoord;
+layout (location = 2) in vec2 texcoords;
 layout (location = 3) in vec4 color;
 layout (location = 4) in vec4 Weights;
 layout (location = 5) in vec4 BoneID;
@@ -15,6 +15,7 @@ layout (location = 2) uniform mat4 model_matrix;
 layout (location = 6) uniform mat4 boneTrans[MAX_BONES];
 
 layout (location = 0) out vec4 f_pos;
+layout (location = 1) out vec2 f_texcoord;
 
 void main()
 {
@@ -35,5 +36,6 @@ void main()
 		pos1 = vec4(position, 1.0);
 	}
 	f_pos = projection * model_matrix * vec4(pos1.xyz, 1.0);
+	f_texcoord = texcoords;
 	gl_Position = f_pos;
 }

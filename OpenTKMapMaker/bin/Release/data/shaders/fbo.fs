@@ -18,7 +18,7 @@ layout (location = 3) out vec4 renderhint;
 void main()
 {
 	vec4 col = texture(s, vec2(f_texcoord[0], f_texcoord[1]));
-	if (col.w < 0.1)
+	if (col.w < 0.9)
 	{
 		discard;
 	}

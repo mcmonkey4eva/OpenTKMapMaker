@@ -15,8 +15,6 @@ namespace OpenTKMapMaker.EntitySystem
             ViewColor = new Color4(1 - f1, f1, 0, 1f);
         }
 
-        public bool Transp = false;
-
         public virtual Location GetMins()
         {
             return new Location(-0.5f);
