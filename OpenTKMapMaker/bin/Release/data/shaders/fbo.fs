@@ -17,7 +17,12 @@ layout (location = 3) out vec4 renderhint;
 
 void main()
 {
-	color = texture(s, vec2(f_texcoord[0], f_texcoord[1]));
+	vec4 col = texture(s, vec2(f_texcoord[0], f_texcoord[1]));
+	if (col.w < 0.1)
+	{
+		discard;
+	}
+	color = col;
 	position = f_position;
 	normal = vec4(f_normal, 1.0);
 	renderhint = vec4(specular_strength, specular_power, minimum_light, 1.0);
