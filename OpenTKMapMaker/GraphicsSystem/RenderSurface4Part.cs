@@ -13,7 +13,7 @@ namespace OpenTKMapMaker.GraphicsSystem
     {
         public int Width;
         public int Height;
-        uint fbo;
+        public uint fbo;
         public uint DiffuseTexture;
         public uint PositionTexture;
         public uint NormalsTexture;

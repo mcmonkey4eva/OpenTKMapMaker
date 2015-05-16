@@ -25,7 +25,7 @@ namespace OpenTKMapMaker.EntitySystem
 
         public override string GetEntityType()
         {
-            return "trigggertouch";
+            return "triggertouch";
         }
 
         public override bool ApplyVar(string var, string value)
