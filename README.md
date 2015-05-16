@@ -53,6 +53,10 @@ CTRL-Z To undo last edit
 
 Backspace/Delete to delete selected entities
 
+### Tips
+
+Keep entities small. If you want a really big cuboid, make it up of ten smaller cuboids. This is to prevent transparency errors.
+
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
