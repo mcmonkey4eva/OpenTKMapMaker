@@ -7,51 +7,36 @@ Built within OpenTK, a C# binding of OpenGL for the 3D rendering, as well as Win
 
 ### Controls
 
-Mouse over or click any view to select it.
+- Mouse over or click any view to select it.
 
-3D View (Top Right):
+**3D View (Top Right):**
 
-WASD to move camera
+- WASD to move camera
+- Middle click to capture mouse - move mouse while captured to look around.
+- P to paint a texture onto the surface hovered over (Texture selected from the bottom right texture list)
+- Right mouse to select/deselect the object under the mouse
 
-Middle click to capture mouse - move mouse while captured to look around.
+**Top and Side View (Left), and Other Side View (Bottom right, leftmore):**
 
-P to paint a texture onto the surface hovered over (Texture selected from the bottom right texture list)
+- Middle click and drag to move around
+- Middle mouse wheel scroll to zoom in/out
+- Right mouse to select/deselect the object under the mouse
+- Left mouse and drag to move or resize objects
+- Space to spawn a new block under the mouse
+- Arrow Keys (Up/Down/Left/Right) to move the view around
+- WASD to move the view around more precisely
+- R key to rotate
+- C key to reposition the camera
 
-Right mouse to select/deselect the object under the mouse
+**Anywhere:**
 
-Top and Side View (Left), and Other Side View (Bottom right, leftmore):
-
-Middle click and drag to move around
-
-Middle mouse wheel scroll to zoom in/out
-
-Right mouse to select/deselect the object under the mouse
-
-Left mouse and drag to move or resize objects
-
-Space to spawn a new block under the mouse
-
-Arrow Keys (Up/Down/Left/Right) to move the view around
-
-WASD to move the view around more precisely
-
-R key to rotate
-
-Anywhere:
-
-T key to quick-change entity type
-
-N to open the entity settings view (While a single entity is selected)
-
-CTRL-X To cut selected entities
-
-CTRL-C To copy selected entities
-
-CTRL-V To paste copied/cut entities
-
-CTRL-Z To undo last edit
-
-Backspace/Delete to delete selected entities
+- T key to quick-change entity type
+- N to open the entity settings view (While a single entity is selected)
+- CTRL-X To cut selected entities
+- CTRL-C To copy selected entities
+- CTRL-V To paste copied/cut entities
+- CTRL-Z To undo last edit
+- Backspace/Delete to delete selected entities
 
 ### Tips
 

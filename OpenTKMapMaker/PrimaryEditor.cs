@@ -1910,6 +1910,11 @@ namespace OpenTKMapMaker
                 top_translate.X += 10f;
                 glControlTop.Invalidate();
             }
+            else if (e.KeyCode == Keys.C)
+            {
+                CameraPos = new Location(top_mousepos.X, top_mousepos.Y, CameraPos.Z);
+                invalidateAll();
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
@@ -1989,6 +1994,11 @@ namespace OpenTKMapMaker
                 side_translate.X -= 10f;
                 glControlSide.Invalidate();
             }
+            else if (e.KeyCode == Keys.C)
+            {
+                CameraPos = new Location(side_mousepos.X, CameraPos.Y, side_mousepos.Z);
+                invalidateAll();
+            }
             PrimaryEditor_KeyDown(sender, e);
         }
 
@@ -2047,6 +2057,11 @@ namespace OpenTKMapMaker
             {
                 oside_translate.X -= 10f;
                 glControlOSide.Invalidate();
+            }
+            else if (e.KeyCode == Keys.C)
+            {
+                CameraPos = new Location(CameraPos.X, oside_mousepos.Y, oside_mousepos.Z);
+                invalidateAll();
             }
             PrimaryEditor_KeyDown(sender, e);
         }
