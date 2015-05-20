@@ -44,6 +44,54 @@ namespace OpenTKMapMaker.Utility
         /// </summary>
         public double Z;
 
+        /// <summary>
+        /// If this location is an angle set, returns the Yaw value of this angle set.
+        /// Equivalent to Z.
+        /// </summary>
+        public double Yaw
+        {
+            get
+            {
+                return Z;
+            }
+            set
+            {
+                Z = value;
+            }
+        }
+
+        /// <summary>
+        /// If this location is an angle set, returns the Pitch value of this angle set.
+        /// Equivalent to Y.
+        /// </summary>
+        public double Pitch
+        {
+            get
+            {
+                return Y;
+            }
+            set
+            {
+                Y = value;
+            }
+        }
+
+        /// <summary>
+        /// If this location is an angle set, returns the Roll value of this angle set.
+        /// Equivalent to X.
+        /// </summary>
+        public double Roll
+        {
+            get
+            {
+                return X;
+            }
+            set
+            {
+                X = value;
+            }
+        }
+
         public double this[int index]
         {
             get

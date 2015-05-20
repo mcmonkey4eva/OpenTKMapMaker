@@ -929,14 +929,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(top_mousepos - ent.Position);
-                    if (ent is CubeEntity || ent is ModelEntity)
-                    {
-                        ent.Angle.Z = ang.X;
-                    }
-                    else
-                    {
-                        ent.Angle.X = ang.X;
-                    }
+                    ent.Angle.Z = ang.Z;
                 }
                 invalidateAll();
             }
@@ -1227,14 +1220,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(side_mousepos.X, side_mousepos.Z, side_mousepos.Y) - new Location(ent.Position.X, ent.Position.Z, ent.Position.Y));
-                    if (ent is CubeEntity || ent is ModelEntity)
-                    {
-                        ent.Angle.Y = -ang.X;
-                    }
-                    else
-                    {
-                        ent.Angle.Y = -ang.X;
-                    }
+                    ent.Angle.Y = -ang.Z;
                 }
                 invalidateAll();
             }
@@ -1365,14 +1351,7 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(oside_mousepos.Z, oside_mousepos.Y, oside_mousepos.X) - new Location(ent.Position.Z, ent.Position.Y, ent.Position.X));
-                    if (ent is CubeEntity || ent is ModelEntity)
-                    {
-                        ent.Angle.X = -ang.X;
-                    }
-                    else
-                    {
-                        ent.Angle.Y = -ang.X;
-                    }
+                    ent.Angle.X = -ang.Z;
                 }
                 invalidateAll();
             }

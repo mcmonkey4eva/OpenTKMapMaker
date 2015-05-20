@@ -342,7 +342,10 @@ namespace OpenTKMapMaker.Utility
                 {
                     yaw -= 360;
                 }
-                return new Location(yaw, pitch, 0);
+                Location loc = new Location();
+                loc.Yaw = yaw;
+                loc.Pitch = pitch;
+                return loc;
             }
         }
 

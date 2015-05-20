@@ -46,13 +46,13 @@ namespace OpenTKMapMaker.EntitySystem
                 if (PrimaryEditor.RenderLines)
                 {
                     context.Rendering.RenderLineBox(Position + mins, Position + maxes);
-                    context.Rendering.RenderLine(Position + new Location(0, 0, 1), Position + Utilities.ForwardVector_Deg(Angle.X, Angle.Y) + new Location(0, 0, 1));
+                    context.Rendering.RenderLine(Position + new Location(0, 0, 1), Position + Utilities.ForwardVector_Deg(Angle.Yaw, Angle.Pitch) + new Location(0, 0, 1));
                 }
                 else
                 {
                     context.Textures.White.Bind();
                     Matrix4 mat = Matrix4.CreateScale((GetMaxes() - GetMins()).ToOVector()) * Matrix4.CreateTranslation((Position + GetMins()).ToOVector());
-                    context.Rendering.RenderLine(Position + new Location(0, 0, 1), Position + Utilities.ForwardVector_Deg(Angle.X, Angle.Y) + new Location(0, 0, 1));
+                    context.Rendering.RenderLine(Position + new Location(0, 0, 1), Position + Utilities.ForwardVector_Deg(Angle.Yaw, Angle.Pitch) + new Location(0, 0, 1));
                     GL.UniformMatrix4(2, false, ref mat);
                     context.Rendering.SetMinimumLight(1.0f);
                     context.Models.Cube.Draw(0);
