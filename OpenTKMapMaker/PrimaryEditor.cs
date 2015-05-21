@@ -1542,8 +1542,8 @@ namespace OpenTKMapMaker
             }
         }
 
-        public Location ambient;
-        public string music;
+        public Location ambient = new Location(0.1f);
+        public string music = "";
 
         public void LoadObj(string name, string dat)
         {
@@ -1723,10 +1723,17 @@ namespace OpenTKMapMaker
                 e.Handled = true;
                 entityTypeChooser.Show(glControlTop, 0, 0);
             }
-            else if (e.KeyCode == Keys.N && Selected.Count == 1)
+            else if (e.KeyCode == Keys.N && Selected.Count <= 1)
             {
                 SavePoint();
-                ecf = new EntityControlForm(Selected[0]);
+                if (Selected.Count == 0)
+                {
+                    ecf = new EntityControlForm(null);
+                }
+                else
+                {
+                    ecf = new EntityControlForm(Selected[0]);
+                }
                 view_selected = false;
                 top_selected = false;
                 side_selected = false;
@@ -2203,6 +2210,39 @@ namespace OpenTKMapMaker
         {
             autoStretch = !autoStretch;
             textureAutoStretchToolStripMenuItem.Checked = autoStretch;
+        }
+
+        public static List<KeyValuePair<string, string>> GetVars()
+        {
+            List<KeyValuePair<string, string>> vars = new List<KeyValuePair<string, string>>();
+            vars.Add(new KeyValuePair<string, string>("music", PRFMain.music));
+            Location amb = PRFMain.ambient;
+            vars.Add(new KeyValuePair<string, string>("ambient", amb.ToString()));
+            return vars;
+        }
+
+        public static void ApplyVar(string var, string value)
+        {
+            switch (var)
+            {
+                case "music":
+                    PRFMain.music = value;
+                    return;
+                case "ambient":
+                    PRFMain.ambient = MiniHelper.LFS(value);
+                    return;
+                default:
+                    SysConsole.Output(OutputType.WARNING, "Invalid variable: " + var);
+                    return;
+            }
+        }
+    }
+
+    class MiniHelper
+    {
+        public static Location LFS(string str)
+        {
+            return Location.FromString(str);
         }
     }
 

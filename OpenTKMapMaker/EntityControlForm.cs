@@ -26,8 +26,18 @@ namespace OpenTKMapMaker
 
         public void recalc()
         {
-            label1.Text = "Entity: " + ent.GetEntityType();
-            textBox2.Text = ent.GetEntityType();
+            if (ent == null)
+            {
+                label1.Text = "Entity: /WORLD/";
+                textBox2.Text = "/WORLD/";
+                textBox2.ReadOnly = true;
+            }
+            else
+            {
+                label1.Text = "Entity: " + ent.GetEntityType();
+                textBox2.Text = ent.GetEntityType();
+                textBox2.ReadOnly = false;
+            }
             resetListBoxContents();
             textBox1.ReadOnly = true;
         }
@@ -35,7 +45,15 @@ namespace OpenTKMapMaker
         void resetListBoxContents()
         {
             listBox1.Items.Clear();
-            List<KeyValuePair<string, string>> vars = ent.GetVars();
+            List<KeyValuePair<string, string>> vars;
+            if (ent != null)
+            {
+                vars = ent.GetVars();
+            }
+            else
+            {
+                vars = PrimaryEditor.GetVars();
+            }
             foreach (KeyValuePair<string, string> kvp in vars)
             {
                 if (kvp.Value == null)
@@ -53,8 +71,16 @@ namespace OpenTKMapMaker
         {
             if (textBox1.Text.Length > 0 && !textBox1.ReadOnly)
             {
-                ent.ApplyVar(label2.Text, textBox1.Text.Replace(Environment.NewLine, "\n").Replace("\r", ""));
-                ent.Recalculate();
+                string s2 = textBox1.Text.Replace(Environment.NewLine, "\n").Replace("\r", "");
+                if (ent != null)
+                {
+                    ent.ApplyVar(label2.Text, s2);
+                    ent.Recalculate();
+                }
+                else
+                {
+                    PrimaryEditor.ApplyVar(label2.Text, s2);
+                }
                 resetListBoxContents();
                 PrimaryEditor.PRFMain.invalidateAll();
             }
@@ -95,18 +121,21 @@ namespace OpenTKMapMaker
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            if (textBox2.Text.ToLower() != ent.GetEntityType().ToLower())
+            if (ent != null)
             {
-                PrimaryEditor.PRFMain.SetType(textBox2.Text);
-                if (PrimaryEditor.Selected.Count != 1)
+                if (textBox2.Text.ToLower() != ent.GetEntityType().ToLower())
                 {
-                    Close();
-                    return;
-                }
-                if (ent != PrimaryEditor.Selected[0])
-                {
-                    ent = PrimaryEditor.Selected[0];
-                    recalc();
+                    PrimaryEditor.PRFMain.SetType(textBox2.Text);
+                    if (PrimaryEditor.Selected.Count != 1)
+                    {
+                        Close();
+                        return;
+                    }
+                    if (ent != PrimaryEditor.Selected[0])
+                    {
+                        ent = PrimaryEditor.Selected[0];
+                        recalc();
+                    }
                 }
             }
         }

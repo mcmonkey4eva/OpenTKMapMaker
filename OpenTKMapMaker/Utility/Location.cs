@@ -370,7 +370,7 @@ namespace OpenTKMapMaker.Utility
             {
                 return new Location(0);
             }
-            return new Location(Utilities.StringToFloat(data[0]), Utilities.StringToFloat(data[1]), Utilities.StringToFloat(data[2]));
+            return new Location(Utilities.StringToDouble(data[0]), Utilities.StringToDouble(data[1]), Utilities.StringToDouble(data[2]));
         }
 
         /// <summary>
