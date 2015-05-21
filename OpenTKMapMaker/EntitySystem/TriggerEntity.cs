@@ -6,9 +6,9 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public class TriggerTouchEntity: CuboidalEntity
+    public abstract class TriggerEntity: CuboidalEntity
     {
-        public TriggerTouchEntity()
+        public TriggerEntity()
             : base(Location.Zero, Location.One, "common/trigger")
         {
         }
@@ -22,11 +22,6 @@ namespace OpenTKMapMaker.EntitySystem
             return vars;
         }
 
-        public override string GetEntityType()
-        {
-            return "triggertouch";
-        }
-
         public override bool ApplyVar(string var, string value)
         {
             switch (var)
@@ -37,11 +32,6 @@ namespace OpenTKMapMaker.EntitySystem
                 default:
                     return base.ApplyVar(var, value);
             }
-        }
-
-        public override Entity CreateInstance()
-        {
-            return new TriggerTouchEntity();
         }
     }
 }

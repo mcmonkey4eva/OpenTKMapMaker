@@ -117,9 +117,9 @@ namespace OpenTKMapMaker
             SetType(e.ClickedItem.Text);
         }
 
-        public void triggerTouchClicked(object sender, EventArgs e)
+        public void triggerGenericClicked(object sender, EventArgs e)
         {
-            SetType("triggertouch");
+            SetType("triggergeneric");
         }
 
         public void SetType(string text)
@@ -177,7 +177,7 @@ namespace OpenTKMapMaker
             entityTypeChooser.Items.Add("Spawn");
             entityTypeChooser.Items.Add("Model");
             ToolStripDropDownButton tsddb = new ToolStripDropDownButton("Trigger*");
-            tsddb.DropDownItems.Add("TriggerTouch", null, new EventHandler(triggerTouchClicked));
+            tsddb.DropDownItems.Add("TriggerGeneric", null, new EventHandler(triggerGenericClicked));
             entityTypeChooser.Items.Add(tsddb);
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
@@ -200,7 +200,7 @@ namespace OpenTKMapMaker
             ents.Add("cube", new CubeEntity(new Location(-1), new Location(1)));
             ents.Add("spawn", new SpawnPointEntity(new Location(0)));
             ents.Add("model", new ModelEntity(""));
-            ents.Add("triggertouch", new TriggerTouchEntity());
+            ents.Add("triggergeneric", new TriggerGenericEntity());
         }
 
         Dictionary<string, Entity> ents = new Dictionary<string, Entity>();
