@@ -38,7 +38,14 @@ namespace OpenTKMapMaker
             List<KeyValuePair<string, string>> vars = ent.GetVars();
             foreach (KeyValuePair<string, string> kvp in vars)
             {
-                listBox1.Items.Add(kvp.Key + ": " + kvp.Value);
+                if (kvp.Value == null)
+                {
+                    listBox1.Items.Add(kvp.Key + ": &NULL");
+                }
+                else
+                {
+                    listBox1.Items.Add(kvp.Key + ": " + kvp.Value.Replace("&", "&amp").Replace("\n", "&nl"));
+                }
             }
         }
 
@@ -46,7 +53,7 @@ namespace OpenTKMapMaker
         {
             if (textBox1.Text.Length > 0 && !textBox1.ReadOnly)
             {
-                ent.ApplyVar(label2.Text, textBox1.Text);
+                ent.ApplyVar(label2.Text, textBox1.Text.Replace(Environment.NewLine, "\n").Replace("\r", ""));
                 ent.Recalculate();
                 resetListBoxContents();
                 PrimaryEditor.PRFMain.invalidateAll();
@@ -68,9 +75,16 @@ namespace OpenTKMapMaker
             {
                 string[] data = res.Split(new char[] { ':' }, 2);
                 label2.Text = data[0];
-                textBox1.ReadOnly = true;
-                textBox1.Text = data[1].Trim();
+                textBox1.Text = data[1].Trim().Replace("&nl", "\r\n").Replace("&amp", "&");
                 textBox1.ReadOnly = false;
+                if (data[0].Contains("scriptcommands"))
+                {
+                    textBox1.Multiline = true;
+                }
+                else
+                {
+                    textBox1.Multiline = false;
+                }
             }
         }
 

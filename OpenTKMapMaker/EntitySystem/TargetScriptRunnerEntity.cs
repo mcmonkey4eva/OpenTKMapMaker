@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public class TriggerGenericEntity: TriggerEntity
+    class TargetScriptRunnerEntity: TargetEntity
     {
         public override string GetEntityType()
         {
-            return "triggergeneric";
+            return "targetscriptrunner";
         }
 
-        public TriggerType Trigger_Type = TriggerType.USE;
+        public string ScriptCommands = "";
 
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
-            vars.Add(new KeyValuePair<string, string>("trigger_type", Trigger_Type.ToString()));
+            vars.Add(new KeyValuePair<string, string>("scriptcommands", ScriptCommands));
             return vars;
         }
 
@@ -25,28 +26,18 @@ namespace OpenTKMapMaker.EntitySystem
         {
             switch (var)
             {
-                case "trigger_type":
-                    TriggerType ttype;
-                    if (Enum.TryParse(value.ToUpper(), out ttype))
-                    {
-                        Trigger_Type = ttype;
-                    }
+                case "scriptcommands":
+                    ScriptCommands = value;
                     return true;
                 default:
                     return base.ApplyVar(var, value);
             }
+
         }
 
         public override Entity CreateInstance()
         {
-            return new TriggerGenericEntity();
+            return new TargetScriptRunnerEntity();
         }
-    }
-
-    public enum TriggerType: byte
-    {
-        NONE = 0,
-        TOUCH = 1,
-        USE = 2
     }
 }

@@ -76,6 +76,8 @@
     <Compile Include="EntitySystem\ModelEntity.cs" />
     <Compile Include="EntitySystem\PointLightEntity.cs" />
     <Compile Include="EntitySystem\SpawnPointEntity.cs" />
+    <Compile Include="EntitySystem\TargetEntity.cs" />
+    <Compile Include="EntitySystem\TargetScriptRunnerEntity.cs" />
     <Compile Include="EntitySystem\TriggerEntity.cs" />
     <Compile Include="EntitySystem\TriggerGenericEntity.cs" />
     <Compile Include="FaceEditor.cs">

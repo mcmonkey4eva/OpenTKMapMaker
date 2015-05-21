@@ -122,6 +122,11 @@ namespace OpenTKMapMaker
             SetType("triggergeneric");
         }
 
+        public void targetSRClicked(object sender, EventArgs e)
+        {
+            SetType("targetscriptrunner");
+        }
+
         public void SetType(string text)
         {
             if (Selected.Count != 1)
@@ -179,6 +184,9 @@ namespace OpenTKMapMaker
             ToolStripDropDownButton tsddb = new ToolStripDropDownButton("Trigger*");
             tsddb.DropDownItems.Add("TriggerGeneric", null, new EventHandler(triggerGenericClicked));
             entityTypeChooser.Items.Add(tsddb);
+            ToolStripDropDownButton tsddb2 = new ToolStripDropDownButton("Target*");
+            tsddb2.DropDownItems.Add("TargetScriptRunner", null, new EventHandler(targetSRClicked));
+            entityTypeChooser.Items.Add(tsddb2);
             entityTypeChooser.Items.Add("Cancel.");
             entityTypeChooser.ItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
             tsddb.DropDownItemClicked += new ToolStripItemClickedEventHandler(entityTypeChooser_ItemClicked);
@@ -201,6 +209,7 @@ namespace OpenTKMapMaker
             ents.Add("spawn", new SpawnPointEntity(new Location(0)));
             ents.Add("model", new ModelEntity(""));
             ents.Add("triggergeneric", new TriggerGenericEntity());
+            ents.Add("targetscriptrunner", new TargetScriptRunnerEntity());
         }
 
         Dictionary<string, Entity> ents = new Dictionary<string, Entity>();

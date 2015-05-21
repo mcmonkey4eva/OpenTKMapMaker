@@ -13,7 +13,7 @@ namespace OpenTKMapMaker.EntitySystem
         {
         }
 
-        public string Target;
+        public string Target = "";
 
         public override List<KeyValuePair<string, string>> GetVars()
         {
