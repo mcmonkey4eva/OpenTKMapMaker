@@ -6,8 +6,13 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    class TargetPositionEntity: TargetEntity
+    class TargetPositionEntity : TargetEntity, EntityTargetting
     {
+        public string GetTarget()
+        {
+            return Target;
+        }
+        
         public override string GetEntityType()
         {
             return "targetposition";

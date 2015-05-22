@@ -6,8 +6,13 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public abstract class TriggerEntity: CuboidalEntity
+    public abstract class TriggerEntity: CuboidalEntity, EntityTargetting
     {
+        public string GetTarget()
+        {
+            return Target;
+        }
+        
         public TriggerEntity()
             : base(Location.Zero, Location.One, "common/trigger")
         {

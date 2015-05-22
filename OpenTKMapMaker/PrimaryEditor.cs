@@ -400,6 +400,19 @@ namespace OpenTKMapMaker
 
         public static bool RenderLights = false;
 
+        public List<Entity> GetTargets(string target)
+        {
+            List<Entity> ents = new List<Entity>();
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i] is EntityTargetable && ((EntityTargetable)Entities[i]).GetTargetName() == target)
+                {
+                    ents.Add(Entities[i]);
+                }
+            }
+            return ents;
+        }
+
         public void Render3D(GLContext context, bool render_entities, bool render_lines, bool render_textures, bool render_lights)
         {
             RenderLines = render_lines;
@@ -413,6 +426,14 @@ namespace OpenTKMapMaker
                     context.Rendering.SetColor(Entities[i].ViewColor);
                 }
                 Entities[i].Render(context);
+                if (RenderEntities && Entities[i] is EntityTargetting)
+                {
+                    List<Entity> targs = GetTargets(((EntityTargetting)Entities[i]).GetTarget());
+                    foreach (Entity target in targs)
+                    {
+                        context.Rendering.RenderLine(Entities[i].Position, target.Position);
+                    }
+                }
             }
             if (RenderEntities && RenderLines)
             {

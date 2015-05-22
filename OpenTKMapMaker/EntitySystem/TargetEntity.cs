@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public abstract class TargetEntity : Entity
+    public abstract class TargetEntity : Entity, EntityTargetable
     {
         public string Targetname = "";
 
@@ -18,6 +18,11 @@ namespace OpenTKMapMaker.EntitySystem
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("targetname", Targetname));
             return vars;
+        }
+
+        public string GetTargetName()
+        {
+            return Targetname;
         }
 
         public override bool ApplyVar(string var, string value)
