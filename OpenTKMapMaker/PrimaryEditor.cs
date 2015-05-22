@@ -1611,7 +1611,7 @@ namespace OpenTKMapMaker
                         throw new Exception("Invalid key '" + dats[i] + "'!");
                     }
                     string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
-                    switch (datum[0])
+                    switch (datum[0].Trim())
                     {
                         case "ambient":
                             ambient = Utilities.StringToLocation(det);
@@ -1620,7 +1620,7 @@ namespace OpenTKMapMaker
                             music = det;
                             break;
                         default:
-                            throw new Exception("Invalid key: " + datum[0] + "!");
+                            throw new Exception("Invalid key: " + datum[0].Trim() + "!");
                     }
                 }
                 return;

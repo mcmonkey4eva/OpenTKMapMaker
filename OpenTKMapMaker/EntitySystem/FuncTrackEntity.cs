@@ -6,7 +6,7 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    public class FuncTrackEntity: CubeEntity, EntityTargetting
+    public class FuncTrackEntity: CubeEntity, EntityTargetable, EntityTargetting
     {
         public string GetTarget()
         {
@@ -18,7 +18,14 @@ namespace OpenTKMapMaker.EntitySystem
         {
         }
 
+        public string GetTargetName()
+        {
+            return Targetname;
+        }
+
         public string Target = "";
+
+        public string Targetname = "";
 
         public float MinDistance = 0.1f;
 
@@ -30,6 +37,7 @@ namespace OpenTKMapMaker.EntitySystem
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("target", Target));
+            vars.Add(new KeyValuePair<string, string>("targetname", Targetname));
             vars.Add(new KeyValuePair<string, string>("mindistance", MinDistance.ToString()));
             vars.Add(new KeyValuePair<string, string>("loopsperactivation", LoopsPerActivation.ToString()));
             vars.Add(new KeyValuePair<string, string>("movespeed", MoveSpeed.ToString()));
@@ -42,6 +50,9 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 case "target":
                     Target = value;
+                    return true;
+                case "targetname":
+                    Targetname = value;
                     return true;
                 case "mindistance":
                     MinDistance = Utilities.StringToFloat(value);
