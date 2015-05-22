@@ -1610,16 +1610,17 @@ namespace OpenTKMapMaker
                     {
                         throw new Exception("Invalid key '" + dats[i] + "'!");
                     }
+                    string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
                     switch (datum[0])
                     {
                         case "ambient":
-                            ambient = Utilities.StringToLocation(datum[1]);
+                            ambient = Utilities.StringToLocation(det);
                             break;
                         case "music":
-                            music = datum[1];
+                            music = det;
                             break;
                         default:
-                            throw new Exception("Invalid key: " + datum[0].Trim() + "!");
+                            throw new Exception("Invalid key: " + datum[0] + "!");
                     }
                 }
                 return;
@@ -1637,11 +1638,12 @@ namespace OpenTKMapMaker
                     continue;
                 }
                 string[] datum = trimmed.Split(':');
+                string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
                 if (datum.Length != 2)
                 {
                     throw new Exception("Invalid key '" + dats[i] + "'!");
                 }
-                if (!e.ApplyVar(datum[0].Trim(), datum[1].Trim()))
+                if (!e.ApplyVar(datum[0].Trim(), det))
                 {
                     throw new Exception("Invalid key: " + datum[0].Trim() + "!");
                 }
@@ -1706,7 +1708,7 @@ namespace OpenTKMapMaker
                 List<KeyValuePair<string, string>> vars = Entities[i].GetVars();
                 for (int v = 0; v < vars.Count; v++)
                 {
-                    sb.Append("\t").Append(vars[v].Key).Append(": ").Append(vars[v].Value).Append(";\n");
+                    sb.Append("\t").Append(vars[v].Key).Append(": ").Append(vars[v].Value.Replace("&", "&amp").Replace("\n", "&nl").Replace(";", "&sc")).Append(";\n");
                 }
                 sb.Append("}\n");
             }

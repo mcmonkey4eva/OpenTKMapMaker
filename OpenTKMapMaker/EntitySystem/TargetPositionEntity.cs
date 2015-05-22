@@ -20,10 +20,13 @@ namespace OpenTKMapMaker.EntitySystem
 
         public string Target = "";
 
+        public float Modifier = 1f;
+
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("target", Target));
+            vars.Add(new KeyValuePair<string, string>("modifier", Modifier.ToString()));
             return vars;
         }
 
@@ -33,6 +36,9 @@ namespace OpenTKMapMaker.EntitySystem
             {
                 case "target":
                     Target = value;
+                    return true;
+                case "modifier":
+                    Modifier = Utilities.StringToFloat(value);
                     return true;
                 default:
                     return base.ApplyVar(var, value);

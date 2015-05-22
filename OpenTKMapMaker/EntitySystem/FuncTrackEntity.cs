@@ -24,12 +24,15 @@ namespace OpenTKMapMaker.EntitySystem
 
         public int LoopsPerActivation = 0;
 
+        public float MoveSpeed = 1f;
+
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("target", Target));
             vars.Add(new KeyValuePair<string, string>("mindistance", MinDistance.ToString()));
             vars.Add(new KeyValuePair<string, string>("loopsperactivation", LoopsPerActivation.ToString()));
+            vars.Add(new KeyValuePair<string, string>("movespeed", MoveSpeed.ToString()));
             return vars;
         }
 
@@ -45,6 +48,9 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "loopsperactivation":
                     LoopsPerActivation = Utilities.StringToInt(value);
+                    return true;
+                case "movespeed":
+                    MoveSpeed = Utilities.StringToFloat(value);
                     return true;
                 default:
                     return base.ApplyVar(var, value);
