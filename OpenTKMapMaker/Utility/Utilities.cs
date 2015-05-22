@@ -349,6 +349,52 @@ namespace OpenTKMapMaker.Utility
             }
         }
 
+        public static BEPUutilities.Quaternion StringToQuat(string input)
+        {
+            string[] data = input.Replace('(', ' ').Replace(')', ' ').Replace(" ", "").Split(',');
+            if (data.Length != 4)
+            {
+                return BEPUutilities.Quaternion.Identity;
+            }
+            return new BEPUutilities.Quaternion(StringToFloat(data[0]), StringToFloat(data[1]), StringToFloat(data[2]), StringToFloat(data[3]));
+        }
+
+        public static string QuatToString(BEPUutilities.Quaternion quat)
+        {
+            return "(" + quat.X + ", " + quat.Y + ", " + quat.Z + ", " + quat.W + ")";
+        }
+
+        public static Location ForwardVector(BEPUutilities.Quaternion quat)
+        {
+            return Location.FromBVector(BEPUutilities.Quaternion.Transform(BEPUutilities.Vector3.UnitX, quat));
+        }
+
+        public static BEPUutilities.Matrix LookAtLH(Location start, Location end, Location up)
+        {
+            Location zAxis = (end - start).Normalize();
+            Location xAxis = up.CrossProduct(zAxis).Normalize();
+            Location yAxis = zAxis.CrossProduct(xAxis);
+            return new BEPUutilities.Matrix((float)xAxis.X, (float)yAxis.X, (float)zAxis.X, 0, (float)xAxis.Y,
+                (float)yAxis.Y, (float)zAxis.Y, 0, (float)xAxis.Z, (float)yAxis.Z, (float)zAxis.Z, 0,
+                (float)-xAxis.Dot(start), (float)-yAxis.Dot(start), (float)-zAxis.Dot(start), 1);
+        }
+
+        public static Location MatrixToAngles(BEPUutilities.Matrix WorldTransform)
+        {
+            Location rot;
+            rot.X = Math.Atan2(WorldTransform.M32, WorldTransform.M33) * 180 / Math.PI;
+            rot.Y = -Math.Asin(WorldTransform.M31) * 180 / Math.PI;
+            rot.Z = Math.Atan2(WorldTransform.M21, WorldTransform.M11) * 180 / Math.PI;
+            return rot;
+        }
+
+        public static BEPUutilities.Matrix AnglesToMatrix(Location rot)
+        {
+            return BEPUutilities.Matrix.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(rot.X * Utilities.PI180))
+                    * BEPUutilities.Matrix.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(rot.Y * Utilities.PI180))
+                    * BEPUutilities.Matrix.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(rot.Z * Utilities.PI180));
+        }
+
         /// <summary>
         /// Validates a username as correctly formatted.
         /// </summary>

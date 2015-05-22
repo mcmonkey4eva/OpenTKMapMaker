@@ -25,7 +25,7 @@ namespace OpenTKMapMaker.EntitySystem
             Radius = rad;
             Color = col;
             Velocity = Location.Zero;
-            Angle = Location.Zero;
+            Angle = BEPUutilities.Quaternion.Identity;
             Angular_Velocity = Location.Zero;
             Mass = 0;
             if (generate)

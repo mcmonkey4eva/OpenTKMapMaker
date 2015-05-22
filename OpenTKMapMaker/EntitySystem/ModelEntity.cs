@@ -51,14 +51,8 @@ namespace OpenTKMapMaker.EntitySystem
 
         public Matrix4 RotMatrix()
         {
-            Matrix4 mat = Matrix4.Identity;
-            if (!Angle.IsCloseTo(Location.Zero, 0.01f))
-            {
-                mat *= Matrix4.CreateRotationX((float)(Angle.X * Utilities.PI180))
-                    * Matrix4.CreateRotationY((float)(Angle.Y * Utilities.PI180))
-                    * Matrix4.CreateRotationZ((float)(Angle.Z * Utilities.PI180));
-            }
-            return mat;
+            BEPUutilities.Matrix mat = BEPUutilities.Matrix.CreateFromQuaternion(Angle);
+            return new Matrix4(mat.M11, mat.M12, mat.M13, mat.M14, mat.M21, mat.M22, mat.M23, mat.M24, mat.M31, mat.M32, mat.M33, mat.M34, mat.M41, mat.M42, mat.M43, mat.M44);
         }
 
         public override void Render(GLContext context)

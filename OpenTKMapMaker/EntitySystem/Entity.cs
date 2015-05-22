@@ -28,7 +28,7 @@ namespace OpenTKMapMaker.EntitySystem
         public Color4 ViewColor;
 
         public Location Position;
-        public Location Angle;
+        public BEPUutilities.Quaternion Angle = BEPUutilities.Quaternion.Identity;
         public Location Velocity;
         public Location Angular_Velocity;
         public float Mass = 0f;
@@ -44,7 +44,7 @@ namespace OpenTKMapMaker.EntitySystem
         {
             List<KeyValuePair<string, string>> vars = new List<KeyValuePair<string, string>>();
             vars.Add(new KeyValuePair<string, string>("position", Position.ToString()));
-            vars.Add(new KeyValuePair<string, string>("angle", Angle.ToString()));
+            vars.Add(new KeyValuePair<string, string>("angle", Utilities.QuatToString(Angle)));
             vars.Add(new KeyValuePair<string, string>("velocity", Velocity.ToString()));
             vars.Add(new KeyValuePair<string, string>("angular_velocity", Angular_Velocity.ToString()));
             vars.Add(new KeyValuePair<string, string>("mass", Mass.ToString()));
@@ -63,7 +63,7 @@ namespace OpenTKMapMaker.EntitySystem
                     Position = Location.FromString(value);
                     return true;
                 case "angle":
-                    Angle = Location.FromString(value);
+                    Angle = Utilities.StringToQuat(value);
                     return true;
                 case "velocity":
                     Velocity = Location.FromString(value);

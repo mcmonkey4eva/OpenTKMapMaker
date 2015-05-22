@@ -20,7 +20,7 @@ namespace OpenTKMapMaker.EntitySystem
             Position = min + (max - min) / 2;
             Mass = 0;
             Velocity = Location.Zero;
-            Angle = Location.Zero;
+            Angle = BEPUutilities.Quaternion.Identity;
             Angular_Velocity = Location.Zero;
             float f1 = (float)Utilities.UtilRandom.NextDouble();
             ViewColor = new Color4(f1, 0f, 1 - f1, 1f);

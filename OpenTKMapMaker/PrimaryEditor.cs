@@ -981,7 +981,8 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(top_mousepos - ent.Position);
-                    ent.Angle.Z = ang.Z;
+                    Location pang = Utilities.MatrixToAngles(BEPUutilities.Matrix.CreateFromQuaternion(ent.Angle));
+                    ent.Angle *= BEPUutilities.Quaternion.CreateFromAxisAngle(BEPUutilities.Vector3.UnitZ, (float)((pang.Yaw - ang.Yaw) * Utilities.PI180));
                 }
                 invalidateAll();
             }
@@ -1096,7 +1097,7 @@ namespace OpenTKMapMaker
                 Location _normal;
                 if (Entities[i] is CubeEntity)
                 {
-                    if (Entities[i].Angle.IsCloseTo(new Location(0, 0, 0), 0.01f))
+                    if (Entities[i].Angle == BEPUutilities.Quaternion.Identity)
                     {
                         mins = ((CubeEntity)Entities[i]).Mins;
                         maxes = ((CubeEntity)Entities[i]).Maxes;
@@ -1108,9 +1109,7 @@ namespace OpenTKMapMaker
                         // TODO: handle scaling
                         BEPUphysics.EntityStateManagement.MotionState ms = new BEPUphysics.EntityStateManagement.MotionState();
                         ms.Position = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins).ToBVector() / 2 + ((CubeEntity)Entities[i]).Mins.ToBVector();
-                        ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
-                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
-                            * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
+                        ms.Orientation = Entities[i].Angle;
                         Location size = (((CubeEntity)Entities[i]).Maxes - ((CubeEntity)Entities[i]).Mins);
                         BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z, 0f);
                         box.CollisionInformation.UpdateBoundingBox();
@@ -1134,7 +1133,7 @@ namespace OpenTKMapMaker
                 }
                 else if (Entities[i] is CuboidalEntity)
                 {
-                    if (Entities[i].Angle.IsCloseTo(new Location(0, 0, 0), 0.01f))
+                    if (Entities[i].Angle == BEPUutilities.Quaternion.Identity)
                     {
                         mins = ((CuboidalEntity)Entities[i]).Mins;
                         maxes = ((CuboidalEntity)Entities[i]).Maxes;
@@ -1272,7 +1271,8 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(side_mousepos.X, side_mousepos.Z, side_mousepos.Y) - new Location(ent.Position.X, ent.Position.Z, ent.Position.Y));
-                    ent.Angle.Y = -ang.Z;
+                    Location pang = Utilities.MatrixToAngles(BEPUutilities.Matrix.CreateFromQuaternion(ent.Angle));
+                    ent.Angle *= BEPUutilities.Quaternion.CreateFromAxisAngle(BEPUutilities.Vector3.UnitY, (float)-((pang.Y + ang.Yaw) * Utilities.PI180)); // TODO: FIX ME! Does not rotate reasonably, can even go NaN!
                 }
                 invalidateAll();
             }
@@ -1403,7 +1403,8 @@ namespace OpenTKMapMaker
                 foreach (Entity ent in Selected)
                 {
                     Location ang = Utilities.VectorToAngles(new Location(oside_mousepos.Z, oside_mousepos.Y, oside_mousepos.X) - new Location(ent.Position.Z, ent.Position.Y, ent.Position.X));
-                    ent.Angle.X = -ang.Z;
+                    Location pang = Utilities.MatrixToAngles(BEPUutilities.Matrix.CreateFromQuaternion(ent.Angle));
+                    ent.Angle *= BEPUutilities.Quaternion.CreateFromAxisAngle(BEPUutilities.Vector3.UnitX, (float)((pang.X + ang.Yaw) * Utilities.PI180));
                 }
                 invalidateAll();
             }
