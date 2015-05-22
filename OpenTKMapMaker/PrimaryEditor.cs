@@ -132,6 +132,11 @@ namespace OpenTKMapMaker
             SetType("targetposition");
         }
 
+        public void targetStartClicked(object sender, EventArgs e)
+        {
+            SetType("targetstart");
+        }
+
         public void funcTrackClicked(object sender, EventArgs e)
         {
             SetType("functrack");
@@ -197,6 +202,7 @@ namespace OpenTKMapMaker
             ToolStripDropDownButton tsddb2 = new ToolStripDropDownButton("Target*");
             tsddb2.DropDownItems.Add("TargetScriptRunner", null, new EventHandler(targetSRClicked));
             tsddb2.DropDownItems.Add("TargetPosition", null, new EventHandler(targetPosClicked));
+            tsddb2.DropDownItems.Add("TargetStart", null, new EventHandler(targetStartClicked));
             entityTypeChooser.Items.Add(tsddb2);
             ToolStripDropDownButton tsddb3 = new ToolStripDropDownButton("Func*");
             tsddb3.DropDownItems.Add("FuncTrack", null, new EventHandler(funcTrackClicked));
@@ -225,6 +231,7 @@ namespace OpenTKMapMaker
             ents.Add("triggergeneric", new TriggerGenericEntity());
             ents.Add("targetscriptrunner", new TargetScriptRunnerEntity());
             ents.Add("targetposition", new TargetPositionEntity());
+            ents.Add("targetstart", new TargetStartEntity());
             ents.Add("functrack", new FuncTrackEntity(new Location(-1), new Location(1)));
         }
 
@@ -237,7 +244,6 @@ namespace OpenTKMapMaker
             {
                 return e.CreateInstance();
             }
-            SysConsole.Output(OutputType.WARNING, "Trying to get etype " + type + ", returning null!");
             return null;
         }
 
