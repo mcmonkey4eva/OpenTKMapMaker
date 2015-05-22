@@ -70,6 +70,8 @@
     <Compile Include="EntityControlForm.Designer.cs">
       <DependentUpon>EntityControlForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EntitySystem\FuncTrackEntity.cs" />
+    <Compile Include="EntitySystem\TargetPositionEntity.cs" />
     <Compile Include="EntitySystem\CubeEntity.cs" />
     <Compile Include="EntitySystem\CuboidalEntity.cs" />
     <Compile Include="EntitySystem\Entity.cs" />

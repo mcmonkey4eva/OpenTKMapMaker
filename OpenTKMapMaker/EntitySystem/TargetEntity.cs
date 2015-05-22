@@ -11,12 +11,12 @@ namespace OpenTKMapMaker.EntitySystem
 {
     public abstract class TargetEntity : Entity
     {
-        public string TargetName = "";
+        public string Targetname = "";
 
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
-            vars.Add(new KeyValuePair<string, string>("targetname", TargetName));
+            vars.Add(new KeyValuePair<string, string>("targetname", Targetname));
             return vars;
         }
 
@@ -25,7 +25,7 @@ namespace OpenTKMapMaker.EntitySystem
             switch (var)
             {
                 case "targetname":
-                    TargetName = value;
+                    Targetname = value;
                     return true;
                 default:
                     return base.ApplyVar(var, value);

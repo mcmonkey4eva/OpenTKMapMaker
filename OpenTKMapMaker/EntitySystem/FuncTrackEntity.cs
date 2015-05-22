@@ -6,19 +6,22 @@ using OpenTKMapMaker.Utility;
 
 namespace OpenTKMapMaker.EntitySystem
 {
-    class TargetPositionEntity: TargetEntity
+    public class FuncTrackEntity: CubeEntity
     {
-        public override string GetEntityType()
+        public FuncTrackEntity(Location min, Location max)
+            : base(min, max)
         {
-            return "targetposition";
         }
 
         public string Target = "";
+
+        public float MinDistance = 0.1f;
 
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("target", Target));
+            vars.Add(new KeyValuePair<string, string>("mindistance", MinDistance.ToString()));
             return vars;
         }
 
@@ -29,14 +32,22 @@ namespace OpenTKMapMaker.EntitySystem
                 case "target":
                     Target = value;
                     return true;
+                case "mindistance":
+                    MinDistance = Utilities.StringToFloat(value);
+                    return true;
                 default:
                     return base.ApplyVar(var, value);
             }
         }
 
+        public override string GetEntityType()
+        {
+            return "functrack";
+        }
+
         public override Entity CreateInstance()
         {
-            return new TargetPositionEntity();
+            return new FuncTrackEntity(Mins, Maxes);
         }
     }
 }
