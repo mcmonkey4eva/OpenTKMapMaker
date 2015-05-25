@@ -17,7 +17,7 @@ namespace OpenTKMapMaker.EntitySystem
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
-            vars.Add(new KeyValuePair<string, string>("trigger_type", Trigger_Type.ToString()));
+            vars.Add(new KeyValuePair<string, string>("trigger_type", Trigger_Type.ToString().ToLower()));
             return vars;
         }
 

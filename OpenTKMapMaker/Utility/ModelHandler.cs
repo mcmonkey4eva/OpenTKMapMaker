@@ -27,6 +27,29 @@ namespace OpenTKMapMaker.Utility
             }
         }
 
+        public List<Vector3> GetCollisionVertices(Scene input)
+        {
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> indices = new List<int>();
+            bool colOnly = false;
+            foreach (Mesh mesh in input.Meshes)
+            {
+                if (mesh.Name.ToLower().Contains("collision"))
+                {
+                    colOnly = true;
+                    break;
+                }
+            }
+            foreach (Mesh mesh in input.Meshes)
+            {
+                if (!colOnly || mesh.Name.ToLower().Contains("collision"))
+                {
+                    AddMesh(mesh, vertices, indices);
+                }
+            }
+            return vertices;
+        }
+
         public MobileMesh MeshToBepu(Scene input)
         {
             List<Vector3> vertices = new List<Vector3>();

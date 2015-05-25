@@ -1178,15 +1178,38 @@ namespace OpenTKMapMaker
                     ms.Orientation = BEPUutilities.Quaternion.CreateFromRotationMatrix(BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(1, 0, 0), (float)(Entities[i].Angle.X * Utilities.PI180))
                         * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 1, 0), (float)(Entities[i].Angle.Y * Utilities.PI180))
                         * BEPUutilities.Matrix3x3.CreateFromAxisAngle(new BEPUutilities.Vector3(0, 0, 1), (float)(Entities[i].Angle.Z * Utilities.PI180)));
-                    BEPUphysics.Entities.Prefabs.MobileMesh mesh = context.Models.Handler.MeshToBepu(context.Models.GetModel(((ModelEntity)Entities[i]).model).OriginalModel);
-                    mesh.Position = ms.Position + mesh.Position;
-                    mesh.Orientation = ms.Orientation;
-                    mesh.CollisionInformation.UpdateBoundingBox();
+                    BEPUphysics.BroadPhaseEntries.Collidable coll;
+                    if (((ModelEntity)Entities[i]).mode == ModelCollisionMode.PRECISE)
+                    {
+                        BEPUphysics.Entities.Prefabs.MobileMesh mesh = context.Models.Handler.MeshToBepu(context.Models.GetModel(((ModelEntity)Entities[i]).model).OriginalModel);
+                        mesh.Position = ms.Position + mesh.Position;
+                        mesh.Orientation = ms.Orientation;
+                        mesh.CollisionInformation.UpdateBoundingBox();
+                        coll = mesh.CollisionInformation;
+                    }
+                    else
+                    {
+                        List<BEPUutilities.Vector3> vecs = context.Models.Handler.GetCollisionVertices((context.Models.GetModel(((ModelEntity)Entities[i]).model).OriginalModel));
+                        Location zero = new Location(vecs[0].X, vecs[0].Y, vecs[0].Z);
+                        AABB abox = new AABB() { Min = zero, Max = zero };
+                        for (int v = 1; v < vecs.Count; v++)
+                        {
+                            abox.Include(new Location(vecs[v].X, vecs[v].Y, vecs[v].Z));
+                        }
+                        Location size = abox.Max - abox.Min;
+                        Location center = abox.Max - size / 2;
+                        ms.Position += center.ToBVector();
+                        BEPUphysics.Entities.Prefabs.Box box = new BEPUphysics.Entities.Prefabs.Box(ms, (float)size.X, (float)size.Y, (float)size.Z);
+                        box.Position = ms.Position;
+                        box.Orientation = ms.Orientation;
+                        box.CollisionInformation.UpdateBoundingBox();
+                        coll = box.CollisionInformation;
+                    }
                     BEPUphysics.CollisionShapes.ConvexShapes.BoxShape boxshape = new BEPUphysics.CollisionShapes.ConvexShapes.BoxShape(0.01f, 0.01f, 0.01f);
                     BEPUutilities.RigidTransform rt = new BEPUutilities.RigidTransform(start.ToBVector());
                     BEPUutilities.Vector3 sweep = (end - start).ToBVector();
                     BEPUutilities.RayHit rh;
-                    mesh.CollisionInformation.ConvexCast(boxshape, ref rt, ref sweep, out rh);
+                    coll.ConvexCast(boxshape, ref rt, ref sweep, out rh);
                     if (rh.T > 0 && rh.T < 1)
                     {
                         hit = new Location(rh.Location.X, rh.Location.Y, rh.Location.Z);

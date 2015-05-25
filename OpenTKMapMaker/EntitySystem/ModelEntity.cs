@@ -26,6 +26,8 @@ namespace OpenTKMapMaker.EntitySystem
             return "model";
         }
 
+        public ModelCollisionMode mode = ModelCollisionMode.AABB;
+
         public override bool ApplyVar(string var, string value)
         {
             switch (var)
@@ -35,6 +37,13 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "scale":
                     scale = Location.FromString(value);
+                    return true;
+                case "collisionmode":
+                    ModelCollisionMode newmode;
+                    if (Enum.TryParse(value.ToUpper(), out newmode))
+                    {
+                        mode = newmode;
+                    }
                     return true;
                 default:
                     return base.ApplyVar(var, value);
@@ -46,6 +55,7 @@ namespace OpenTKMapMaker.EntitySystem
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("model", model));
             vars.Add(new KeyValuePair<string, string>("scale", scale.ToString()));
+            vars.Add(new KeyValuePair<string, string>("collisionmode", mode.ToString().ToLower()));
             return vars;
         }
 
@@ -69,5 +79,11 @@ namespace OpenTKMapMaker.EntitySystem
         {
             return new ModelEntity(model);
         }
+    }
+
+    public enum ModelCollisionMode
+    {
+        PRECISE = 1,
+        AABB = 2
     }
 }
