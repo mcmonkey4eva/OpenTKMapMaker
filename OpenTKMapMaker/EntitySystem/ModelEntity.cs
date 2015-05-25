@@ -60,7 +60,9 @@ namespace OpenTKMapMaker.EntitySystem
             Matrix4 mat = Matrix4.CreateScale(scale.ToOVector()) * RotMatrix() * Matrix4.CreateTranslation(Position.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             context.Rendering.SetMinimumLight(0.0f);
-            context.Models.GetModel(model).Draw(0); // TODO: Handle more efficiently. Recalculate()?
+            Model rmodel = context.Models.GetModel(model); // TODO: Handle more efficiently. Recalculate()?
+            rmodel.LoadSkin(context.Textures);
+            rmodel.Draw(0);
         }
 
         public override Entity CreateInstance()

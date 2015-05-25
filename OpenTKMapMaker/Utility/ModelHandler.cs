@@ -23,7 +23,7 @@ namespace OpenTKMapMaker.Utility
             using (AssimpContext ACont = new AssimpContext())
             {
                 ACont.SetConfig(new NormalSmoothingAngleConfig(66f));
-                return ACont.ImportFileFromStream(new DataStream(data), PostProcessSteps.Triangulate | PostProcessSteps.SortByPrimitiveType, ext);
+                return ACont.ImportFileFromStream(new DataStream(data), PostProcessSteps.Triangulate, ext);
             }
         }
 
@@ -31,30 +31,46 @@ namespace OpenTKMapMaker.Utility
         {
             List<Vector3> vertices = new List<Vector3>();
             List<int> indices = new List<int>();
+            bool colOnly = false;
             foreach (Mesh mesh in input.Meshes)
             {
-                for (int i = 0; i < mesh.Vertices.Count; i++)
+                if (mesh.Name.ToLower().Contains("collision"))
                 {
-                    Vector3D vert = mesh.Vertices[i];
-                    vertices.Add(new Vector3(vert.X, vert.Y, vert.Z));
-                }
-                foreach (Face face in mesh.Faces)
-                {
-                    if (face.Indices.Count == 3)
-                    {
-                        for (int i = 2; i >= 0; i--)
-                        {
-                            indices.Add(face.Indices[i]);
-                        }
-                    }
-                    else
-                    {
-                        SysConsole.Output(OutputType.WARNING, "Mesh has face with " + face.Indices.Count + " faces!!");
-                    }
+                    colOnly = true;
+                    break;
                 }
             }
-            SysConsole.Output(OutputType.INFO, "Sweeping against a model with " + vertices.Count + " verts and " + indices.Count + " indices!");
+            foreach (Mesh mesh in input.Meshes)
+            {
+                if (!colOnly || mesh.Name.ToLower().Contains("collision"))
+                {
+                    AddMesh(mesh, vertices, indices);
+                }
+            }
             return new MobileMesh(vertices.ToArray(), indices.ToArray(), AffineTransform.Identity, MobileMeshSolidity.DoubleSided);
+        }
+
+        void AddMesh(Mesh mesh, List<Vector3> vertices, List<int> indices)
+        {
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                Vector3D vert = mesh.Vertices[i];
+                vertices.Add(new Vector3(vert.X, vert.Y, vert.Z));
+            }
+            foreach (Face face in mesh.Faces)
+            {
+                if (face.Indices.Count == 3)
+                {
+                    for (int i = 2; i >= 0; i--)
+                    {
+                        indices.Add(face.Indices[i]);
+                    }
+                }
+                else
+                {
+                    SysConsole.Output(OutputType.WARNING, "Mesh has face with " + face.Indices.Count + " faces!!");
+                }
+            }
         }
     }
 }

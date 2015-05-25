@@ -510,6 +510,8 @@ namespace OpenTKMapMaker
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
 
+        static AnimationEngine AnimEngine = new AnimationEngine();
+
         static void InitGL(GLContext context)
         {
             try
@@ -525,7 +527,7 @@ namespace OpenTKMapMaker
                 context.FontSets = new FontSetEngine(context.Fonts);
                 context.FontSets.Init();
                 context.Models = new ModelEngine();
-                context.Models.Init();
+                context.Models.Init(AnimEngine);
                 context.Rendering = new Renderer(context.Textures);
                 context.Rendering.Init();
                 GL.Enable(EnableCap.Texture2D);
