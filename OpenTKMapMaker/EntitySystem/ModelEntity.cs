@@ -7,6 +7,9 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTKMapMaker.Utility;
+using BEPUphysics.CollisionShapes;
+using BEPUphysics.Entities;
+using BEPUphysics.Entities.Prefabs;
 
 namespace OpenTKMapMaker.EntitySystem
 {
@@ -27,6 +30,8 @@ namespace OpenTKMapMaker.EntitySystem
         }
 
         public ModelCollisionMode mode = ModelCollisionMode.AABB;
+
+        public BEPUphysics.Entities.Entity mesh;
 
         public override bool ApplyVar(string var, string value)
         {
@@ -65,9 +70,50 @@ namespace OpenTKMapMaker.EntitySystem
             return new Matrix4(mat.M11, mat.M12, mat.M13, mat.M14, mat.M21, mat.M22, mat.M23, mat.M24, mat.M31, mat.M32, mat.M33, mat.M34, mat.M41, mat.M42, mat.M43, mat.M44);
         }
 
+        string pmodel = null;
+
+        Model internalModel;
+
+        Matrix4 offsetmat = Matrix4.Identity;
+
+        public void refreshModel(GLContext context)
+        {
+            if (model != pmodel)
+            {
+                pmodel = model;
+                internalModel = context.Models.GetModel(model);
+                if (mode == ModelCollisionMode.PRECISE)
+                {
+                    mesh = context.Models.Handler.MeshToBepu(internalModel.OriginalModel);
+                    offset = -Location.FromBVector(mesh.Position);
+                }
+                else
+                {
+                    List<BEPUutilities.Vector3> vecs = context.Models.Handler.GetCollisionVertices(internalModel.OriginalModel);
+                    Location zero = new Location(vecs[0].X, vecs[0].Y, vecs[0].Z);
+                    AABB abox = new AABB() { Min = zero, Max = zero };
+                    for (int v = 1; v < vecs.Count; v++)
+                    {
+                        abox.Include(new Location(vecs[v].X, vecs[v].Y, vecs[v].Z));
+                    }
+                    Location size = abox.Max - abox.Min;
+                    offset = abox.Max - size / 2;
+                    mesh = new BEPUphysics.Entities.Prefabs.Box(
+                        new BEPUphysics.EntityStateManagement.MotionState() { Position = Position.ToBVector(), Orientation = Angle },
+                        (float)size.X, (float)size.Y, (float)size.Z);
+                }
+                offsetmat = Matrix4.CreateTranslation(offset.ToOVector());
+            }
+            mesh.Position = Position.ToBVector();
+            mesh.Orientation = Angle;
+        }
+
+        public Location offset;
+
         public override void Render(GLContext context)
         {
-            Matrix4 mat = Matrix4.CreateScale(scale.ToOVector()) * RotMatrix() * Matrix4.CreateTranslation(Position.ToOVector());
+            refreshModel(context);
+            Matrix4 mat = offsetmat * Matrix4.CreateScale(scale.ToOVector()) * RotMatrix() * Matrix4.CreateTranslation(Position.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             context.Rendering.SetMinimumLight(0.0f);
             Model rmodel = context.Models.GetModel(model); // TODO: Handle more efficiently. Recalculate()?
@@ -81,7 +127,7 @@ namespace OpenTKMapMaker.EntitySystem
         }
     }
 
-    public enum ModelCollisionMode
+    public enum ModelCollisionMode : byte
     {
         PRECISE = 1,
         AABB = 2
