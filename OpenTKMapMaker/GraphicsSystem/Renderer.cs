@@ -258,8 +258,8 @@ namespace OpenTKMapMaker.GraphicsSystem
         {
             float len = (float)(end - start).Length();
             Location vecang = Utilities.VectorToAngles(start - end);
-            Matrix4 mat = Matrix4.CreateScale(len, len, len) * Matrix4.CreateRotationZ((float)(vecang.Z * Utilities.PI180))
-                * Matrix4.CreateRotationY((float)(-vecang.Y * Utilities.PI180)) * Matrix4.CreateTranslation(start.ToOVector());
+            Matrix4 mat = Matrix4.CreateScale(len, len, len) * Matrix4.CreateRotationZ((float)(vecang.Yaw * Utilities.PI180))
+                * Matrix4.CreateRotationY((float)(-vecang.Pitch * Utilities.PI180)) * Matrix4.CreateTranslation(start.ToOVector());
             GL.UniformMatrix4(2, false, ref mat);
             GL.BindVertexArray(Line._VAO);
             GL.DrawElements(PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, IntPtr.Zero);

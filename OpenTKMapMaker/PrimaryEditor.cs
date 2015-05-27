@@ -12,6 +12,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTKMapMaker.GraphicsSystem;
 using OpenTKMapMaker.Utility;
 using OpenTKMapMaker.EntitySystem;
+using OpenTKMapMaker.JointSystem;
 using System.IO;
 using BEPUphysics;
 using BEPUphysics.Settings;
@@ -30,6 +31,18 @@ namespace OpenTKMapMaker
 
         public static List<Entity> Entities = new List<Entity>();
 
+        public static Entity GetTarget(string jointtarget)
+        {
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                if (Entities[i].JointTargetID == jointtarget)
+                {
+                    return Entities[i];
+                }
+            }
+            return null;
+        }
+
         public static List<Entity> Selected = new List<Entity>();
 
         public ContextMenuStrip entityTypeChooser;
@@ -37,6 +50,8 @@ namespace OpenTKMapMaker
         public List<ClipboardEntity> Clipboard = new List<ClipboardEntity>();
 
         public List<List<ClipboardEntity>> History = new List<List<ClipboardEntity>>();
+
+        public List<BaseJoint> Joints = new List<BaseJoint>();
 
         public void Select(Entity e)
         {
@@ -439,6 +454,18 @@ namespace OpenTKMapMaker
                     {
                         context.Rendering.RenderLine(Entities[i].Position, target.Position);
                     }
+                }
+            }
+            if (RenderEntities)
+            {
+                if (RenderTextures)
+                {
+                    context.Textures.White.Bind();
+                }
+                context.Rendering.SetColor(Color4.Yellow);
+                for (int j = 0; j < Joints.Count; j++)
+                {
+                    Joints[j].Render(context);
                 }
             }
             if (RenderEntities && RenderLines)
@@ -1627,31 +1654,70 @@ namespace OpenTKMapMaker
                 }
                 return;
             }
-            Entity e = GetForType(name.ToLower());
-            for (int i = 0; i < dats.Length; i++)
+            string nl = name.ToLower();
+            if (nl.StartsWith("joint_"))
             {
-                if (dats[i].Length <= 0)
+                BaseJoint joint;
+                switch (name.Substring("joint_".Length))
                 {
-                    continue;
+                    case "ballsocket":
+                        joint = new JointBallSocket();
+                        break;
+                    default:
+                        throw new Exception("Invalid joint type '" + name + "'!");
                 }
-                string trimmed = dats[i].Trim();
-                if (trimmed.Length == 0)
+                for (int i = 0; i < dats.Length; i++)
                 {
-                    continue;
+                    if (dats[i].Length <= 0)
+                    {
+                        continue;
+                    }
+                    string trimmed = dats[i].Trim();
+                    if (trimmed.Length == 0)
+                    {
+                        continue;
+                    }
+                    string[] datum = trimmed.Split(':');
+                    if (datum.Length != 2)
+                    {
+                        throw new Exception("Invalid key '" + dats[i] + "'!");
+                    }
+                    string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
+                    if (!joint.ApplyVar(datum[0].Trim(), det))
+                    {
+                        throw new Exception("Invalid key: " + datum[0].Trim() + "!");
+                    }
                 }
-                string[] datum = trimmed.Split(':');
-                string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
-                if (datum.Length != 2)
-                {
-                    throw new Exception("Invalid key '" + dats[i] + "'!");
-                }
-                if (!e.ApplyVar(datum[0].Trim(), det))
-                {
-                    throw new Exception("Invalid key: " + datum[0].Trim() + "!");
-                }
+                Joints.Add(joint);
             }
-            e.Recalculate();
-            Spawn(e);
+            else
+            {
+                Entity e = GetForType(nl);
+                for (int i = 0; i < dats.Length; i++)
+                {
+                    if (dats[i].Length <= 0)
+                    {
+                        continue;
+                    }
+                    string trimmed = dats[i].Trim();
+                    if (trimmed.Length == 0)
+                    {
+                        continue;
+                    }
+                    string[] datum = trimmed.Split(':');
+                    string det = datum[1].Trim().Replace("&nl", "\n").Replace("&sc", ";").Replace("&amp", "&");
+                    if (datum.Length != 2)
+                    {
+                        throw new Exception("Invalid key '" + dats[i] + "'!");
+                    }
+                    if (!e.ApplyVar(datum[0].Trim(), det))
+                    {
+                        throw new Exception("Invalid key: " + datum[0].Trim() + "!");
+                    }
+                }
+                e.Recalculate();
+                Spawn(e);
+            }
         }
 
         public string file = null;
@@ -1708,6 +1774,17 @@ namespace OpenTKMapMaker
                 sb.Append(Entities[i].GetEntityType()).Append("\n");
                 sb.Append("{\n");
                 List<KeyValuePair<string, string>> vars = Entities[i].GetVars();
+                for (int v = 0; v < vars.Count; v++)
+                {
+                    sb.Append("\t").Append(vars[v].Key).Append(": ").Append(vars[v].Value.Replace("&", "&amp").Replace("\n", "&nl").Replace(";", "&sc")).Append(";\n");
+                }
+                sb.Append("}\n");
+            }
+            for (int i = 0; i < Joints.Count; i++)
+            {
+                sb.Append("joint_").Append(Joints[i].JType()).Append("\n");
+                sb.Append("{\n");
+                List<KeyValuePair<string, string>> vars = Joints[i].GetVars();
                 for (int v = 0; v < vars.Count; v++)
                 {
                     sb.Append("\t").Append(vars[v].Key).Append(": ").Append(vars[v].Value.Replace("&", "&amp").Replace("\n", "&nl").Replace(";", "&sc")).Append(";\n");

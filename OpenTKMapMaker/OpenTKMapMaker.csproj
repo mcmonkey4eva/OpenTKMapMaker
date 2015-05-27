@@ -106,6 +106,8 @@
     <Compile Include="GraphicsSystem\Texture.cs" />
     <Compile Include="GraphicsSystem\TextVBO.cs" />
     <Compile Include="GraphicsSystem\VBO.cs" />
+    <Compile Include="JointSystem\BaseJoint.cs" />
+    <Compile Include="JointSystem\JointBallSocket.cs" />
     <Compile Include="PrimaryEditor.cs">
       <SubType>Form</SubType>
     </Compile>
