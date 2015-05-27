@@ -37,6 +37,7 @@ namespace OpenTKMapMaker.EntitySystem
         public bool Solid = true;
         public bool Visible = true;
         public float Bounciness = 0f;
+        public string JointTargetID = "none";
 
         public abstract string GetEntityType();
 
@@ -52,6 +53,7 @@ namespace OpenTKMapMaker.EntitySystem
             vars.Add(new KeyValuePair<string, string>("bounciness", Bounciness.ToString()));
             vars.Add(new KeyValuePair<string, string>("solid", (Solid ? "true" : "false")));
             vars.Add(new KeyValuePair<string, string>("visible", (Visible ? "true" : "false")));
+            vars.Add(new KeyValuePair<string, string>("jointtargetid", JointTargetID));
             return vars;
         }
 
@@ -85,6 +87,9 @@ namespace OpenTKMapMaker.EntitySystem
                     return true;
                 case "visible":
                     Visible = value.ToLower() == "true";
+                    return true;
+                case "jointtargetid":
+                    JointTargetID = value;
                     return true;
                 default:
                     return false;
