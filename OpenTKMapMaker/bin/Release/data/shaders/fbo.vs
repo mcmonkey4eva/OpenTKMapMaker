@@ -11,11 +11,13 @@ layout (location = 0) out vec4 f_position;
 layout (location = 1) out vec3 f_normal;
 layout (location = 2) out vec2 f_texcoord;
 
-const int MAX_BONES = 50;
+const int MAX_BONES = 70;
 
-layout (location = 1) uniform mat4 proj_matrix;
-layout (location = 2) uniform mat4 mv_matrix;
-layout (location = 6) uniform mat4 boneTrans[MAX_BONES];
+layout (location = 1) uniform mat4 proj_matrix = mat4(1.0);
+layout (location = 2) uniform mat4 mv_matrix = mat4(1.0);
+// ...
+layout (location = 6) uniform mat4 simplebone_matrix = mat4(1.0);
+layout (location = 7) uniform mat4 boneTrans[MAX_BONES];
 
 void main(void)
 {
@@ -38,6 +40,10 @@ void main(void)
 		pos1 = vec4(position, 1.0);
 		norm1 = vec4(normal, 1.0);
 	}
+	pos1 *= simplebone_matrix;
+	norm1 *= simplebone_matrix;
+	//pos1 = simplebone_matrix * pos1;
+	//norm1 = simplebone_matrix * norm1;
 	f_texcoord = texcoords;
 	f_position = mv_matrix * vec4(pos1.xyz, 1.0);
 	mat4 mv_mat_simple = mv_matrix;
