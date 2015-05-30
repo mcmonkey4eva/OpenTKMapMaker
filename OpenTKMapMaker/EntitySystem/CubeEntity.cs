@@ -56,11 +56,14 @@ namespace OpenTKMapMaker.EntitySystem
 
         public List<VBO> VBOs = new List<VBO>();
 
+        public bool Water = false;
+
         public override List<KeyValuePair<string, string>> GetVars()
         {
             List<KeyValuePair<string, string>> vars = base.GetVars();
             vars.Add(new KeyValuePair<string, string>("textures", GetTextureString()));
-            vars.Add(new KeyValuePair<string,string>("coords", GetCoordString()));
+            vars.Add(new KeyValuePair<string, string>("coords", GetCoordString()));
+            vars.Add(new KeyValuePair<string, string>("water", Water ? "true": "false"));
             return vars;
         }
 
@@ -90,6 +93,9 @@ namespace OpenTKMapMaker.EntitySystem
                     Coords = new TextureCoordinates[] { TextureCoordinates.FromString(coords[0]), TextureCoordinates.FromString(coords[1]),
                         TextureCoordinates.FromString(coords[2]), TextureCoordinates.FromString(coords[3]),
                         TextureCoordinates.FromString(coords[4]), TextureCoordinates.FromString(coords[5]) };
+                    return true;
+                case "water":
+                    Water = value.ToLower() == "true";
                     return true;
                 default:
                     return base.ApplyVar(var, value);

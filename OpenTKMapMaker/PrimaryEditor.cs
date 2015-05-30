@@ -239,7 +239,7 @@ namespace OpenTKMapMaker
             CollisionDetectionSettings.AllowedPenetration = 0.001f;
             // Load a CollisionUtil instance
             Collision = new CollisionUtil(PhysicsWorld);
-            ents.Add("pointlight", new PointLightEntity(new Location(0), 50, new Location(1), false));
+            ents.Add("pointlight", new PointLightEntity(new Location(0), 15, new Location(1), false));
             ents.Add("cube", new CubeEntity(new Location(-1), new Location(1)));
             ents.Add("spawn", new SpawnPointEntity(new Location(0)));
             ents.Add("model", new ModelEntity(""));

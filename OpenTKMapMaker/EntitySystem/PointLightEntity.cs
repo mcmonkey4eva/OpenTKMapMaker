@@ -51,7 +51,7 @@ namespace OpenTKMapMaker.EntitySystem
             PrimaryEditor.Lights.Add(Internal);
         }
 
-        public float Radius = 0;
+        public float Radius = 15;
         public Location Color;
 
         public override List<KeyValuePair<string, string>> GetVars()
