@@ -87,7 +87,7 @@ namespace OpenTKMapMaker.EntitySystem
                     mesh = context.Models.Handler.MeshToBepu(internalModel.OriginalModel);
                     offset = -Location.FromBVector(mesh.Position);
                 }
-                else
+                else if (mode == ModelCollisionMode.AABB)
                 {
                     List<BEPUutilities.Vector3> vecs = context.Models.Handler.GetCollisionVertices(internalModel.OriginalModel);
                     Location zero = new Location(vecs[0].X, vecs[0].Y, vecs[0].Z);
@@ -101,6 +101,23 @@ namespace OpenTKMapMaker.EntitySystem
                     mesh = new BEPUphysics.Entities.Prefabs.Box(
                         new BEPUphysics.EntityStateManagement.MotionState() { Position = Position.ToBVector(), Orientation = Angle },
                         (float)size.X, (float)size.Y, (float)size.Z);
+                }
+                else
+                {
+                    List<BEPUutilities.Vector3> vecs = context.Models.Handler.GetCollisionVertices(internalModel.OriginalModel);
+                    Location zero = new Location(vecs[0].X, vecs[0].Y, vecs[0].Z);
+                    double distSq = 0;
+                    for (int v = 1; v < vecs.Count; v++)
+                    {
+                        if (vecs[v].LengthSquared() > distSq)
+                        {
+                            distSq = vecs[v].LengthSquared();
+                        }
+                    }
+                    double size = Math.Sqrt(distSq);
+                    offset = Location.Zero;
+                    mesh = new BEPUphysics.Entities.Prefabs.Sphere(
+                        new BEPUphysics.EntityStateManagement.MotionState() { Position = Position.ToBVector(), Orientation = Angle }, (float)size);
                 }
                 offsetmat = Matrix4.CreateTranslation(offset.ToOVector());
             }
@@ -130,6 +147,7 @@ namespace OpenTKMapMaker.EntitySystem
     public enum ModelCollisionMode : byte
     {
         PRECISE = 1,
-        AABB = 2
+        AABB = 2,
+        SPHERE = 3
     }
 }
