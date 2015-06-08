@@ -105,7 +105,6 @@ namespace OpenTKMapMaker.EntitySystem
                 else
                 {
                     List<BEPUutilities.Vector3> vecs = context.Models.Handler.GetCollisionVertices(internalModel.OriginalModel);
-                    Location zero = new Location(vecs[0].X, vecs[0].Y, vecs[0].Z);
                     double distSq = 0;
                     for (int v = 1; v < vecs.Count; v++)
                     {

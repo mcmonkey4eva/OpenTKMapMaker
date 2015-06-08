@@ -1,4 +1,5 @@
 #version 430 core
+#INCLUDE_STATEMENTS_HERE
 
 layout (binding = 0) uniform sampler2D pre_lighttex;
 layout (binding = 1) uniform sampler2D positiontex;
@@ -54,7 +55,8 @@ void main()
 	}
 	if (light_type == 1.0)
 	{
-		atten *= 1 - (f_spos.x * f_spos.x + f_spos.y * f_spos.y);
+		vec4 fst = f_spos / f_spos.w;
+		atten *= 1 - (fst.x * fst.x + fst.y * fst.y);
 	}
 	vec3 L = light_path / light_length;
 	vec3 V_Base = position - eye_pos;
@@ -64,11 +66,15 @@ void main()
 	vec4 diffuse = vec4(max(dot(N, -L), 0.0) * diffuse_albedo, 1.0);
 	vec3 specular = vec3(pow(max(dot(R, V), 0.0), renderhint.y * 1000.0) * specular_albedo * renderhint.x);
 	vec4 fs = f_spos / f_spos.w / 2.0 + 0.5;
+#ifdef MCM_GOOD_GRAPHICS
 	float cosTheta = dot(N, L);
 	cosTheta = clamp(cosTheta, 0.0, 1.0);
-	float bias = 0.00025 * tan(acos(cosTheta));
+	float bias = 0.00005 * tan(acos(cosTheta));
 	bias = clamp(bias, 0.0, 0.001);
 	fs.z -= bias / (light_length / 5.0 / (light_radius / 100.0));
+#else
+	fs.z -= 0.0001;
+#endif
 	float jump = clamp(0.0001 * V_Len, 0.0001, 0.01);
 	float depth = textureProj(tex, fs + vec4(0.00, -jump, 0.0, 0.0));
 	float depth2 = textureProj(tex, fs + vec4(jump, 0.0, 0.0, 0.0));
@@ -88,6 +94,6 @@ void main()
 	atten = max(atten, min_depth);
 	diffuse = vec4(max(diffuse.x, min_depth), max(diffuse.y, min_depth), max(diffuse.z, min_depth), diffuse.w);
 	color = vec4((prelight_color + (vec4(depth, depth, depth, 1.0) *
-		atten * (mix(vec4(1.0), diffuse, bvec4(1.0)) * vec4(light_color, 1.0)) * diffuset) +
+		atten * (/*mix(vec4(1.0), diffuse, bvec4(1.0))*/diffuse * vec4(light_color, 1.0)) * diffuset) +
 		(vec4(min(specular, 1.0), 0.0) * vec4(light_color, 1.0) * atten * depth)).xyz, diffuset.w);
 }

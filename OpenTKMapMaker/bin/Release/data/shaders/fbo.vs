@@ -16,8 +16,8 @@ const int MAX_BONES = 70;
 layout (location = 1) uniform mat4 proj_matrix = mat4(1.0);
 layout (location = 2) uniform mat4 mv_matrix = mat4(1.0);
 // ...
-layout (location = 6) uniform mat4 simplebone_matrix = mat4(1.0);
-layout (location = 7) uniform mat4 boneTrans[MAX_BONES];
+layout (location = 7) uniform mat4 simplebone_matrix = mat4(1.0);
+layout (location = 8) uniform mat4 boneTrans[MAX_BONES];
 
 void main(void)
 {

@@ -9,9 +9,10 @@ layout (binding = 5) uniform sampler2D renderhinttex;
 
 layout (location = 0) in vec2 f_texcoord;
 
-layout (location = 3) uniform mat4 shadow_matrix;
-layout (location = 4) uniform vec3 light_pos = vec3(5.0, 5.0, 5.0);
 layout (location = 5) uniform vec3 ambient = vec3(0.05, 0.05, 0.05);
+// ...
+layout (location = 8) uniform vec3 cameraTargetPos = vec3(0.0, 0.0, 0.0);
+layout (location = 9) uniform float cameraTargetDepth = 0.01;
 
 out vec4 color;
 
@@ -29,9 +30,6 @@ void main()
 	vec4 shadow_light_color = texture(shtex, f_texcoord);
 	vec4 colortex_color = texture(colortex, f_texcoord);
 	vec4 light_color = regularize(vec4(ambient, 0.0) * colortex_color + shadow_light_color);
-	if (light_color.w > 1.0)
-	{
-		light_color.w = 1.0;
-	}
+	light_color.w = 1.0;
 	color = light_color;
 }

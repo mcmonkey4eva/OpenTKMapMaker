@@ -548,6 +548,11 @@ namespace OpenTKMapMaker
                 context.Textures = new TextureEngine();
                 context.Textures.InitTextureSystem();
                 context.Shaders = new ShaderEngine();
+                string vendor = GL.GetString(StringName.Vendor);
+                if (vendor.ToLower().Contains("intel"))
+                {
+                    context.Shaders.MCM_GOOD_GRAPHICS = false;
+                }
                 context.Shaders.InitShaderSystem();
                 context.Fonts = new GLFontEngine(context.Shaders);
                 context.Fonts.Init();

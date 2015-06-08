@@ -131,6 +131,8 @@ namespace OpenTKMapMaker.GraphicsSystem
             return generic;
         }
 
+        public bool MCM_GOOD_GRAPHICS = true;
+
         /// <summary>
         /// Compiles a VertexShader and FragmentShader to a usable shader program.
         /// </summary>
@@ -150,6 +152,14 @@ namespace OpenTKMapMaker.GraphicsSystem
                 throw new Exception("Error creating VertexShader. Error status: " + VS_Status + ", info: " + VS_Info);
             }
             int FragmentObject = GL.CreateShader(ShaderType.FragmentShader);
+            if (MCM_GOOD_GRAPHICS)
+            {
+                FS = FS.Replace("#INCLUDE_STATEMENTS_HERE", "#define MCM_GOOD_GRAPHICS");
+            }
+            else
+            {
+                FS = FS.Replace("#INCLUDE_STATEMENTS_HERE", "");
+            }
             GL.ShaderSource(FragmentObject, FS);
             GL.CompileShader(FragmentObject);
             string FS_Info = GL.GetShaderInfoLog(FragmentObject);
@@ -157,7 +167,7 @@ namespace OpenTKMapMaker.GraphicsSystem
             GL.GetShader(FragmentObject, ShaderParameter.CompileStatus, out FS_Status);
             if (FS_Status != 1)
             {
-                throw new Exception("Error creating VertexShader. Error status: " + FS_Status + ", info: " + FS_Info);
+                throw new Exception("Error creating FragmentShader. Error status: " + FS_Status + ", info: " + FS_Info);
             }
             int Program = GL.CreateProgram();
             GL.AttachShader(Program, FragmentObject);
