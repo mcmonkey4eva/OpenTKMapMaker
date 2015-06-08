@@ -550,10 +550,10 @@ namespace OpenTKMapMaker
                 context.Textures.InitTextureSystem();
                 context.Shaders = new ShaderEngine();
                 string vendor = GL.GetString(StringName.Vendor);
+                SysConsole.Output(OutputType.INIT, "Found vendor " + vendor);
                 if (vendor.ToLower().Contains("intel"))
                 {
                     context.Shaders.MCM_GOOD_GRAPHICS = false;
-                    SysConsole.Output(OutputType.INFO, "Found vendor " + vendor);
                 }
                 context.Shaders.InitShaderSystem();
                 context.Fonts = new GLFontEngine(context.Shaders);
