@@ -467,6 +467,7 @@ namespace OpenTKMapMaker
                 {
                     Joints[j].Render(context);
                 }
+                context.Rendering.SetColor(Color4.White);
             }
             if (RenderEntities && RenderLines)
             {
@@ -552,6 +553,7 @@ namespace OpenTKMapMaker
                 if (vendor.ToLower().Contains("intel"))
                 {
                     context.Shaders.MCM_GOOD_GRAPHICS = false;
+                    SysConsole.Output(OutputType.INFO, "Found vendor " + vendor);
                 }
                 context.Shaders.InitShaderSystem();
                 context.Fonts = new GLFontEngine(context.Shaders);
