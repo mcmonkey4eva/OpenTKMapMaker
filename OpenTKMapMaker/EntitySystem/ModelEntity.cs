@@ -134,6 +134,10 @@ namespace OpenTKMapMaker.EntitySystem
             context.Rendering.SetMinimumLight(0.0f);
             Model rmodel = context.Models.GetModel(model); // TODO: Handle more efficiently. Recalculate()?
             rmodel.LoadSkin(context.Textures);
+            if (rmodel.Meshes[0].vbo.Tex == null)
+            {
+                context.Textures.White.Bind();
+            }
             rmodel.Draw(0);
         }
 
